@@ -23,7 +23,7 @@ config/*
 temp/*
 #######
 # sphinx docs
-docs/build
+docsrc/build
 ######
 # package files
 *.egg-info/

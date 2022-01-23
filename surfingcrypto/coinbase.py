@@ -104,7 +104,7 @@ class CB:
         Return:
             has_transactions (:obj:`list` of :obj:`coinbase.ApiObject`): list of coinbase accounts
             timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first 
-                and last transaction for each account in `has_transactions`
+            and last transaction for each account in `has_transactions`
         """
         has_transactions=[]
         timeranges=[]
