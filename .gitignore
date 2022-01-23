@@ -1,0 +1,43 @@
+__pycache__/
+.vscode
+#######
+#time series locally downloaded
+data/ts/**
+#######
+#ignore all kind of images in home directory
+./*.pdf
+./*.png
+./*.jpeg
+./*.jpg
+#######
+#ignore private info and config
+config/*
+#######
+# AWS ec2 keys
+*.pem
+#######
+# log files 
+*.log
+#######
+# temp files, if present
+temp/*
+#######
+# sphinx docs
+docs/build
+######
+# package files
+*.egg-info/
+######
+# pytest
+*.pytest_cache
+# test coverage
+.coverage
+######
+# git files
+*.rej
+*.patch
+# plotly
+*.html
+####
+main.py
+tools

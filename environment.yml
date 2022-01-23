@@ -1,0 +1,33 @@
+name: cryptoenv
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.7
+  - ipython
+  - ipykernel
+  - requests
+  - dataclasses
+  - pandas
+  - matplotlib==3.2.2
+  - plotly
+  - plotly_express
+  - docutils==0.16
+  - numpy
+  - pytrends
+  - mplfinance
+  - python-telegram-bot
+  - python-dateutil
+  - sphinx
+  - sphinx_rtd_theme
+  - myst-parser
+  - pytest
+  - pytest-cov
+  - pip
+  - pip:
+    - trendln
+    - pandas-ta
+    - git+https://github.com/giocaizzi/cryptoCMD.git
+    - bob-telegram-tools
+    - backtrader
+    - coinbase
