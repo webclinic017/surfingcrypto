@@ -55,43 +55,6 @@ To use the package a file `config.json` containing configuration is required. It
 
 ### Read the docs
 
-Documentations is temporarily  hosted [here](http://crypto-documentation-website.s3-website.eu-central-1.amazonaws.com) on an AWS S3 bucket with public access.
+Documentations can be found [here]()
 
-### Build the docs and share docs 
 
-Documentation is obtained by executing following script. Allows to share online if `AWS CLI` credentials are installed on the machine.
-
-`sphinx` in required and `./tools/build-docs.sh` must be executable.
-
-```shell
-./tools/build-docs.sh
-```
-
-## Branching and versioning logic 
-
-*in the future will be switched to a more CI-favourable approach*
-
-The repository is *kinda* based onto a gitflow approach. There is a `main` and `develop` branch. 
-
-- `main`  is the relase version, tagged with version number. It is the version that is installed on remote server. It can only receive merges from `developement`.
-- `develop` is the *release* and *developement* version alltogheter. It is the last step before the release (a.k.a. installation on server). Can be also be independently modified.
-
-In addition:
-- `hotfix/` branches are quick fixes of main branches. Will be merged only into `main` or `develop`
-- `feature/` branches are the actual developement branches, where new features are implemented.
-
-The branching and versioning logic can be represented with the following diagram:
-
-```
-Tags               v0.2        v0.3         v0.4
-
-main             ---o-----------o-----------o
-                     \         /           /
-hotfix                o---o---o           /
-                               \         /
-develop          ---o-----o-----o---o---o---o-->
-                     \         /     \
-feature1              o---o---o       \
-feature2                               o---o-->
-etc...
-```
