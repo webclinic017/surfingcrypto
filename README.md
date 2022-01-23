@@ -1,7 +1,7 @@
 
 # surfingcrypto
 
-![img](docs/source/images/logo.png)
+![img](docsrc/source/images/logo.png)
 
 ![img](https://img.shields.io/static/v1?label=python&message=3.7&color=blue&style=for-the-badge)
 
