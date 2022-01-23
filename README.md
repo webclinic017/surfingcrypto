@@ -19,9 +19,9 @@
     conda activate cryptoenv
     ```
 
-3. Run setup in editable mode to allow importing from anywhere within the environment and set it in editable `-e` mode.
+3. Install with pip
    ```shell
-   pip install -e .
+   pip install .
    ```
 
 ## Configuration
