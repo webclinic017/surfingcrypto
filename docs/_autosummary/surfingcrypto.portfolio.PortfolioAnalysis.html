@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>surfingcrypto.portfolio.PortfolioAnalysis &mdash; surfingcrypto 0.2.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="surfingcrypto.portfolio_tracker" href="surfingcrypto.portfolio_tracker.html" />
+    <link rel="prev" title="surfingcrypto.portfolio" href="surfingcrypto.portfolio.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> surfingcrypto
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bodytext.html">Quick start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="surfingcrypto.html">surfingcrypto</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.coinbase.html">surfingcrypto.coinbase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.config.html">surfingcrypto.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.gtrends.html">surfingcrypto.gtrends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.plotting.html">surfingcrypto.plotting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="surfingcrypto.portfolio.html">surfingcrypto.portfolio</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">surfingcrypto.portfolio.PortfolioAnalysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio_tracker.html">surfingcrypto.portfolio_tracker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.scraper.html">surfingcrypto.scraper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.strategies.html">surfingcrypto.strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.telegram_bot.html">surfingcrypto.telegram_bot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.trend_line.html">surfingcrypto.trend_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.ts.html">surfingcrypto.ts</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">surfingcrypto</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.html">surfingcrypto</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.portfolio.html">surfingcrypto.portfolio</a> &raquo;</li>
+        
+      <li>surfingcrypto.portfolio.PortfolioAnalysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_autosummary/surfingcrypto.portfolio.PortfolioAnalysis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="surfingcrypto-portfolio-portfolioanalysis">
+<h1>surfingcrypto.portfolio.PortfolioAnalysis<a class="headerlink" href="#surfingcrypto-portfolio-portfolioanalysis" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="surfingcrypto.portfolio.PortfolioAnalysis">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">surfingcrypto.portfolio.</span></span><span class="sig-name descname"><span class="pre">PortfolioAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mycoinbase_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.portfolio.PortfolioAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is a Coinbase portfolio analysis.</p>
+<p>Has methods for assessing portfolio values, grouping transactions by type,
+calculate total fees, etc.</p>
+<p>With <cite>Portfolio.Analysis.standardize()</cite> it is possible to adapt
+the <cite>surfingcrypto.coinbase.MyCoinbase</cite> object to a standard form
+where there are only <cite>buy</cite> or <cite>sell</cite> trades
+and the amounts are always positive.</p>
+<p>This standard portfolio allows to reconstruct easily the timeline
+of the portfolio value, at each given instant in time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mycoinbase_df</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>) – coinbase transaction
+history, eg. <cite>surfingcrypto.coinbase.MyCoinbase.my_coinbase</cite></p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.portfolio.PortfolioAnalysis.df">
+<span class="sig-name descname"><span class="pre">df</span></span><a class="headerlink" href="#surfingcrypto.portfolio.PortfolioAnalysis.df" title="Permalink to this definition">¶</a></dt>
+<dd><p>coinbase transaction
+history as from the <cite>surfingcrypto.coinbase.MyCoinbase</cite> output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.portfolio.PortfolioAnalysis.std_df">
+<span class="sig-name descname"><span class="pre">std_df</span></span><a class="headerlink" href="#surfingcrypto.portfolio.PortfolioAnalysis.std_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>standardized transaction history,
+contains only <cite>buy</cite> or <cite>sell</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.portfolio.PortfolioAnalysis.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mycoinbase_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.portfolio.PortfolioAnalysis.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.portfolio.PortfolioAnalysis.__init__" title="surfingcrypto.portfolio.PortfolioAnalysis.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(mycoinbase_df)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.portfolio.PortfolioAnalysis.live_value" title="surfingcrypto.portfolio.PortfolioAnalysis.live_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">live_value</span></code></a>(client, amount, currency)</p></td>
+<td><p>gets live value of given currency and amount.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.portfolio.PortfolioAnalysis.portfolio_value" title="surfingcrypto.portfolio.PortfolioAnalysis.portfolio_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">portfolio_value</span></code></a>(client)</p></td>
+<td><p>gets live value of portfolio.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.portfolio.PortfolioAnalysis.standardize" title="surfingcrypto.portfolio.PortfolioAnalysis.standardize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">standardize</span></code></a>()</p></td>
+<td><p>creates a dataframe of only <cite>buy</cite> and <cite>sell</cite> orders, for easier portfolio analysis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.portfolio.PortfolioAnalysis.total_by_type" title="surfingcrypto.portfolio.PortfolioAnalysis.total_by_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_by_type</span></code></a>()</p></td>
+<td><p>total EUR by transaction type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.portfolio.PortfolioAnalysis.total_fees" title="surfingcrypto.portfolio.PortfolioAnalysis.total_fees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_fees</span></code></a>()</p></td>
+<td><p>total fees paid by user for th</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.portfolio.PortfolioAnalysis.live_value">
+<span class="sig-name descname"><span class="pre">live_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">currency</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.portfolio.PortfolioAnalysis.live_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets live value of given currency and amount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="surfingcrypto.coinbase.CB.html#surfingcrypto.coinbase.CB.client" title="surfingcrypto.coinbase.CB.client"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surfingcrypto.coinbase.CB.client</span></code></a>) – client to coinbase account.</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – amount of currency</p></li>
+<li><p><strong>currency</strong> (<em>str</em>) – symbol of currency</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.portfolio.PortfolioAnalysis.portfolio_value">
+<span class="sig-name descname"><span class="pre">portfolio_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.portfolio.PortfolioAnalysis.portfolio_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets live value of portfolio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>client</strong> (<a class="reference internal" href="surfingcrypto.coinbase.CB.html#surfingcrypto.coinbase.CB.client" title="surfingcrypto.coinbase.CB.client"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surfingcrypto.coinbase.CB.client</span></code></a>) – client to coinbase account.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.portfolio.PortfolioAnalysis.standardize">
+<span class="sig-name descname"><span class="pre">standardize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.portfolio.PortfolioAnalysis.standardize" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a dataframe of only <cite>buy</cite> and <cite>sell</cite> orders, for easier portfolio analysis.</p>
+<p>It calculates missing fee information of <cite>trade</cite> transactions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>At the moment does not include <cite>send</cite>,`deposit` or <cite>withdrawal</cite> transactions</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.portfolio.PortfolioAnalysis.total_by_type">
+<span class="sig-name descname"><span class="pre">total_by_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.portfolio.PortfolioAnalysis.total_by_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>total EUR by transaction type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.portfolio.PortfolioAnalysis.total_fees">
+<span class="sig-name descname"><span class="pre">total_fees</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.portfolio.PortfolioAnalysis.total_fees" title="Permalink to this definition">¶</a></dt>
+<dd><p>total fees paid by user for th</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="surfingcrypto.portfolio_tracker.html" class="btn btn-neutral float-right" title="surfingcrypto.portfolio_tracker" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="surfingcrypto.portfolio.html" class="btn btn-neutral float-left" title="surfingcrypto.portfolio" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, giocaizzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

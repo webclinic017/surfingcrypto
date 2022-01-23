@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>surfingcrypto.telegram_bot.Tg_notifications &mdash; surfingcrypto 0.2.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="surfingcrypto.trend_line" href="surfingcrypto.trend_line.html" />
+    <link rel="prev" title="surfingcrypto.telegram_bot" href="surfingcrypto.telegram_bot.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> surfingcrypto
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bodytext.html">Quick start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="surfingcrypto.html">surfingcrypto</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.coinbase.html">surfingcrypto.coinbase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.config.html">surfingcrypto.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.gtrends.html">surfingcrypto.gtrends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.plotting.html">surfingcrypto.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio.html">surfingcrypto.portfolio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio_tracker.html">surfingcrypto.portfolio_tracker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.scraper.html">surfingcrypto.scraper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.strategies.html">surfingcrypto.strategies</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="surfingcrypto.telegram_bot.html">surfingcrypto.telegram_bot</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">surfingcrypto.telegram_bot.Tg_notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.trend_line.html">surfingcrypto.trend_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.ts.html">surfingcrypto.ts</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">surfingcrypto</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.html">surfingcrypto</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.telegram_bot.html">surfingcrypto.telegram_bot</a> &raquo;</li>
+        
+      <li>surfingcrypto.telegram_bot.Tg_notifications</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_autosummary/surfingcrypto.telegram_bot.Tg_notifications.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="surfingcrypto-telegram-bot-tg-notifications">
+<h1>surfingcrypto.telegram_bot.Tg_notifications<a class="headerlink" href="#surfingcrypto-telegram-bot-tg-notifications" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">surfingcrypto.telegram_bot.</span></span><span class="sig-name descname"><span class="pre">Tg_notifications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_users_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Wrapper of official telegram API to send notifications from a BOT initiaed manually with &#64;BotFather.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>configuration</strong> – package configuration object</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.token">
+<span class="sig-name descname"><span class="pre">token</span></span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.token" title="Permalink to this definition">¶</a></dt>
+<dd><p>token of telegram bot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.users">
+<span class="sig-name descname"><span class="pre">users</span></span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.users" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe containing usernames and chat_id of known users following the bot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.updates">
+<span class="sig-name descname"><span class="pre">updates</span></span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.updates" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe containing all updates fetched from bot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.channel_mode">
+<span class="sig-name descname"><span class="pre">channel_mode</span></span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.channel_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>channel_mode is active</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_users_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.telegram_bot.Tg_notifications.__init__" title="surfingcrypto.telegram_bot.Tg_notifications.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(configuration[, channel_mode, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.telegram_bot.Tg_notifications.getUpdates" title="surfingcrypto.telegram_bot.Tg_notifications.getUpdates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getUpdates</span></code></a>()</p></td>
+<td><p>get updates from bot</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.telegram_bot.Tg_notifications.new_users" title="surfingcrypto.telegram_bot.Tg_notifications.new_users"><code class="xref py py-obj docutils literal notranslate"><span class="pre">new_users</span></code></a>()</p></td>
+<td><p>check if unknown users have interacted with the telegram bot.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.telegram_bot.Tg_notifications.send_coinfig" title="surfingcrypto.telegram_bot.Tg_notifications.send_coinfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_coinfig</span></code></a>([figure, file, caption, to])</p></td>
+<td><p>context handler to send figures from either matplotlib figure objects or local files</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_doc</span></code>(document, caption, chat_id)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.telegram_bot.Tg_notifications.send_message" title="surfingcrypto.telegram_bot.Tg_notifications.send_message"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_message</span></code></a>(message, chat_id)</p></td>
+<td><p>send message to a specific user</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.telegram_bot.Tg_notifications.send_message_to_all" title="surfingcrypto.telegram_bot.Tg_notifications.send_message_to_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_message_to_all</span></code></a>(message)</p></td>
+<td><p>send message to all known users</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.telegram_bot.Tg_notifications.send_plot" title="surfingcrypto.telegram_bot.Tg_notifications.send_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_plot</span></code></a>(figure, chat_id)</p></td>
+<td><p>send plot to specific user</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.telegram_bot.Tg_notifications.send_plot_to_all" title="surfingcrypto.telegram_bot.Tg_notifications.send_plot_to_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_plot_to_all</span></code></a>(figure)</p></td>
+<td><p>send plot to all known users</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.getUpdates">
+<span class="sig-name descname"><span class="pre">getUpdates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.getUpdates" title="Permalink to this definition">¶</a></dt>
+<dd><p>get updates from bot</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.new_users">
+<span class="sig-name descname"><span class="pre">new_users</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.new_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if unknown users have interacted with the telegram bot.
+If the new users are found, they are automatically added to known users csv files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.send_coinfig">
+<span class="sig-name descname"><span class="pre">send_coinfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caption</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.send_coinfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>context handler to send figures from either matplotlib figure objects or local files</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.send_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>send message to a specific user</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chat_id</strong> (<em>int</em>) – chat_id code of chat to send the message to</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – string containing message to send</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.send_message_to_all">
+<span class="sig-name descname"><span class="pre">send_message_to_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.send_message_to_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>send message to all known users</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – string containing message to send</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.send_plot">
+<span class="sig-name descname"><span class="pre">send_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.send_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>send plot to specific user</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chat_id</strong> (<em>int</em>) – chat_id code of chat to send the plot to</p></li>
+<li><p><strong>figure</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code>) – matplotlib figure object to send</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.telegram_bot.Tg_notifications.send_plot_to_all">
+<span class="sig-name descname"><span class="pre">send_plot_to_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.telegram_bot.Tg_notifications.send_plot_to_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>send plot to all known users</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>figure</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code>) – matplotlib figure object to send</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="surfingcrypto.trend_line.html" class="btn btn-neutral float-right" title="surfingcrypto.trend_line" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="surfingcrypto.telegram_bot.html" class="btn btn-neutral float-left" title="surfingcrypto.telegram_bot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, giocaizzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

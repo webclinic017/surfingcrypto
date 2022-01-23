@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>surfingcrypto.scraper.Scraper &mdash; surfingcrypto 0.2.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="surfingcrypto.strategies" href="surfingcrypto.strategies.html" />
+    <link rel="prev" title="surfingcrypto.scraper" href="surfingcrypto.scraper.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> surfingcrypto
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bodytext.html">Quick start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="surfingcrypto.html">surfingcrypto</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.coinbase.html">surfingcrypto.coinbase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.config.html">surfingcrypto.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.gtrends.html">surfingcrypto.gtrends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.plotting.html">surfingcrypto.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio.html">surfingcrypto.portfolio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio_tracker.html">surfingcrypto.portfolio_tracker</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="surfingcrypto.scraper.html">surfingcrypto.scraper</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">surfingcrypto.scraper.Scraper</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.strategies.html">surfingcrypto.strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.telegram_bot.html">surfingcrypto.telegram_bot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.trend_line.html">surfingcrypto.trend_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.ts.html">surfingcrypto.ts</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">surfingcrypto</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.html">surfingcrypto</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.scraper.html">surfingcrypto.scraper</a> &raquo;</li>
+        
+      <li>surfingcrypto.scraper.Scraper</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_autosummary/surfingcrypto.scraper.Scraper.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="surfingcrypto-scraper-scraper">
+<h1>surfingcrypto.scraper.Scraper<a class="headerlink" href="#surfingcrypto-scraper-scraper" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">surfingcrypto.scraper.</span></span><span class="sig-name descname"><span class="pre">Scraper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.scraper.Scraper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is a wrapper of GitHub repo <cite>cryptocmd</cite> that scrapes data from coinmarketcap.com.
+It scrapes data for the crypto coins specified in the keys of the customizable coins.json file.
+Saves data in a <cite>*.csv</cite> file stored in <cite>data/ts/</cite>.
+Checks if the file exists, if not it is downloaded.
+If it exists, it check last element of datetime index and compares it with today’s date.
+If required, it updates the <cite>*.csv</cite> file to today’s date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>configuration</strong> (<a class="reference internal" href="surfingcrypto.config.config.html#surfingcrypto.config.config" title="surfingcrypto.config.config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surfingcrypto.config.config</span></code></a>) – package configuration object</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.config">
+<span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>package configuration object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="surfingcrypto.config.config.html#surfingcrypto.config.config" title="surfingcrypto.config.config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surfingcrypto.config.config</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.log_strings">
+<span class="sig-name descname"><span class="pre">log_strings</span></span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.log_strings" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of log strings for output of process, one for each coin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.log_bool">
+<span class="sig-name descname"><span class="pre">log_bool</span></span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.log_bool" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of boolean output of process, one for each coin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.output">
+<span class="sig-name descname"><span class="pre">output</span></span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overall boolean output of process. If everything went well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.output_descrition">
+<span class="sig-name descname"><span class="pre">output_descrition</span></span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.output_descrition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overall log string of ouput.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.scraper.Scraper.__init__" title="surfingcrypto.scraper.Scraper.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(configuration)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.scraper.Scraper.load_csv" title="surfingcrypto.scraper.Scraper.load_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_csv</span></code></a>(path)</p></td>
+<td><p>load csv data from directory specified as <cite>data_folder</cite> in package config</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.scraper.Scraper.log" title="surfingcrypto.scraper.Scraper.log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code></a>()</p></td>
+<td><p>prints <cite>output_description</cite> for reading output.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.scraper.Scraper.overall_output_description" title="surfingcrypto.scraper.Scraper.overall_output_description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overall_output_description</span></code></a>()</p></td>
+<td><p>creates an overall verbose description of process.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.scraper.Scraper.run" title="surfingcrypto.scraper.Scraper.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>()</p></td>
+<td><p>runs the scraping process.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.scraper.Scraper.scrape_alltime_data" title="surfingcrypto.scraper.Scraper.scrape_alltime_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scrape_alltime_data</span></code></a>(start, end_day, key, path)</p></td>
+<td><p>scrape all time data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.scraper.Scraper.scrape_missing_data" title="surfingcrypto.scraper.Scraper.scrape_missing_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scrape_missing_data</span></code></a>(last, end_day, key, path, df)</p></td>
+<td><p>scrapes the missing data and concatenates it to existing df.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.load_csv">
+<span class="sig-name descname"><span class="pre">load_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.load_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>load csv data from directory specified as <cite>data_folder</cite> in package config</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – path to csv file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>date parsed as d-m-Y of last known price
+df (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>): dataframe of locally stored data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>last (str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.log">
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>prints <cite>output_description</cite> for reading output.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.overall_output_description">
+<span class="sig-name descname"><span class="pre">overall_output_description</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.overall_output_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates an overall verbose description of process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>runs the scraping process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.scrape_alltime_data">
+<span class="sig-name descname"><span class="pre">scrape_alltime_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.scrape_alltime_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>scrape all time data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime.datetime</span></code>) – start day</p></li>
+<li><p><strong>end_day</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime.datetime</span></code>) – end day</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – symbol of crypto</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – path to csv file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.scraper.Scraper.scrape_missing_data">
+<span class="sig-name descname"><span class="pre">scrape_missing_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">last</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.scraper.Scraper.scrape_missing_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>scrapes the missing data and concatenates it to existing df.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>last</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime.datetime</span></code>) – date parsed as string with d-m-Y format of last known price</p></li>
+<li><p><strong>end_day</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime.datetime</span></code>) – date parsed as string with d-m-Y format for limiting the dowload of data to a specific date.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – symbol of crypto</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – path to csv file</p></li>
+<li><p><strong>df</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>) – dataframe of  locally stored data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="surfingcrypto.strategies.html" class="btn btn-neutral float-right" title="surfingcrypto.strategies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="surfingcrypto.scraper.html" class="btn btn-neutral float-left" title="surfingcrypto.scraper" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, giocaizzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

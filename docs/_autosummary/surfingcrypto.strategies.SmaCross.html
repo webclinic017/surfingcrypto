@@ -1,0 +1,1280 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>surfingcrypto.strategies.SmaCross &mdash; surfingcrypto 0.2.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="surfingcrypto.strategies.TestStrategy" href="surfingcrypto.strategies.TestStrategy.html" />
+    <link rel="prev" title="surfingcrypto.strategies" href="surfingcrypto.strategies.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> surfingcrypto
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bodytext.html">Quick start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="surfingcrypto.html">surfingcrypto</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.coinbase.html">surfingcrypto.coinbase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.config.html">surfingcrypto.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.gtrends.html">surfingcrypto.gtrends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.plotting.html">surfingcrypto.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio.html">surfingcrypto.portfolio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio_tracker.html">surfingcrypto.portfolio_tracker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.scraper.html">surfingcrypto.scraper</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="surfingcrypto.strategies.html">surfingcrypto.strategies</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">surfingcrypto.strategies.SmaCross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="surfingcrypto.strategies.TestStrategy.html">surfingcrypto.strategies.TestStrategy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.telegram_bot.html">surfingcrypto.telegram_bot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.trend_line.html">surfingcrypto.trend_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.ts.html">surfingcrypto.ts</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">surfingcrypto</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.html">surfingcrypto</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.strategies.html">surfingcrypto.strategies</a> &raquo;</li>
+        
+      <li>surfingcrypto.strategies.SmaCross</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_autosummary/surfingcrypto.strategies.SmaCross.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="surfingcrypto-strategies-smacross">
+<h1>surfingcrypto.strategies.SmaCross<a class="headerlink" href="#surfingcrypto-strategies-smacross" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">surfingcrypto.strategies.</span></span><span class="sig-name descname"><span class="pre">SmaCross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">backtrader.strategy.Strategy</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.__init__" title="surfingcrypto.strategies.SmaCross.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.add_timer" title="surfingcrypto.strategies.SmaCross.add_timer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_timer</span></code></a>(when[, offset, repeat, weekdays, ...])</p></td>
+<td><p><strong>Note</strong>: can be called during <code class="docutils literal notranslate"><span class="pre">__init__</span></code> or <code class="docutils literal notranslate"><span class="pre">start</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">addindicator</span></code>(indicator)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.addminperiod" title="surfingcrypto.strategies.SmaCross.addminperiod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addminperiod</span></code></a>(minperiod)</p></td>
+<td><p>The passed minperiod is fed to the lines</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">advance</span></code>([size])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">backwards</span></code>([size, force])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bind2line</span></code>([owner, own])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bind2lines</span></code>([owner, own])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bindlines</span></code>([owner, own])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.buy" title="surfingcrypto.strategies.SmaCross.buy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">buy</span></code></a>([data, size, price, plimit, exectype, ...])</p></td>
+<td><p>Create a buy (long) order and send it to the broker</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.buy_bracket" title="surfingcrypto.strategies.SmaCross.buy_bracket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">buy_bracket</span></code></a>([data, size, price, plimit, ...])</p></td>
+<td><p>Create a bracket order group (low side - buy order - high side).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.cancel" title="surfingcrypto.strategies.SmaCross.cancel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cancel</span></code></a>(order)</p></td>
+<td><p>Cancels the order in the broker</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.close" title="surfingcrypto.strategies.SmaCross.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>([data, size])</p></td>
+<td><p>Counters a long/short position closing it</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extend</span></code>([value, size])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code>([value, size])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.getdatabyname" title="surfingcrypto.strategies.SmaCross.getdatabyname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getdatabyname</span></code></a>(name)</p></td>
+<td><p>Returns a given data by name using the environment (cerebro)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.getdatanames" title="surfingcrypto.strategies.SmaCross.getdatanames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getdatanames</span></code></a>()</p></td>
+<td><p>Returns a list of the existing data names</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getindicators</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getindicators_lines</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getobservers</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.getposition" title="surfingcrypto.strategies.SmaCross.getposition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getposition</span></code></a>([data, broker])</p></td>
+<td><p>Returns the current position for a given data in a given broker.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.getpositionbyname" title="surfingcrypto.strategies.SmaCross.getpositionbyname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getpositionbyname</span></code></a>([name, broker])</p></td>
+<td><p>Returns the current position for a given name in a given broker.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.getpositions" title="surfingcrypto.strategies.SmaCross.getpositions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getpositions</span></code></a>([broker])</p></td>
+<td><p>Returns the current by data positions directly from the broker</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.getpositionsbyname" title="surfingcrypto.strategies.SmaCross.getpositionsbyname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getpositionsbyname</span></code></a>([broker])</p></td>
+<td><p>Returns the current by name positions directly from the broker</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.getsizer" title="surfingcrypto.strategies.SmaCross.getsizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getsizer</span></code></a>()</p></td>
+<td><p>Returns the sizer which is in used if automatic statke calculation is used</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.getsizing" title="surfingcrypto.strategies.SmaCross.getsizing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getsizing</span></code></a>([data, isbuy])</p></td>
+<td><p>Return the stake calculated by the sizer instance for the current situation</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getwriterheaders</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getwriterinfo</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getwritervalues</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">home</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.incminperiod" title="surfingcrypto.strategies.SmaCross.incminperiod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">incminperiod</span></code></a>(minperiod)</p></td>
+<td><p>The passed minperiod is fed to the lines</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.minbuffer" title="surfingcrypto.strategies.SmaCross.minbuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">minbuffer</span></code></a>(size)</p></td>
+<td><p>Receive notification of how large the buffer must at least be</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.next" title="surfingcrypto.strategies.SmaCross.next"><code class="xref py py-obj docutils literal notranslate"><span class="pre">next</span></code></a>()</p></td>
+<td><p>This method will be called for all remaining data points when the minimum period for all datas/indicators have been meet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">next_open</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.nextstart" title="surfingcrypto.strategies.SmaCross.nextstart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nextstart</span></code></a>()</p></td>
+<td><p>This method will be called once, exactly when the minimum period for all datas/indicators have been meet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nextstart_open</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.notify_cashvalue" title="surfingcrypto.strategies.SmaCross.notify_cashvalue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_cashvalue</span></code></a>(cash, value)</p></td>
+<td><p>Receives the current fund value, value status of the strategy's broker</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.notify_data" title="surfingcrypto.strategies.SmaCross.notify_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_data</span></code></a>(data, status, *args, **kwargs)</p></td>
+<td><p>Receives a notification from data</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.notify_fund" title="surfingcrypto.strategies.SmaCross.notify_fund"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_fund</span></code></a>(cash, value, fundvalue, shares)</p></td>
+<td><p>Receives the current cash, value, fundvalue and fund shares</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.notify_order" title="surfingcrypto.strategies.SmaCross.notify_order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_order</span></code></a>(order)</p></td>
+<td><p>Receives an order whenever there has been a change in one</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.notify_store" title="surfingcrypto.strategies.SmaCross.notify_store"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_store</span></code></a>(msg, *args, **kwargs)</p></td>
+<td><p>Receives a notification from a store provider</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.notify_timer" title="surfingcrypto.strategies.SmaCross.notify_timer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_timer</span></code></a>(timer, when, *args, **kwargs)</p></td>
+<td><p>Receives a timer notification where <code class="docutils literal notranslate"><span class="pre">timer</span></code> is the timer which was returned by <code class="docutils literal notranslate"><span class="pre">add_timer</span></code>, and <code class="docutils literal notranslate"><span class="pre">when</span></code> is the calling time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.notify_trade" title="surfingcrypto.strategies.SmaCross.notify_trade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">notify_trade</span></code></a>(trade)</p></td>
+<td><p>Receives a trade whenever there has been a change in one</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.once" title="surfingcrypto.strategies.SmaCross.once"><code class="xref py py-obj docutils literal notranslate"><span class="pre">once</span></code></a>(start, end)</p></td>
+<td><p>Called to calculate values at &quot;once&quot; when the minperiod is over</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.oncestart" title="surfingcrypto.strategies.SmaCross.oncestart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oncestart</span></code></a>(start, end)</p></td>
+<td><p>It will be called when the minperiod phase is over for the 1st post-minperiod value</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.order_target_percent" title="surfingcrypto.strategies.SmaCross.order_target_percent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">order_target_percent</span></code></a>([data, target])</p></td>
+<td><p>Place an order to rebalance a position to have final value of <code class="docutils literal notranslate"><span class="pre">target</span></code> percentage of current portfolio <code class="docutils literal notranslate"><span class="pre">value</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.order_target_size" title="surfingcrypto.strategies.SmaCross.order_target_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">order_target_size</span></code></a>([data, target])</p></td>
+<td><p>Place an order to rebalance a position to have final size of <code class="docutils literal notranslate"><span class="pre">target</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.order_target_value" title="surfingcrypto.strategies.SmaCross.order_target_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">order_target_value</span></code></a>([data, target, price])</p></td>
+<td><p>Place an order to rebalance a position to have final value of <code class="docutils literal notranslate"><span class="pre">target</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotlabel</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.prenext" title="surfingcrypto.strategies.SmaCross.prenext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prenext</span></code></a>()</p></td>
+<td><p>This method will be called before the minimum period of all datas/indicators have been meet for the strategy to start executing</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prenext_open</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.preonce" title="surfingcrypto.strategies.SmaCross.preonce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preonce</span></code></a>(start, end)</p></td>
+<td><p>It will be called during the &quot;minperiod&quot; phase of a &quot;once&quot; iteration</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.qbuffer" title="surfingcrypto.strategies.SmaCross.qbuffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qbuffer</span></code></a>([savemem, replaying])</p></td>
+<td><p>Enable the memory saving schemes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rewind</span></code>([size])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.sell" title="surfingcrypto.strategies.SmaCross.sell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sell</span></code></a>([data, size, price, plimit, exectype, ...])</p></td>
+<td><p>To create a selll (short) order and send it to the broker</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.sell_bracket" title="surfingcrypto.strategies.SmaCross.sell_bracket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sell_bracket</span></code></a>([data, size, price, plimit, ...])</p></td>
+<td><p>Create a bracket order group (low side - buy order - high side).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_tradehistory</span></code>([onoff])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.setminperiod" title="surfingcrypto.strategies.SmaCross.setminperiod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setminperiod</span></code></a>(minperiod)</p></td>
+<td><p>Direct minperiod manipulation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.setsizer" title="surfingcrypto.strategies.SmaCross.setsizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setsizer</span></code></a>(sizer)</p></td>
+<td><p>Replace the default (fixed stake) sizer</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.start" title="surfingcrypto.strategies.SmaCross.start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start</span></code></a>()</p></td>
+<td><p>Called right before the backtesting is about to be started.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.stop" title="surfingcrypto.strategies.SmaCross.stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></a>()</p></td>
+<td><p>Called right before the backtesting is about to be stopped</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.updateminperiod" title="surfingcrypto.strategies.SmaCross.updateminperiod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">updateminperiod</span></code></a>(minperiod)</p></td>
+<td><p>Update the minperiod if needed.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IndType</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObsType</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriceClose</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriceDateTime</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriceHigh</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriceLow</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriceOpen</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriceOpenInteres</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriceVolume</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">StratType</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">alias</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">aliased</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">csv</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">frompackages</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">packages</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.position" title="surfingcrypto.strategies.SmaCross.position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></a></p></td>
+<td><p>Returns the current position for a given data in a given broker.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.positionbyname" title="surfingcrypto.strategies.SmaCross.positionbyname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positionbyname</span></code></a></p></td>
+<td><p>Returns the current position for a given name in a given broker.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.positions" title="surfingcrypto.strategies.SmaCross.positions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positions</span></code></a></p></td>
+<td><p>Returns the current by data positions directly from the broker</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.positionsbyname" title="surfingcrypto.strategies.SmaCross.positionsbyname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positionsbyname</span></code></a></p></td>
+<td><p>Returns the current by name positions directly from the broker</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.strategies.SmaCross.sizer" title="surfingcrypto.strategies.SmaCross.sizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sizer</span></code></a></p></td>
+<td><p>Returns the sizer which is in used if automatic statke calculation is used</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.add_timer">
+<span class="sig-name descname"><span class="pre">add_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">when</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.timedelta(0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repeat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">datetime.timedelta(0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekdays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekcarry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monthdays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monthcarry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tzdata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cheat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.add_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Note</strong>: can be called during <code class="docutils literal notranslate"><span class="pre">__init__</span></code> or <code class="docutils literal notranslate"><span class="pre">start</span></code></p>
+<p>Schedules a timer to invoke either a specified callback or the
+<code class="docutils literal notranslate"><span class="pre">notify_timer</span></code> of one or more strategies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>when</strong> (<em>-</em>) – <p>can be</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">datetime.time</span></code> instance (see below <code class="docutils literal notranslate"><span class="pre">tzdata</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bt.timer.SESSION_START</span></code> to reference a session start</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bt.timer.SESSION_END</span></code> to reference a session end</p></li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code> which must be a <code class="docutils literal notranslate"><span class="pre">datetime.timedelta</span></code> instance</p>
+<p>Used to offset the value <code class="docutils literal notranslate"><span class="pre">when</span></code>. It has a meaningful use in
+combination with <code class="docutils literal notranslate"><span class="pre">SESSION_START</span></code> and <code class="docutils literal notranslate"><span class="pre">SESSION_END</span></code>, to indicated
+things like a timer being called <code class="docutils literal notranslate"><span class="pre">15</span> <span class="pre">minutes</span></code> after the session
+start.</p>
+</li>
+</ul>
+<blockquote>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">repeat</span></code> which must be a <code class="docutils literal notranslate"><span class="pre">datetime.timedelta</span></code> instance</p>
+<p>Indicates if after a 1st call, further calls will be scheduled
+within the same session at the scheduled <code class="docutils literal notranslate"><span class="pre">repeat</span></code> delta</p>
+<p>Once the timer goes over the end of the session it is reset to the
+original value for <code class="docutils literal notranslate"><span class="pre">when</span></code></p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weekdays</span></code>: a <strong>sorted</strong> iterable with integers indicating on
+which days (iso codes, Monday is 1, Sunday is 7) the timers can
+be actually invoked</p>
+<p>If not specified, the timer will be active on all days</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weekcarry</span></code> (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>). If <code class="docutils literal notranslate"><span class="pre">True</span></code> and the weekday was
+not seen (ex: trading holiday), the timer will be executed on the
+next day (even if in a new week)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">monthdays</span></code>: a <strong>sorted</strong> iterable with integers indicating on
+which days of the month a timer has to be executed. For example
+always on day <em>15</em> of the month</p>
+<p>If not specified, the timer will be active on all days</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">monthcarry</span></code> (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>). If the day was not seen
+(weekend, trading holiday), the timer will be executed on the next
+available day.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">allow</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>). A callback which receives a
+<cite>datetime.date`</cite> instance and returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the date is
+allowed for timers or else returns <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tzdata</span></code> which can be either <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), a <code class="docutils literal notranslate"><span class="pre">pytz</span></code>
+instance or a <code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">feed</span></code> instance.</p>
+<p><code class="docutils literal notranslate"><span class="pre">None</span></code>: <code class="docutils literal notranslate"><span class="pre">when</span></code> is interpreted at face value (which translates
+to handling it as if it where UTC even if it’s not)</p>
+<p><code class="docutils literal notranslate"><span class="pre">pytz</span></code> instance: <code class="docutils literal notranslate"><span class="pre">when</span></code> will be interpreted as being specified
+in the local time specified by the timezone instance.</p>
+<p><code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">feed</span></code> instance: <code class="docutils literal notranslate"><span class="pre">when</span></code> will be interpreted as being
+specified in the local time specified by the <code class="docutils literal notranslate"><span class="pre">tz</span></code> parameter of
+the data feed instance.</p>
+<dl class="simple">
+<dt><strong>Note</strong>: If <code class="docutils literal notranslate"><span class="pre">when</span></code> is either <code class="docutils literal notranslate"><span class="pre">SESSION_START</span></code> or</dt><dd><p><code class="docutils literal notranslate"><span class="pre">SESSION_END</span></code> and <code class="docutils literal notranslate"><span class="pre">tzdata</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the 1st <em>data feed</em>
+in the system (aka <code class="docutils literal notranslate"><span class="pre">self.data0</span></code>) will be used as the reference
+to find out the session times.</p>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cheat</span></code> (default <code class="docutils literal notranslate"><span class="pre">False</span></code>) if <code class="docutils literal notranslate"><span class="pre">True</span></code> the timer will be called
+before the broker has a chance to evaluate the orders. This opens
+the chance to issue orders based on opening price for example right
+before the session starts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*args</span></code>: any extra args will be passed to <code class="docutils literal notranslate"><span class="pre">notify_timer</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>: any extra kwargs will be passed to <code class="docutils literal notranslate"><span class="pre">notify_timer</span></code></p></li>
+</ul>
+</div></blockquote>
+</p>
+</dd>
+</dl>
+<p>Return Value:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The created timer</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.addminperiod">
+<span class="sig-name descname"><span class="pre">addminperiod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minperiod</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.addminperiod" title="Permalink to this definition">¶</a></dt>
+<dd><p>The passed minperiod is fed to the lines</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.buy">
+<span class="sig-name descname"><span class="pre">buy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exectype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oco</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailamount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailpercent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transmit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.buy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a buy (long) order and send it to the broker</p>
+<blockquote>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>For which data the order has to be created. If <code class="docutils literal notranslate"><span class="pre">None</span></code> then the
+first data in the system, <code class="docutils literal notranslate"><span class="pre">self.datas[0]</span> <span class="pre">or</span> <span class="pre">self.data0</span></code> (aka
+<code class="docutils literal notranslate"><span class="pre">self.data</span></code>) will be used</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Size to use (positive) of units of data to use for the order.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code> the <code class="docutils literal notranslate"><span class="pre">sizer</span></code> instance retrieved via <code class="docutils literal notranslate"><span class="pre">getsizer</span></code> will
+be used to determine the size.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">price</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Price to use (live brokers may place restrictions on the actual
+format if it does not comply to minimum tick size requirements)</p>
+<p><code class="docutils literal notranslate"><span class="pre">None</span></code> is valid for <code class="docutils literal notranslate"><span class="pre">Market</span></code> and <code class="docutils literal notranslate"><span class="pre">Close</span></code> orders (the market
+determines the price)</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">Limit</span></code>, <code class="docutils literal notranslate"><span class="pre">Stop</span></code> and <code class="docutils literal notranslate"><span class="pre">StopLimit</span></code> orders this value
+determines the trigger point (in the case of <code class="docutils literal notranslate"><span class="pre">Limit</span></code> the trigger
+is obviously at which price the order should be matched)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plimit</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Only applicable to <code class="docutils literal notranslate"><span class="pre">StopLimit</span></code> orders. This is the price at which
+to set the implicit <em>Limit</em> order, once the <em>Stop</em> has been
+triggered (for which <code class="docutils literal notranslate"><span class="pre">price</span></code> has been used)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trailamount</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>If the order type is StopTrail or StopTrailLimit, this is an
+absolute amount which determines the distance to the price (below
+for a Sell order and above for a buy order) to keep the trailing
+stop</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trailpercent</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>If the order type is StopTrail or StopTrailLimit, this is a
+percentage amount which determines the distance to the price (below
+for a Sell order and above for a buy order) to keep the trailing
+stop (if <code class="docutils literal notranslate"><span class="pre">trailamount</span></code> is also specified it will be used)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exectype</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Possible values:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Order.Market</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>. A market order will be executed
+with the next available price. In backtesting it will be the
+opening price of the next bar</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Order.Limit</span></code>. An order which can only be executed at the given
+<code class="docutils literal notranslate"><span class="pre">price</span></code> or better</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Order.Stop</span></code>. An order which is triggered at <code class="docutils literal notranslate"><span class="pre">price</span></code> and
+executed like an <code class="docutils literal notranslate"><span class="pre">Order.Market</span></code> order</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Order.StopLimit</span></code>. An order which is triggered at <code class="docutils literal notranslate"><span class="pre">price</span></code> and
+executed as an implicit <em>Limit</em> order with price given by
+<code class="docutils literal notranslate"><span class="pre">pricelimit</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Order.Close</span></code>. An order which can only be executed with the
+closing price of the session (usually during a closing auction)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Order.StopTrail</span></code>. An order which is triggered at <code class="docutils literal notranslate"><span class="pre">price</span></code>
+minus <code class="docutils literal notranslate"><span class="pre">trailamount</span></code> (or <code class="docutils literal notranslate"><span class="pre">trailpercent</span></code>) and which is updated
+if the price moves away from the stop</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Order.StopTrailLimit</span></code>. An order which is triggered at
+<code class="docutils literal notranslate"><span class="pre">price</span></code> minus <code class="docutils literal notranslate"><span class="pre">trailamount</span></code> (or <code class="docutils literal notranslate"><span class="pre">trailpercent</span></code>) and which
+is updated if the price moves away from the stop</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">valid</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Possible values:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: this generates an order that will not expire (aka
+<em>Good till cancel</em>) and remain in the market until matched or
+canceled. In reality brokers tend to impose a temporal limit,
+but this is usually so far away in time to consider it as not
+expiring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">datetime.datetime</span></code> or <code class="docutils literal notranslate"><span class="pre">datetime.date</span></code> instance: the date
+will be used to generate an order valid until the given
+datetime (aka <em>good till date</em>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Order.DAY</span></code> or <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">timedelta()</span></code>: a day valid until
+the <em>End of the Session</em> (aka <em>day</em> order) will be generated</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numeric</span> <span class="pre">value</span></code>: This is assumed to be a value corresponding
+to a datetime in <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> coding (the one used by
+<code class="docutils literal notranslate"><span class="pre">backtrader</span></code>) and will used to generate an order valid until
+that time (<em>good till date</em>)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tradeid</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p>
+<p>This is an internal value applied by <code class="docutils literal notranslate"><span class="pre">backtrader</span></code> to keep track
+of overlapping trades on the same asset. This <code class="docutils literal notranslate"><span class="pre">tradeid</span></code> is sent
+back to the <em>strategy</em> when notifying changes to the status of the
+orders.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">oco</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Another <code class="docutils literal notranslate"><span class="pre">order</span></code> instance. This order will become part of an OCO
+(Order Cancel Others) group. The execution of one of the orders,
+immediately cancels all others in the same group</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Controls the relationship of a group of orders, for example a buy
+which is bracketed by a high-side limit sell and a low side stop
+sell. The high/low side orders remain inactive until the parent
+order has been either executed (they become active) or is
+canceled/expires (the children are also canceled) bracket orders
+have the same size</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">transmit</span></code> (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p>
+<p>Indicates if the order has to be <strong>transmitted</strong>, ie: not only
+placed in the broker but also issued. This is meant for example to
+control bracket orders, in which one disables the transmission for
+the parent and 1st set of children and activates it for the last
+children, which triggers the full placement of all bracket orders.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>: additional broker implementations may support extra
+parameters. <code class="docutils literal notranslate"><span class="pre">backtrader</span></code> will pass the <em>kwargs</em> down to the
+created order objects</p>
+<p>Example: if the 4 order execution types directly supported by
+<code class="docutils literal notranslate"><span class="pre">backtrader</span></code> are not enough, in the case of for example
+<em>Interactive Brokers</em> the following could be passed as <em>kwargs</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;LIT&#39;</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">auxPrice</span><span class="o">=</span><span class="mf">9.8</span>
+</pre></div>
+</div>
+<p>This would override the settings created by <code class="docutils literal notranslate"><span class="pre">backtrader</span></code> and
+generate a <code class="docutils literal notranslate"><span class="pre">LIMIT</span> <span class="pre">IF</span> <span class="pre">TOUCHED</span></code> order with a <em>touched</em> price of 9.8
+and a <em>limit</em> price of 10.0.</p>
+</li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>the submitted order</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.buy_bracket">
+<span class="sig-name descname"><span class="pre">buy_bracket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exectype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailamount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailpercent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopprice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopexec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limitprice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limitexec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limitargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.buy_bracket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a bracket order group (low side - buy order - high side). The
+default behavior is as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Issue a <strong>buy</strong> order with execution <code class="docutils literal notranslate"><span class="pre">Limit</span></code></p></li>
+<li><p>Issue a <em>low side</em> bracket <strong>sell</strong> order with execution <code class="docutils literal notranslate"><span class="pre">Stop</span></code></p></li>
+<li><p>Issue a <em>high side</em> bracket <strong>sell</strong> order with execution
+<code class="docutils literal notranslate"><span class="pre">Limit</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>See below for the different parameters</p>
+<blockquote>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>For which data the order has to be created. If <code class="docutils literal notranslate"><span class="pre">None</span></code> then the
+first data in the system, <code class="docutils literal notranslate"><span class="pre">self.datas[0]</span> <span class="pre">or</span> <span class="pre">self.data0</span></code> (aka
+<code class="docutils literal notranslate"><span class="pre">self.data</span></code>) will be used</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Size to use (positive) of units of data to use for the order.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code> the <code class="docutils literal notranslate"><span class="pre">sizer</span></code> instance retrieved via <code class="docutils literal notranslate"><span class="pre">getsizer</span></code> will
+be used to determine the size.</p>
+<p><strong>Note</strong>: The same size is applied to all 3 orders of the bracket</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">price</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Price to use (live brokers may place restrictions on the actual
+format if it does not comply to minimum tick size requirements)</p>
+<p><code class="docutils literal notranslate"><span class="pre">None</span></code> is valid for <code class="docutils literal notranslate"><span class="pre">Market</span></code> and <code class="docutils literal notranslate"><span class="pre">Close</span></code> orders (the market
+determines the price)</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">Limit</span></code>, <code class="docutils literal notranslate"><span class="pre">Stop</span></code> and <code class="docutils literal notranslate"><span class="pre">StopLimit</span></code> orders this value
+determines the trigger point (in the case of <code class="docutils literal notranslate"><span class="pre">Limit</span></code> the trigger
+is obviously at which price the order should be matched)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plimit</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Only applicable to <code class="docutils literal notranslate"><span class="pre">StopLimit</span></code> orders. This is the price at which
+to set the implicit <em>Limit</em> order, once the <em>Stop</em> has been
+triggered (for which <code class="docutils literal notranslate"><span class="pre">price</span></code> has been used)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trailamount</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>If the order type is StopTrail or StopTrailLimit, this is an
+absolute amount which determines the distance to the price (below
+for a Sell order and above for a buy order) to keep the trailing
+stop</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trailpercent</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>If the order type is StopTrail or StopTrailLimit, this is a
+percentage amount which determines the distance to the price (below
+for a Sell order and above for a buy order) to keep the trailing
+stop (if <code class="docutils literal notranslate"><span class="pre">trailamount</span></code> is also specified it will be used)</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exectype</span></code> (default: <code class="docutils literal notranslate"><span class="pre">bt.Order.Limit</span></code>)</p>
+<p>Possible values: (see the documentation for the method <code class="docutils literal notranslate"><span class="pre">buy</span></code></p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">valid</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Possible values: (see the documentation for the method <code class="docutils literal notranslate"><span class="pre">buy</span></code></p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tradeid</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p>
+<p>Possible values: (see the documentation for the method <code class="docutils literal notranslate"><span class="pre">buy</span></code></p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">oargs</span></code> (default: <code class="docutils literal notranslate"><span class="pre">{}</span></code>)</p>
+<p>Specific keyword arguments (in a <code class="docutils literal notranslate"><span class="pre">dict</span></code>) to pass to the main side
+order. Arguments from the default <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> will be applied on
+top of this.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>: additional broker implementations may support extra
+parameters. <code class="docutils literal notranslate"><span class="pre">backtrader</span></code> will pass the <em>kwargs</em> down to the
+created order objects</p>
+<p>Possible values: (see the documentation for the method <code class="docutils literal notranslate"><span class="pre">buy</span></code></p>
+<p><strong>Note</strong>: this <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> will be applied to the 3 orders of a
+bracket. See below for specific keyword arguments for the low and
+high side orders</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stopprice</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Specific price for the <em>low side</em> stop order</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stopexec</span></code> (default: <code class="docutils literal notranslate"><span class="pre">bt.Order.Stop</span></code>)</p>
+<p>Specific execution type for the <em>low side</em> order</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stopargs</span></code> (default: <code class="docutils literal notranslate"><span class="pre">{}</span></code>)</p>
+<p>Specific keyword arguments (in a <code class="docutils literal notranslate"><span class="pre">dict</span></code>) to pass to the low side
+order. Arguments from the default <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> will be applied on
+top of this.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">limitprice</span></code> (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<p>Specific price for the <em>high side</em> stop order</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stopexec</span></code> (default: <code class="docutils literal notranslate"><span class="pre">bt.Order.Limit</span></code>)</p>
+<p>Specific execution type for the <em>high side</em> order</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">limitargs</span></code> (default: <code class="docutils literal notranslate"><span class="pre">{}</span></code>)</p>
+<p>Specific keyword arguments (in a <code class="docutils literal notranslate"><span class="pre">dict</span></code>) to pass to the high side
+order. Arguments from the default <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> will be applied on
+top of this.</p>
+</li>
+</ul>
+</div></blockquote>
+<p>High/Low Side orders can be suppressed by using:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">limitexec=None</span></code> to suppress the <em>high side</em></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stopexec=None</span></code> to suppress the <em>low side</em></p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>A list containing the 3 orders [order, stop side, limit side]</p></li>
+<li><p>If high/low orders have been suppressed the return value will still
+contain 3 orders, but those suppressed will have a value of
+<code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancels the order in the broker</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counters a long/short position closing it</p>
+<p>See the documentation for <code class="docutils literal notranslate"><span class="pre">buy</span></code> for an explanation of the parameters</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: automatically calculated from the existing position if
+not provided (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) by the caller</p></li>
+</ul>
+</div>
+<p>Returns: the submitted order</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.getdatabyname">
+<span class="sig-name descname"><span class="pre">getdatabyname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.getdatabyname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a given data by name using the environment (cerebro)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.getdatanames">
+<span class="sig-name descname"><span class="pre">getdatanames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.getdatanames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the existing data names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.getposition">
+<span class="sig-name descname"><span class="pre">getposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.getposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current position for a given data in a given broker.</p>
+<p>If both are None, the main data and the default broker will be used</p>
+<p>A property <code class="docutils literal notranslate"><span class="pre">position</span></code> is also available</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.getpositionbyname">
+<span class="sig-name descname"><span class="pre">getpositionbyname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.getpositionbyname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current position for a given name in a given broker.</p>
+<p>If both are None, the main data and the default broker will be used</p>
+<p>A property <code class="docutils literal notranslate"><span class="pre">positionbyname</span></code> is also available</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.getpositions">
+<span class="sig-name descname"><span class="pre">getpositions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">broker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.getpositions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current by data positions directly from the broker</p>
+<p>If the given <code class="docutils literal notranslate"><span class="pre">broker</span></code> is None, the default broker will be used</p>
+<p>A property <code class="docutils literal notranslate"><span class="pre">positions</span></code> is also available</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.getpositionsbyname">
+<span class="sig-name descname"><span class="pre">getpositionsbyname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">broker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.getpositionsbyname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current by name positions directly from the broker</p>
+<p>If the given <code class="docutils literal notranslate"><span class="pre">broker</span></code> is None, the default broker will be used</p>
+<p>A property <code class="docutils literal notranslate"><span class="pre">positionsbyname</span></code> is also available</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.getsizer">
+<span class="sig-name descname"><span class="pre">getsizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.getsizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the sizer which is in used if automatic statke calculation is
+used</p>
+<p>Also available as <code class="docutils literal notranslate"><span class="pre">sizer</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.getsizing">
+<span class="sig-name descname"><span class="pre">getsizing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isbuy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.getsizing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the stake calculated by the sizer instance for the current
+situation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.incminperiod">
+<span class="sig-name descname"><span class="pre">incminperiod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minperiod</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.incminperiod" title="Permalink to this definition">¶</a></dt>
+<dd><p>The passed minperiod is fed to the lines</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.lines">
+<span class="sig-name descname"><span class="pre">lines</span></span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">backtrader.lineseries.Lines_LineSeries_LineIterator_DataAccessor_StrategyBase_Strategy_SmaCross</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.minbuffer">
+<span class="sig-name descname"><span class="pre">minbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.minbuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive notification of how large the buffer must at least be</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.next">
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will be called for all remaining data points when the
+minimum period for all datas/indicators have been meet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.nextstart">
+<span class="sig-name descname"><span class="pre">nextstart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.nextstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will be called once, exactly when the minimum period for
+all datas/indicators have been meet. The default behavior is to call
+next</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.notify_cashvalue">
+<span class="sig-name descname"><span class="pre">notify_cashvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cash</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.notify_cashvalue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receives the current fund value, value status of the strategy’s broker</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.notify_data">
+<span class="sig-name descname"><span class="pre">notify_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.notify_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receives a notification from data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.notify_fund">
+<span class="sig-name descname"><span class="pre">notify_fund</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cash</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fundvalue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shares</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.notify_fund" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receives the current cash, value, fundvalue and fund shares</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.notify_order">
+<span class="sig-name descname"><span class="pre">notify_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.notify_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receives an order whenever there has been a change in one</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.notify_store">
+<span class="sig-name descname"><span class="pre">notify_store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.notify_store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receives a notification from a store provider</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.notify_timer">
+<span class="sig-name descname"><span class="pre">notify_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.notify_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receives a timer notification where <code class="docutils literal notranslate"><span class="pre">timer</span></code> is the timer which was
+returned by <code class="docutils literal notranslate"><span class="pre">add_timer</span></code>, and <code class="docutils literal notranslate"><span class="pre">when</span></code> is the calling time. <code class="docutils literal notranslate"><span class="pre">args</span></code>
+and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> are any additional arguments passed to <code class="docutils literal notranslate"><span class="pre">add_timer</span></code></p>
+<p>The actual <code class="docutils literal notranslate"><span class="pre">when</span></code> time can be later, but the system may have not be
+able to call the timer before. This value is the timer value and no the
+system time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.notify_trade">
+<span class="sig-name descname"><span class="pre">notify_trade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trade</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.notify_trade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receives a trade whenever there has been a change in one</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.once">
+<span class="sig-name descname"><span class="pre">once</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.once" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called to calculate values at “once” when the minperiod is over</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.oncestart">
+<span class="sig-name descname"><span class="pre">oncestart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.oncestart" title="Permalink to this definition">¶</a></dt>
+<dd><p>It will be called when the minperiod phase is over for the 1st
+post-minperiod value</p>
+<p>Only called once and defaults to automatically calling once</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.order_target_percent">
+<span class="sig-name descname"><span class="pre">order_target_percent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.order_target_percent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Place an order to rebalance a position to have final value of
+<code class="docutils literal notranslate"><span class="pre">target</span></code> percentage of current portfolio <code class="docutils literal notranslate"><span class="pre">value</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">target</span></code> is expressed in decimal: <code class="docutils literal notranslate"><span class="pre">0.05</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">5%</span></code></p>
+<p>It uses <code class="docutils literal notranslate"><span class="pre">order_target_value</span></code> to execute the order.</p>
+<p class="rubric">Example</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">target=0.05</span></code> and portfolio value is <code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">value</span></code> to be reached is <code class="docutils literal notranslate"><span class="pre">0.05</span> <span class="pre">*</span> <span class="pre">100</span> <span class="pre">=</span> <span class="pre">5</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">5</span></code> is passed as the <code class="docutils literal notranslate"><span class="pre">target</span></code> value to <code class="docutils literal notranslate"><span class="pre">order_target_value</span></code></p></li>
+</ul>
+<p>The current <code class="docutils literal notranslate"><span class="pre">value</span></code> is taken into account as the start point to
+achieve <code class="docutils literal notranslate"><span class="pre">target</span></code></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">position.size</span></code> is used to determine if a position is <code class="docutils literal notranslate"><span class="pre">long</span></code> /
+<code class="docutils literal notranslate"><span class="pre">short</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">target</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">value</span></code>
+- buy if <code class="docutils literal notranslate"><span class="pre">pos.size</span> <span class="pre">&gt;=</span> <span class="pre">0</span></code> (Increase a long position)
+- sell if <code class="docutils literal notranslate"><span class="pre">pos.size</span> <span class="pre">&lt;</span> <span class="pre">0</span></code> (Increase a short position)</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">target</span></code> &lt; <code class="docutils literal notranslate"><span class="pre">value</span></code>
+- sell if <code class="docutils literal notranslate"><span class="pre">pos.size</span> <span class="pre">&gt;=</span> <span class="pre">0</span></code> (Decrease a long position)
+- buy if <code class="docutils literal notranslate"><span class="pre">pos.size</span> <span class="pre">&lt;</span> <span class="pre">0</span></code> (Decrease a short position)</p></li>
+</ul>
+</div></blockquote>
+<p>It returns either:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The generated order</p></li>
+</ul>
+<p>or</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> if no order has been issued (<code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">==</span> <span class="pre">position.size</span></code>)</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.order_target_size">
+<span class="sig-name descname"><span class="pre">order_target_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.order_target_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Place an order to rebalance a position to have final size of <code class="docutils literal notranslate"><span class="pre">target</span></code></p>
+<p>The current <code class="docutils literal notranslate"><span class="pre">position</span></code> size is taken into account as the start point
+to achieve <code class="docutils literal notranslate"><span class="pre">target</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">target</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">pos.size</span></code> -&gt; buy <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">-</span> <span class="pre">pos.size</span></code></p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">target</span></code> &lt; <code class="docutils literal notranslate"><span class="pre">pos.size</span></code> -&gt; sell <code class="docutils literal notranslate"><span class="pre">pos.size</span> <span class="pre">-</span> <span class="pre">target</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>It returns either:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The generated order</p></li>
+</ul>
+<p>or</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> if no order has been issued (<code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">==</span> <span class="pre">position.size</span></code>)</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.order_target_value">
+<span class="sig-name descname"><span class="pre">order_target_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.order_target_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Place an order to rebalance a position to have final value of
+<code class="docutils literal notranslate"><span class="pre">target</span></code></p>
+<p>The current <code class="docutils literal notranslate"><span class="pre">value</span></code> is taken into account as the start point to
+achieve <code class="docutils literal notranslate"><span class="pre">target</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If no <code class="docutils literal notranslate"><span class="pre">target</span></code> then close postion on data</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">target</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">value</span></code> then buy on data</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">target</span></code> &lt; <code class="docutils literal notranslate"><span class="pre">value</span></code> then sell on data</p></li>
+</ul>
+</div></blockquote>
+<p>It returns either:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The generated order</p></li>
+</ul>
+<p>or</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> if no order has been issued</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.position">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current position for a given data in a given broker.</p>
+<p>If both are None, the main data and the default broker will be used</p>
+<p>A property <code class="docutils literal notranslate"><span class="pre">position</span></code> is also available</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.positionbyname">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">positionbyname</span></span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.positionbyname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current position for a given name in a given broker.</p>
+<p>If both are None, the main data and the default broker will be used</p>
+<p>A property <code class="docutils literal notranslate"><span class="pre">positionbyname</span></code> is also available</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.positions">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">positions</span></span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current by data positions directly from the broker</p>
+<p>If the given <code class="docutils literal notranslate"><span class="pre">broker</span></code> is None, the default broker will be used</p>
+<p>A property <code class="docutils literal notranslate"><span class="pre">positions</span></code> is also available</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.positionsbyname">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">positionsbyname</span></span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.positionsbyname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current by name positions directly from the broker</p>
+<p>If the given <code class="docutils literal notranslate"><span class="pre">broker</span></code> is None, the default broker will be used</p>
+<p>A property <code class="docutils literal notranslate"><span class="pre">positionsbyname</span></code> is also available</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.prenext">
+<span class="sig-name descname"><span class="pre">prenext</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.prenext" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will be called before the minimum period of all
+datas/indicators have been meet for the strategy to start executing</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.preonce">
+<span class="sig-name descname"><span class="pre">preonce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.preonce" title="Permalink to this definition">¶</a></dt>
+<dd><p>It will be called during the “minperiod” phase of a “once” iteration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.qbuffer">
+<span class="sig-name descname"><span class="pre">qbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">savemem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replaying</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.qbuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable the memory saving schemes. Possible values for <code class="docutils literal notranslate"><span class="pre">savemem</span></code>:</p>
+<blockquote>
+<div><p>0: No savings. Each lines object keeps in memory all values</p>
+<p>1: All lines objects save memory, using the strictly minimum needed</p>
+</div></blockquote>
+<p>Negative values are meant to be used when plotting is required:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>-1: Indicators at Strategy Level and Observers do not enable memory</dt><dd><p>savings (but anything declared below it does)</p>
+</dd>
+<dt>-2: Same as -1 plus activation of memory saving for any indicators</dt><dd><p>which has declared <em>plotinfo.plot</em> as False (will not be plotted)</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.sell">
+<span class="sig-name descname"><span class="pre">sell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exectype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oco</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailamount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailpercent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transmit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.sell" title="Permalink to this definition">¶</a></dt>
+<dd><p>To create a selll (short) order and send it to the broker</p>
+<p>See the documentation for <code class="docutils literal notranslate"><span class="pre">buy</span></code> for an explanation of the parameters</p>
+<p>Returns: the submitted order</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.sell_bracket">
+<span class="sig-name descname"><span class="pre">sell_bracket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exectype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradeid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailamount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailpercent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopprice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopexec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limitprice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limitexec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limitargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.sell_bracket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a bracket order group (low side - buy order - high side). The
+default behavior is as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Issue a <strong>sell</strong> order with execution <code class="docutils literal notranslate"><span class="pre">Limit</span></code></p></li>
+<li><p>Issue a <em>high side</em> bracket <strong>buy</strong> order with execution <code class="docutils literal notranslate"><span class="pre">Stop</span></code></p></li>
+<li><p>Issue a <em>low side</em> bracket <strong>buy</strong> order with execution <code class="docutils literal notranslate"><span class="pre">Limit</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>See <code class="docutils literal notranslate"><span class="pre">bracket_buy</span></code> for the meaning of the parameters</p>
+<p>High/Low Side orders can be suppressed by using:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stopexec=None</span></code> to suppress the <em>high side</em></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">limitexec=None</span></code> to suppress the <em>low side</em></p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>A list containing the 3 orders [order, stop side, limit side]</p></li>
+<li><p>If high/low orders have been suppressed the return value will still
+contain 3 orders, but those suppressed will have a value of
+<code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.setminperiod">
+<span class="sig-name descname"><span class="pre">setminperiod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minperiod</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.setminperiod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Direct minperiod manipulation. It could be used for example
+by a strategy
+to not wait for all indicators to produce a value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.setsizer">
+<span class="sig-name descname"><span class="pre">setsizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sizer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.setsizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace the default (fixed stake) sizer</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.sizer">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">sizer</span></span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.sizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the sizer which is in used if automatic statke calculation is
+used</p>
+<p>Also available as <code class="docutils literal notranslate"><span class="pre">sizer</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called right before the backtesting is about to be started.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called right before the backtesting is about to be stopped</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.strategies.SmaCross.updateminperiod">
+<span class="sig-name descname"><span class="pre">updateminperiod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minperiod</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.strategies.SmaCross.updateminperiod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the minperiod if needed. The minperiod will have been
+calculated elsewhere
+and has to take over if greater that self’s</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="surfingcrypto.strategies.TestStrategy.html" class="btn btn-neutral float-right" title="surfingcrypto.strategies.TestStrategy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="surfingcrypto.strategies.html" class="btn btn-neutral float-left" title="surfingcrypto.strategies" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, giocaizzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

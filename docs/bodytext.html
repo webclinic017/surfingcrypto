@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quick start &mdash; surfingcrypto 0.2.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="surfingcrypto" href="_autosummary/surfingcrypto.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> surfingcrypto
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pre-processing-initalization-of-tools">Pre-processing &amp; initalization of tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#price-data-scraping">Price data scraping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#telegram-notifications">Telegram notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#price-data-analysis">Price data analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#plotting-prices-and-indicators">Plotting prices and indicators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reporting-useful-information">Reporting useful information</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/surfingcrypto.html">surfingcrypto</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">surfingcrypto</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Quick start</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/bodytext.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="tex2jax_ignore mathjax_ignore section" id="quick-start">
+<h1>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>This repository - as of 15 November 2021 - is the source code for automated reporting of cryptocurrency prices. It uses a telegram bot (&#64;ccrryyppttoo_bot) to send <strong>daily updates on crypto prices</strong>.</p>
+<p><img alt="TA Figure" src="_images/ta.jpeg" /></p>
+<p>The coins that are actually tracked are: <code class="docutils literal notranslate"><span class="pre">BTC</span></code>,<code class="docutils literal notranslate"><span class="pre">ETH</span></code>,<code class="docutils literal notranslate"><span class="pre">ADA</span></code>,<code class="docutils literal notranslate"><span class="pre">MATIC</span></code>, <code class="docutils literal notranslate"><span class="pre">SOL</span></code>.</p>
+<p>If you wish to get updates on the selected coins, just open a chat with the bot and start the conversation with <code class="docutils literal notranslate"><span class="pre">\start</span></code>. You will be added to the user list.</p>
+<p>The package is used as in <code class="docutils literal notranslate"><span class="pre">main.py</span></code>.
+This script is executed on a AWS ec2 istance every day at <code class="docutils literal notranslate"><span class="pre">06:30</span> <span class="pre">AM</span> <span class="pre">UTC</span></code>.</p>
+<ol class="arabic simple">
+<li><p>The <span class="xref myst">Scraper()</span> module gets the necesarriy data from <a class="reference external" href="http://www.coinmarketcap.com">coinmarketcap.com</a> and stores data locally.</p></li>
+<li><p><span class="xref myst">Tg_notifications()</span> starts a telegram client to send outputs to bot followers.</p></li>
+<li><p><span class="xref myst">CoinFigure()</span> Creates a figure that resumes the last month of data. If requested, it plots also technical indicators.</p></li>
+</ol>
+<p>The folder <code class="docutils literal notranslate"><span class="pre">examples</span></code> contains <code class="docutils literal notranslate"><span class="pre">main.ipynb</span></code> that allows to experiment interactively with the repository capacities.</p>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="reference external" href="#quick-start">Quick start</a></p>
+<ul>
+<li><p><a class="reference external" href="#pre-processing--initalization-of-tools">Pre-processing &amp; initalization of tools</a></p>
+<ul>
+<li><p><a class="reference external" href="#configuration">Configuration</a></p></li>
+<li><p><a class="reference external" href="#price-data-scraping">Price data scraping</a></p></li>
+<li><p><a class="reference external" href="#telegram-notifications">Telegram notifications</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#price-data-analysis">Price data analysis</a></p>
+<ul>
+<li><p><a class="reference external" href="#plotting-prices-and-indicators">Plotting prices and indicators</a></p></li>
+<li><p><a class="reference external" href="#reporting-useful-information">Reporting useful information</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+<div class="section" id="pre-processing-initalization-of-tools">
+<h2>Pre-processing &amp; initalization of tools<a class="headerlink" href="#pre-processing-initalization-of-tools" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<p>The <span class="xref myst">config()</span> class is used to pass the user configuration.</p>
+<p>It requires to specify the location of the folder in which there is a <code class="docutils literal notranslate"><span class="pre">config.json</span></code> file, in which it is possible/required to specify the following parameters:</p>
+<ul class="simple">
+<li><p>the parametrization of Technical Analysis (eg. window of moving averages, RSI length, etc…)</p></li>
+<li><p>the API key to the <a class="reference external" href="https://core.telegram.org/">telegram</a> bot.</p></li>
+<li><p>the API key to the <a class="reference external" href="https://developers.coinbase.com/">Coinbase</a> client.</p></li>
+</ul>
+<p>Additionally, it is possible to specify the location of a <code class="docutils literal notranslate"><span class="pre">data</span></code> folder where to save all data (eg. time series of prices)</p>
+</div>
+<div class="section" id="price-data-scraping">
+<h3>Price data scraping<a class="headerlink" href="#price-data-scraping" title="Permalink to this headline">¶</a></h3>
+<p>The <span class="xref myst">Scraper()</span> gets the necesarriy data from <a class="reference external" href="http://www.coinmarketcap.com">coinmarketcap.com</a> and stores data locally.</p>
+</div>
+<div class="section" id="telegram-notifications">
+<h3>Telegram notifications<a class="headerlink" href="#telegram-notifications" title="Permalink to this headline">¶</a></h3>
+<p>In order to receive daily updates on prices, a telegram bot (&#64;ccrryyppttoo_bot) is used.</p>
+<p>The bot can be used both in “normal” mode or in “channel mode”.
+The normal mode (<code class="docutils literal notranslate"><span class="pre">channel_mode=False</span></code>) requires to specify a <code class="docutils literal notranslate"><span class="pre">chat_id</span></code> parameter to specify the desired chat to send the message/picture/document to. Otherwise, when <code class="docutils literal notranslate"><span class="pre">channel_mode=True</span></code> then the bot will send the content to all users specified in the <code class="docutils literal notranslate"><span class="pre">telegram_users.csv</span></code>.</p>
+<p>The bot has the capability of adding new users to the known list of users, just by recording the <code class="docutils literal notranslate"><span class="pre">chat_id</span></code> of the users that have interacted with it. Everytime the bot is initiated, it checks for new users.</p>
+</div>
+</div>
+<div class="section" id="price-data-analysis">
+<h2>Price data analysis<a class="headerlink" href="#price-data-analysis" title="Permalink to this headline">¶</a></h2>
+<p>The project is focused on the production of a customizable and useful set of information to be up to date with cryptocurrency prices.</p>
+<p>The reporting structure is based on the production of graphs and by well-structured text.</p>
+<div class="section" id="plotting-prices-and-indicators">
+<h3>Plotting prices and indicators<a class="headerlink" href="#plotting-prices-and-indicators" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">CoinFigure</span></code> class inherits from the classic <code class="docutils literal notranslate"><span class="pre">TS</span></code> class and it is a structured plot of the latest price data. Indicators are computed on request.</p>
+<p>There following are the kind of plots that have been implemented.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">default</span></code> Default plot.</p>
+<ul>
+<li><p>candlesticks</p></li>
+<li><p>volume</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ta</span></code> Technical Analysis plot.</p>
+<ul>
+<li><p>candlestick (with MA lines)</p></li>
+<li><p>volume</p></li>
+<li><p>MACD</p></li>
+<li><p>Bollinger bands</p></li>
+<li><p>RSI</p></li>
+</ul>
+</li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">ta</span></code> kind of plot is easily customizable, for integrating and/or changing indicators in the plots.</p>
+</div>
+<div class="section" id="reporting-useful-information">
+<h3>Reporting useful information<a class="headerlink" href="#reporting-useful-information" title="Permalink to this headline">¶</a></h3>
+<p>The class <code class="docutils literal notranslate"><span class="pre">CoinFigure</span></code> inherits from <code class="docutils literal notranslate"><span class="pre">TS</span></code> and so it has some reporting methods associated, such as <code class="docutils literal notranslate"><span class="pre">report_percentage_diff</span></code> that produces a well structured string with formatting to be sent via telegram or read over the terminal.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">**</span><span class="n">ADA</span><span class="o">**</span>
+<span class="o">-</span> <span class="mi">1</span><span class="n">d</span><span class="p">:</span> <span class="mf">0.36</span> <span class="o">%</span>
+<span class="o">-</span> <span class="mi">3</span><span class="n">d</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.32</span> <span class="o">%</span>
+<span class="o">-</span> <span class="mi">7</span><span class="n">d</span><span class="p">:</span> <span class="mf">2.32</span> <span class="o">%</span>
+<span class="o">-</span> <span class="mi">14</span><span class="n">d</span><span class="p">:</span> <span class="mf">4.89</span> <span class="o">%</span>
+<span class="o">-</span> <span class="mi">60</span><span class="n">d</span><span class="p">:</span> <span class="o">-</span><span class="mf">14.30</span> <span class="o">%</span>
+</pre></div>
+</div>
+<p>Ex: percentage difference for a set of different days.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="_autosummary/surfingcrypto.html" class="btn btn-neutral float-right" title="surfingcrypto" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, giocaizzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

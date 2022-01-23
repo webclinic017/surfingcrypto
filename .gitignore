@@ -37,7 +37,7 @@ docsrc/build
 *.rej
 *.patch
 # plotly
-*.html
+./*.html
 ####
 main.py
 tools

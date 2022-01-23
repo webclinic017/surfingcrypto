@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>surfingcrypto.ts.TS &mdash; surfingcrypto 0.2.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="surfingcrypto.ts" href="surfingcrypto.ts.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> surfingcrypto
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bodytext.html">Quick start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="surfingcrypto.html">surfingcrypto</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.coinbase.html">surfingcrypto.coinbase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.config.html">surfingcrypto.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.gtrends.html">surfingcrypto.gtrends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.plotting.html">surfingcrypto.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio.html">surfingcrypto.portfolio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio_tracker.html">surfingcrypto.portfolio_tracker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.scraper.html">surfingcrypto.scraper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.strategies.html">surfingcrypto.strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.telegram_bot.html">surfingcrypto.telegram_bot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.trend_line.html">surfingcrypto.trend_line</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="surfingcrypto.ts.html">surfingcrypto.ts</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">surfingcrypto.ts.TS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">surfingcrypto</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.html">surfingcrypto</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.ts.html">surfingcrypto.ts</a> &raquo;</li>
+        
+      <li>surfingcrypto.ts.TS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_autosummary/surfingcrypto.ts.TS.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="surfingcrypto-ts-ts">
+<h1>surfingcrypto.ts.TS<a class="headerlink" href="#surfingcrypto-ts-ts" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">surfingcrypto.ts.</span></span><span class="sig-name descname"><span class="pre">TS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is an time-series oriented crypto price data object.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Data can be downloaded calling <code class="docutils literal notranslate"><span class="pre">`surfingcrypto.scraper.Scraper`</span></code> object.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>configuration</strong> (<a class="reference internal" href="surfingcrypto.config.config.html#surfingcrypto.config.config" title="surfingcrypto.config.config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surfingcrypto.config.config</span></code></a>) – configuration object</p></li>
+<li><p><strong>coin</strong> (<em>str</em>) – string representing the crypto coin of choice, eg. BTC,ETH</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.df">
+<span class="sig-name descname"><span class="pre">df</span></span><a class="headerlink" href="#surfingcrypto.ts.TS.df" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe with datetime index of ohlc data. Could store also TA indicators if these are computed invoking the relative method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.ta_params">
+<span class="sig-name descname"><span class="pre">ta_params</span></span><a class="headerlink" href="#surfingcrypto.ts.TS.ta_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary containing TA parametrization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.__init__" title="surfingcrypto.ts.TS.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(configuration[, coin])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.build_ts" title="surfingcrypto.ts.TS.build_ts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_ts</span></code></a>()</p></td>
+<td><p>reads the data from data stored locally in <cite>data/ts/</cite> and saved in .csv format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.candlesticks" title="surfingcrypto.ts.TS.candlesticks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">candlesticks</span></code></a>(ax[, volume, vol_ax, style])</p></td>
+<td><p>plotting candlesticks into a matplotlib.axes.Axes object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.parametrization" title="surfingcrypto.ts.TS.parametrization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrization</span></code></a>()</p></td>
+<td><p>sets the default parameters if not specified in config.json file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.percentage_diff" title="surfingcrypto.ts.TS.percentage_diff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">percentage_diff</span></code></a>([window])</p></td>
+<td><p>Percentage difference given a window size.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.plot_RSI" title="surfingcrypto.ts.TS.plot_RSI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_RSI</span></code></a>(iax)</p></td>
+<td><p>plot RSI indicator into a matplotlib.axes.Axes object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.plot_bb" title="surfingcrypto.ts.TS.plot_bb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_bb</span></code></a>(iax)</p></td>
+<td><p>plot Bollinger bands indicator into a matplotlib.axes.Axes object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.plot_macd" title="surfingcrypto.ts.TS.plot_macd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_macd</span></code></a>(ax[, plot_lines])</p></td>
+<td><p>plot macd indicator into a matplotlib.axes.Axes object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.plot_moving_averages" title="surfingcrypto.ts.TS.plot_moving_averages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_moving_averages</span></code></a>(ax[, windows])</p></td>
+<td><p>Plot two simple moving averages.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.report_percentage_diff" title="surfingcrypto.ts.TS.report_percentage_diff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">report_percentage_diff</span></code></a>([windows])</p></td>
+<td><p>Produces verbose and pretty report on latest price difference from a given list of windows.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.ts.TS.ta_indicators" title="surfingcrypto.ts.TS.ta_indicators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ta_indicators</span></code></a>()</p></td>
+<td><p>computes the selected TA indicators and appends them to df attribute.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.build_ts">
+<span class="sig-name descname"><span class="pre">build_ts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.build_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads the data from data stored locally in <cite>data/ts/</cite> and saved in .csv format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.candlesticks">
+<span class="sig-name descname"><span class="pre">candlesticks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol_ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'candlesticks'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.candlesticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>plotting candlesticks into a matplotlib.axes.Axes object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code>) – matplotlib ax to plot candlesticks into.</p></li>
+<li><p><strong>volume</strong> (<em>bool</em><em>,</em><em>optional</em>) – plot volume histogram data into a another ax specified with <cite>vol_ax</cite></p></li>
+<li><p><strong>vol_ax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code>) – matplotlib ax to plot volume histogram into.</p></li>
+<li><p><strong>style</strong> (<em>str</em><em>,</em><em>optional</em>) – style of plotting candlesticks, <cite>candlesticks</cite> is default but <cite>ohlc</cite> style is used in BB bands plotting.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.parametrization">
+<span class="sig-name descname"><span class="pre">parametrization</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.parametrization" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets the default parameters if not specified in config.json file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.percentage_diff">
+<span class="sig-name descname"><span class="pre">percentage_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.percentage_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Percentage difference given a window size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>window</strong> (<em>int</em>) – number of days used to computer percentage difference.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.plot_RSI">
+<span class="sig-name descname"><span class="pre">plot_RSI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.plot_RSI" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot RSI indicator into a matplotlib.axes.Axes object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code>) – matplotlib ax to plot RSI into.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.plot_bb">
+<span class="sig-name descname"><span class="pre">plot_bb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.plot_bb" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot Bollinger bands indicator into a matplotlib.axes.Axes object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code>) – matplotlib ax to plot BB bands into.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.plot_macd">
+<span class="sig-name descname"><span class="pre">plot_macd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.plot_macd" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot macd indicator into a matplotlib.axes.Axes object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code>) – matplotlib ax to plot MACD into.</p></li>
+<li><p><strong>plot_lines</strong> (<em>bool</em>) – plot lines in addition to histogram.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.plot_moving_averages">
+<span class="sig-name descname"><span class="pre">plot_moving_averages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.plot_moving_averages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot two simple moving averages.
+Default windows are 12 and 26 days. Can be customized by using lists of window-color pairs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>(</strong><strong>obj</strong> (<em>windows</em>) – <cite>list</cite> of obj:<cite>int</cite>,optional): list of windows to compute MA</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.report_percentage_diff">
+<span class="sig-name descname"><span class="pre">report_percentage_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">windows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">3,</span> <span class="pre">7,</span> <span class="pre">14,</span> <span class="pre">60]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.report_percentage_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces verbose and pretty report on latest price difference from a given list of windows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>windows</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – list of windows to compute percentage difference.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.ts.TS.ta_indicators">
+<span class="sig-name descname"><span class="pre">ta_indicators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.ts.TS.ta_indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the selected TA indicators and appends them to df attribute.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="surfingcrypto.ts.html" class="btn btn-neutral float-left" title="surfingcrypto.ts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, giocaizzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>surfingcrypto.coinbase.CB &mdash; surfingcrypto 0.2.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="surfingcrypto.coinbase.MyCoinbase" href="surfingcrypto.coinbase.MyCoinbase.html" />
+    <link rel="prev" title="surfingcrypto.coinbase" href="surfingcrypto.coinbase.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> surfingcrypto
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bodytext.html">Quick start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="surfingcrypto.html">surfingcrypto</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="surfingcrypto.coinbase.html">surfingcrypto.coinbase</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">surfingcrypto.coinbase.CB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="surfingcrypto.coinbase.MyCoinbase.html">surfingcrypto.coinbase.MyCoinbase</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.config.html">surfingcrypto.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.gtrends.html">surfingcrypto.gtrends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.plotting.html">surfingcrypto.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio.html">surfingcrypto.portfolio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.portfolio_tracker.html">surfingcrypto.portfolio_tracker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.scraper.html">surfingcrypto.scraper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.strategies.html">surfingcrypto.strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.telegram_bot.html">surfingcrypto.telegram_bot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.trend_line.html">surfingcrypto.trend_line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surfingcrypto.ts.html">surfingcrypto.ts</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">surfingcrypto</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.html">surfingcrypto</a> &raquo;</li>
+        
+          <li><a href="surfingcrypto.coinbase.html">surfingcrypto.coinbase</a> &raquo;</li>
+        
+      <li>surfingcrypto.coinbase.CB</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_autosummary/surfingcrypto.coinbase.CB.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="surfingcrypto-coinbase-cb">
+<h1>surfingcrypto.coinbase.CB<a class="headerlink" href="#surfingcrypto-coinbase-cb" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="surfingcrypto.coinbase.CB">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">surfingcrypto.coinbase.</span></span><span class="sig-name descname"><span class="pre">CB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.coinbase.CB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Interface to the coinbase python api.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/coinbase/coinbase-python">https://github.com/coinbase/coinbase-python</a></p></li>
+<li><p><a class="reference external" href="https://levelup.gitconnected.com/tracking-your-coinbase-portfolio-performance-using-python-google-sheets-57d86d687547">https://levelup.gitconnected.com/tracking-your-coinbase-portfolio-performance-using-python-google-sheets-57d86d687547</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Mfbeeck/coinbase-tracker/blob/master/coinbase_tracker.py">https://github.com/Mfbeeck/coinbase-tracker/blob/master/coinbase_tracker.py</a></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Requires an API Key and API Secret stored in <cite>coinbase.json</cite>.
+The permissions required to run this code are <em>read-only</em> and are the following.::
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">wallet:sells:read</span>
+<span class="pre">wallet:accounts:read</span>
+<span class="pre">wallet:buys:read</span>
+<span class="pre">wallet:deposits:read</span>
+<span class="pre">wallet:orders:read</span>
+<span class="pre">wallet:trades:read</span>
+<span class="pre">wallet:transactions:read</span>
+<span class="pre">wallet:user:read</span>
+<span class="pre">`</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>configuration</strong> (<a class="reference internal" href="surfingcrypto.config.config.html#surfingcrypto.config.config" title="surfingcrypto.config.config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surfingcrypto.config.config</span></code></a>) – package configuration object</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.coinbase.CB.client">
+<span class="sig-name descname"><span class="pre">client</span></span><a class="headerlink" href="#surfingcrypto.coinbase.CB.client" title="Permalink to this definition">¶</a></dt>
+<dd><p>client object for making requests to coinbase API</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">coinbase.wallet.client.Client</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="surfingcrypto.coinbase.CB.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#surfingcrypto.coinbase.CB.user" title="Permalink to this definition">¶</a></dt>
+<dd><p>user API object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">coinbase</span> <span class="pre">API</span> <span class="pre">object</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.coinbase.CB.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configuration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.coinbase.CB.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.coinbase.CB.__init__" title="surfingcrypto.coinbase.CB.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(configuration)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.coinbase.CB.get_accounts" title="surfingcrypto.coinbase.CB.get_accounts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_accounts</span></code></a>([limit])</p></td>
+<td><p>get all accounts through pagination.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.coinbase.CB.get_accounts_from_list" title="surfingcrypto.coinbase.CB.get_accounts_from_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_accounts_from_list</span></code></a>([l])</p></td>
+<td><p>gets accounts from a list dumped locally in the config folder.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.coinbase.CB.get_active_accounts" title="surfingcrypto.coinbase.CB.get_active_accounts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_active_accounts</span></code></a>()</p></td>
+<td><p>get active accounts (balance &gt; 0)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#surfingcrypto.coinbase.CB.get_all_accounts_with_transactions" title="surfingcrypto.coinbase.CB.get_all_accounts_with_transactions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_accounts_with_transactions</span></code></a>([verbose])</p></td>
+<td><p>get all accounts with recorded transactions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#surfingcrypto.coinbase.CB.get_transactions" title="surfingcrypto.coinbase.CB.get_transactions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transactions</span></code></a>(account[, limit])</p></td>
+<td><p>get all transaction from specified account through pagination.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.coinbase.CB.get_accounts">
+<span class="sig-name descname"><span class="pre">get_accounts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.coinbase.CB.get_accounts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all accounts through pagination.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.coinbase.CB.get_accounts_from_list">
+<span class="sig-name descname"><span class="pre">get_accounts_from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.coinbase.CB.get_accounts_from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets accounts from a list dumped locally in the config folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of coinbase accounts</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>from_list (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">coinbase.ApiObject</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.coinbase.CB.get_active_accounts">
+<span class="sig-name descname"><span class="pre">get_active_accounts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.coinbase.CB.get_active_accounts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get active accounts (balance &gt; 0)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of coinbase accounts</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>active (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">coinbase.ApiObject</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.coinbase.CB.get_all_accounts_with_transactions">
+<span class="sig-name descname"><span class="pre">get_all_accounts_with_transactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.coinbase.CB.get_all_accounts_with_transactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all accounts with recorded transactions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>SUPER FUCKING SLOW!!!</p>
+</div>
+<dl class="simple">
+<dt>Params:</dt><dd><p>verbose (bool): verbose mode in order to check status</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of coinbase accounts
+timeranges (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>): list of dictionaries with dates of first
+and last transaction for each account in <cite>has_transactions</cite></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>has_transactions (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">coinbase.ApiObject</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="surfingcrypto.coinbase.CB.get_transactions">
+<span class="sig-name descname"><span class="pre">get_transactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#surfingcrypto.coinbase.CB.get_transactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all transaction from specified account through pagination.</p>
+<dl class="simple">
+<dt>Arguments</dt><dd><p>account (<code class="xref py py-obj docutils literal notranslate"><span class="pre">coinbase.wallet.model.ApiObject</span></code>) : coinbase account object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="surfingcrypto.coinbase.MyCoinbase.html" class="btn btn-neutral float-right" title="surfingcrypto.coinbase.MyCoinbase" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="surfingcrypto.coinbase.html" class="btn btn-neutral float-left" title="surfingcrypto.coinbase" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, giocaizzi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
