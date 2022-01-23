@@ -10,8 +10,7 @@ It's future developement will be based on **algotrading**.
    This is project is based on making money fast to go surf in some tropical destination.
 
 .. warning ::
-   The documentation on this website might be ahed of main repository.
-   This is for enhancing the developement of new features.
+   The package is under developement and it has not been released yet.
 
 .. include:: intro.md
 

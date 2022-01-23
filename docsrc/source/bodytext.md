@@ -11,9 +11,11 @@ If you wish to get updates on the selected coins, just open a chat with the bot 
 The package is used as in `main.py`.
 This script is executed on a AWS ec2 istance every day at `06:30 AM UTC`.
 
-1. The [Scraper()](/reference/scraper.rst) module gets the necesarriy data from [coinmarketcap.com](http://www.coinmarketcap.com) and stores data locally. 
-2. [Tg_notifications()](/reference/telegram.rst) starts a telegram client to send outputs to bot followers.
-3. [CoinFigure()](/reference/plotting.rst) Creates a figure that resumes the last month of data. If requested, it plots also technical indicators.
+1. The [Scraper()](/_autosummary/surfingcrypto.scraper.Scraper.rst) class gets the necesarriy data from [coinmarketcap.com](http://www.coinmarketcap.com) and stores data locally. 
+   
+2. [Tg_notifications()](/_autosummary/surfingcrypto.telegram_bot.rst) starts a telegram client to send outputs to bot followers.
+   
+3. [CoinFigure()](/_autosummary/surfingcrypto.plotting.CoinFigure.rst) Creates a figure that resumes the last month of data. If requested, it plots also technical indicators.
   
 The folder `examples` contains `main.ipynb` that allows to experiment interactively with the repository capacities.
 
@@ -32,7 +34,7 @@ ___
 
 ### Configuration
 
-The [config()](/reference/config.rst) class is used to pass the user configuration.
+The [config()](/_autosummary/surfingcrypto.config.config.rst) class is used to pass the user configuration.
 
 It requires to specify the location of the folder in which there is a `config.json` file, in which it is possible/required to specify the following parameters:
 * the parametrization of Technical Analysis (eg. window of moving averages, RSI length, etc...)
@@ -43,7 +45,7 @@ Additionally, it is possible to specify the location of a `data` folder where to
 
 ### Price data scraping
 
-The [Scraper()](/reference/scraper.rst) gets the necesarriy data from [coinmarketcap.com](http://www.coinmarketcap.com) and stores data locally. 
+The [Scraper()](/_autosummary/surfincrypto.scraper.Scraper.rst) gets the necesarriy data from [coinmarketcap.com](http://www.coinmarketcap.com) and stores data locally. 
 
 ### Telegram notifications
 
