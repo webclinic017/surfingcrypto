@@ -3,7 +3,9 @@
 
 ![img](docsrc/source/images/logo.png)
 
-![img](https://img.shields.io/static/v1?label=python&message=3.7&color=blue&style=for-the-badge)
+![Python](https://img.shields.io/badge/python-3.7-blue)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/giocaizzi/surfingcrypto/ci)
+![Codecov](https://img.shields.io/codecov/c/gh/giocaizzi/surfingcrypto)
 
 ## Installation
 
