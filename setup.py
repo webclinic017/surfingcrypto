@@ -16,7 +16,7 @@ setup(
     author_email='giocaizzi@gmail.com',
     packages=find_packages(include=['surfingcrypto', 'surfingcrypto.*']),
     setup_requires=[],
-    tests_require=['pytest'],
+    tests_require=[],
     install_requires=[],
     extras_require={
         "docs":[
@@ -24,7 +24,7 @@ setup(
             "nbsphinx",
             "myst-parser",
             "sphinx_rtd_theme",
-            "docutils==0.16" 
+            # "docutils==0.16" 
             ],
         "dev":[],
         'test':['pytest',"pytest-cov"],
