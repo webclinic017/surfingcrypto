@@ -41,6 +41,7 @@ jobs:
       run: |
         conda env update --file environment.yml --name base
         pip install .
+      if: steps.cache.outputs.cache-hit != 'true'
   
     - name: Test with pytest
       run: |
