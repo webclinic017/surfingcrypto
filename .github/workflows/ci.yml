@@ -45,6 +45,7 @@ jobs:
   
     - name: Test with pytest
       run: |
+        conda activate base
         pytest --cov=./surfingcrypto --cov-report=xml
         
     - name: "Upload coverage to Codecov"
