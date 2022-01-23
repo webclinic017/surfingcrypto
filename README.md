@@ -26,7 +26,7 @@
 
 ## Configuration
 
-To use the package a file `config.json` containing configuration is required. It contains also private keys for telegram and coinbase modules.
+In order to use the package, provide `surfingcrypto.config.config` class with the path to a folder containing a `config.json`. The json file must contain at least a dictionary of `coins`. It can also contain private keys for telegram and coinbase modules.
 
 ```
 {
