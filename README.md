@@ -55,6 +55,6 @@ To use the package a file `config.json` containing configuration is required. It
 
 ### Read the docs
 
-Documentations can be found [here]()
+Documentations can be found [here](https://giocaizzi.github.io/surfingcrypto/)
 
 
