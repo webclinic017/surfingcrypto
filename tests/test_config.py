@@ -29,6 +29,7 @@ def test_init_with_datafolder(
     assert isinstance(c.data_folder,str)
     assert os.path.isdir(tmp/"data"/"ts")
     assert isinstance(c.coinbase_req,cb_req)
+    print(c.coinbase_req)
     assert isinstance(c.scraping_req,scrap_req)
 
 @pytest.mark.parametrize("scrap_req",[(dict,dict)])

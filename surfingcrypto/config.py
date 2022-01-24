@@ -98,7 +98,7 @@ class config:
         """
         gets the requirements for coinbase portfolio tracking.
         """
-        if os.path.isdir(self.config_folder+"/coinbase_accounts.json"):
+        if os.path.isfile(self.config_folder+"/coinbase_accounts.json"):
             with open(self.config_folder+"/coinbase_accounts.json","rb") as f:
                 self.coinbase_req=json.load(f)
         else:
@@ -127,13 +127,16 @@ class config:
                             "end_day":dateutil.parser.parse(account["timerange"]["0"]).date(),
                         }
         #store coinbase requirements paresed correctly for portfolio tracker features
-        self.coinbase_req=req
+            self.coinbase_req=req
 
     def set_scraping_parameters(self):
         """
         sets the parameteters for the `surfingcrypto.Scraper` module
         """
-        params=self.coinbase_req.copy()
+        if self.coinbase_req is not None:
+            params=self.coinbase_req.copy()
+        else:
+            params={}
         #then, overrun with the reporting requirements
         for coin in self.coins:
             params[coin]={
