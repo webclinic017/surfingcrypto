@@ -7,6 +7,7 @@ import os
 
 from surfingcrypto.config import config
 
+@pytest.mark.parametrize("scrap_req",[(dict,dict)])
 @pytest.mark.parametrize('cb_req',[(type(None),dict)])
 @pytest.mark.parametrize(
     'temp_test_env',
@@ -15,7 +16,8 @@ from surfingcrypto.config import config
     )
 def test_init_with_datafolder(
     temp_test_env,
-    cb_req
+    cb_req,
+    scrap_req
     ):
     """
     test initialization of config class without specifying a data folder
@@ -27,7 +29,9 @@ def test_init_with_datafolder(
     assert isinstance(c.data_folder,str)
     assert os.path.isdir(tmp/"data"/"ts")
     assert isinstance(c.coinbase_req,cb_req)
+    assert isinstance(c.scraping_req,scrap_req)
 
+@pytest.mark.parametrize("scrap_req",[(dict,dict)])
 @pytest.mark.parametrize('cb_req',[(type(None),dict)])
 @pytest.mark.parametrize(
     'temp_test_env',
@@ -36,7 +40,8 @@ def test_init_with_datafolder(
     )
 def test_init_without_datafolder(
     temp_test_env,
-    cb_req
+    cb_req,
+    scrap_req
     ):
     """
     test initialization of config class without specifying a data folder
@@ -47,3 +52,4 @@ def test_init_without_datafolder(
     assert isinstance(c.data_folder,str)
     assert os.path.isdir(tmp/"data"/"ts")
     assert isinstance(c.coinbase_req,cb_req)
+    assert isinstance(c.scraping_req,scrap_req)
