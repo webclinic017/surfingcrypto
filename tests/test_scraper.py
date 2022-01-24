@@ -8,7 +8,8 @@ import os
 from surfingcrypto.scraper import Scraper 
 from surfingcrypto.config import config
 
-@pytest.mark.parametrize('check_file',[False,True])
+@pytest.mark.parametrize('run',[(False,True)])
+@pytest.mark.parametrize('check_file',[(True,True)])
 @pytest.mark.parametrize(
     'temp_test_env',
     [("config.json",),],
@@ -17,12 +18,13 @@ from surfingcrypto.config import config
 @pytest.mark.wip
 def test_load_config(
     temp_test_env,
-    check_file
+    check_file,run
     ):
     root=temp_test_env
     c=config(str(root/"config"))
     s=Scraper(c)
     assert isinstance(s.config,config)
-    if check_file:
+    if run:
         s.run()
+    if check_file:
         assert os.path.isfile(root/"data"/"ts"/"BTC.csv")
