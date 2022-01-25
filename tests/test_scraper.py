@@ -40,5 +40,5 @@ def test_overall_run(temp_test_env2,run):
         assert os.path.isfile(root/"data"/"ts"/"BTC.csv")
         df=pd.read_csv(root/"data"/"ts"/"BTC.csv")
         df["Date"]=pd.to_datetime(df["Date"])
-        assert not any(df["Date"].duplicated())
+        assert any(df["Date"].duplicated()) is False
         assert df["Date"].iat[-1].date()== datetime.datetime.utcnow().date()+datetime.timedelta(-1)
