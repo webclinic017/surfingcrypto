@@ -12,7 +12,7 @@ def pytest_configure(config):
 ##### TEST_ENVIRONMENT 
 
 CWD = Path(__file__).resolve()
-TEST_DATA=CWD.parent / "test_env"/"test_data"
+TEST_DATA=CWD.parent / "fixtures"
 
 @pytest.fixture
 def temp_test_env(request,tmp_path):
