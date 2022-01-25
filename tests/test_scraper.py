@@ -10,7 +10,7 @@ from surfingcrypto.scraper import Scraper
 from surfingcrypto.config import config
 
 # @pytest.mark.parametrize(
-#     'temp_test_env',
+#     'temp_test_env2',
 #     [("config.json","BTC.csv"),],
 #     indirect=True
 #     )
@@ -20,17 +20,17 @@ def test():
 scenarios=[
     (("config.json",),False,),
     (("config.json",),True,),
-    (("config.json",),True,)
+    ((("config.json",),("BTC.csv",)),True,)
 ]
 
-
+@pytest.mark.wip
 @pytest.mark.parametrize(
-    "temp_test_env,run",
+    "temp_test_env2,run",
     scenarios,
-    indirect=["temp_test_env"]
+    indirect=["temp_test_env2"]
     )
-def test_overall_run(temp_test_env,run):
-    root=temp_test_env
+def test_overall_run(temp_test_env2,run):
+    root=temp_test_env2
     
     c=config(str(root/"config"))
     s=Scraper(c)
@@ -41,4 +41,4 @@ def test_overall_run(temp_test_env,run):
         df=pd.read_csv(root/"data"/"ts"/"BTC.csv")
         df["Date"]=pd.to_datetime(df["Date"])
         assert not any(df["Date"].duplicated())
-        assert df["Date"].iat[-1].date()==datetime.date.today()+datetime.timedelta(-1)
+        assert df["Date"].iat[-1].date()== datetime.datetime.utcnow().date()+datetime.timedelta(-1)
