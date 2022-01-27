@@ -125,7 +125,7 @@ class Scraper():
 			path (str): path to csv file
 			df (:obj:`pandas.DataFrame`): dataframe of  locally stored data
 		"""
-		last=last.strftime("%d-%m-%Y")
+		last=(last+datetime.timedelta(1)).strftime("%d-%m-%Y")
 		end_day=end_day.strftime("%d-%m-%Y")
 		scraper = CmcScraper(key, last,end_day)
 		scraped=scraper.get_dataframe()
