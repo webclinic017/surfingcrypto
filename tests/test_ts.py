@@ -7,7 +7,6 @@ from surfingcrypto.ts import TS
 from surfingcrypto.config import config
 
 
-@pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env",
     [("config.json",)],
@@ -19,7 +18,6 @@ def test_failed_load_data(temp_test_env):
     with pytest.raises(FileNotFoundError):
         assert TS(c,coin="BTC")
 
-@pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env",
     [(("config.json",),("BTC.csv",))],
