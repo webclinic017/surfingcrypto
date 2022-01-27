@@ -1,0 +1,14 @@
+{
+    "datetime": "16-12-21",
+    "accounts": [
+        {
+            "currency": "SOL",
+            "account_id": "e5efeea6-737c-50bc-9e83-97a34eee6bd9",
+            "balance": "1.026155936",
+            "timerange": {
+                "0": "2021-11-29T10:47:17Z",
+                "1": "2021-11-29T10:47:17Z"
+            }
+        }
+    ]
+}

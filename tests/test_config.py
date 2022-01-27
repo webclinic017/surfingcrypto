@@ -4,17 +4,23 @@ test config class.
 import pytest
 from unittest.mock import patch
 import os
+import datetime
 
 from surfingcrypto.config import config
 
-@pytest.mark.parametrize('cb_req',[(type(None),dict)])
+scenarios=[
+    (("config.json",),dict,type(None)),
+    (("config.json","coinbase_accounts.json"),dict,dict),
+]
+
 @pytest.mark.parametrize(
-    'temp_test_env',
-    [("config.json",),("config.json","coinbase_accounts.json")],
-    indirect=True
+    'temp_test_env,scrp_req,cb_req',
+    scenarios,
+    indirect=["temp_test_env"]
     )
 def test_init_with_datafolder(
     temp_test_env,
+    scrp_req,
     cb_req
     ):
     """
@@ -26,16 +32,24 @@ def test_init_with_datafolder(
     assert hasattr(c,"coins")
     assert isinstance(c.data_folder,str)
     assert os.path.isdir(tmp/"data"/"ts")
+    print(scrp_req,cb_req)
+    assert isinstance(c.scraping_req,scrp_req)
+    assert "BTC" in c.scraping_req.keys()
     assert isinstance(c.coinbase_req,cb_req)
+    if isinstance(cb_req,dict):
+        assert "SOL" in c.coinbase_req.keys()
+        assert isinstance(c.coinbase_req["start"],datetime)
+        assert isinstance(c.coinbase_req["end_day"],datetime)
+        assert c.coinbase_req["end_day"] > c.coinbase_req["start"]
 
-@pytest.mark.parametrize('cb_req',[(type(None),dict)])
 @pytest.mark.parametrize(
-    'temp_test_env',
-    [("config.json",),("config.json","coinbase_accounts.json")],
-    indirect=True
+    'temp_test_env,scrp_req,cb_req',
+    scenarios,
+    indirect=["temp_test_env"]
     )
-def test_init_without_datafolder(
+def test_init_with_datafolder(
     temp_test_env,
+    scrp_req,
     cb_req
     ):
     """
@@ -46,4 +60,12 @@ def test_init_without_datafolder(
     assert hasattr(c,"coins")
     assert isinstance(c.data_folder,str)
     assert os.path.isdir(tmp/"data"/"ts")
+    print(scrp_req,cb_req)
+    assert isinstance(c.scraping_req,scrp_req)
+    assert "BTC" in c.scraping_req.keys()
     assert isinstance(c.coinbase_req,cb_req)
+    if isinstance(cb_req,dict):
+        assert "SOL" in c.coinbase_req.keys()
+        assert isinstance(c.coinbase_req["start"],datetime)
+        assert isinstance(c.coinbase_req["end_day"],datetime)
+        assert c.coinbase_req["end_day"] > c.coinbase_req["start"]

@@ -46,10 +46,10 @@ class Scraper():
 		result=[]
 		errors=[]
 
-		for key in self.config.scraping_parameters:
+		for key in self.config.scraping_req:
 			
-			end_day=self.config.scraping_parameters[key]["end_day"]
-			start=self.config.scraping_parameters[key]["start"]
+			end_day=self.config.scraping_req[key]["end_day"]
+			start=self.config.scraping_req[key]["start"]
 			path=self.config.data_folder+"/ts/"+key+".csv"
 
 			if os.path.isfile(path):
@@ -94,6 +94,7 @@ class Scraper():
 		self.output=all(self.log_bool)
 		self.overall_output_description()
 		self.errors=errors
+		self.log()
 
 	def scrape_alltime_data(self, start,end_day, key, path):
 		"""
@@ -124,7 +125,7 @@ class Scraper():
 			path (str): path to csv file
 			df (:obj:`pandas.DataFrame`): dataframe of  locally stored data
 		"""
-		last=last.strftime("%d-%m-%Y")
+		last=(last+datetime.timedelta(1)).strftime("%d-%m-%Y")
 		end_day=end_day.strftime("%d-%m-%Y")
 		scraper = CmcScraper(key, last,end_day)
 		scraped=scraper.get_dataframe()
