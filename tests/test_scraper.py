@@ -9,14 +9,6 @@ import os
 from surfingcrypto.scraper import Scraper 
 from surfingcrypto.config import config
 
-# @pytest.mark.parametrize(
-#     'temp_test_env2',
-#     [("config.json","BTC.csv"),],
-#     indirect=True
-#     )
-def test():
-    pass
-
 scenarios=[
     (("config.json",),False,),
     (("config.json",),True,),
@@ -25,12 +17,12 @@ scenarios=[
 
 @pytest.mark.wip
 @pytest.mark.parametrize(
-    "temp_test_env2,run",
+    "temp_test_env,run",
     scenarios,
-    indirect=["temp_test_env2"]
+    indirect=["temp_test_env"]
     )
-def test_overall_run(temp_test_env2,run):
-    root=temp_test_env2
+def test_overall_run(temp_test_env,run):
+    root=temp_test_env
     
     c=config(str(root/"config"))
     s=Scraper(c)

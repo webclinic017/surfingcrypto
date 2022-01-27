@@ -13,21 +13,9 @@ def pytest_configure(config):
 CWD = Path(__file__).resolve()
 TEST_DATA=CWD.parent / "fixtures"
 
-@pytest.fixture
-def temp_test_env(request,tmp_path):
-    config_folder=tmp_path/"config"
-    config_folder.mkdir()
-    for p in request.param:
-        shutil.copy(
-            TEST_DATA/p,
-            tmp_path/"config"/p)
-    yield tmp_path
-    def clean():
-        shutil.rmtree(tmp_path)
-    request.addfinalizer(clean)
 
 @pytest.fixture
-def temp_test_env2(request,tmp_path):
+def temp_test_env(request,tmp_path):
     """
     set up environment for testing.
     creating config, copying the required files
