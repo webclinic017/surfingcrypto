@@ -26,12 +26,12 @@ def test_init_with_datafolder(
     """
     test initialization of config class without specifying a data folder
     """
-    tmp=temp_test_env
-    os.mkdir(tmp/"data")
-    c=config(str(tmp/"config"),str(tmp/"data"))
+    root=temp_test_env
+    os.mkdir(root/"data")
+    c=config(str(root/"config"),str(root/"data"))
     assert hasattr(c,"coins")
     assert isinstance(c.data_folder,str)
-    assert os.path.isdir(tmp/"data"/"ts")
+    assert os.path.isdir(root/"data"/"ts")
     print(scrp_req,cb_req)
     assert isinstance(c.scraping_req,scrp_req)
     assert "BTC" in c.scraping_req.keys()
@@ -55,11 +55,11 @@ def test_init_with_datafolder(
     """
     test initialization of config class without specifying a data folder
     """
-    tmp=temp_test_env
-    c=config(str(tmp/"config"))
+    root=temp_test_env
+    c=config(str(root/"config"))
     assert hasattr(c,"coins")
     assert isinstance(c.data_folder,str)
-    assert os.path.isdir(tmp/"data"/"ts")
+    assert os.path.isdir(root/"data"/"ts")
     print(scrp_req,cb_req)
     assert isinstance(c.scraping_req,scrp_req)
     assert "BTC" in c.scraping_req.keys()
@@ -69,3 +69,13 @@ def test_init_with_datafolder(
         assert isinstance(c.coinbase_req["start"],datetime)
         assert isinstance(c.coinbase_req["end_day"],datetime)
         assert c.coinbase_req["end_day"] > c.coinbase_req["start"]
+
+@pytest.mark.parametrize(
+    'temp_test_env',
+    [()],
+    indirect=["temp_test_env"]
+    )
+def test_fail_init(temp_test_env):
+    root=temp_test_env
+    with pytest.raises(FileNotFoundError):
+        c=config(str(root/"config"))

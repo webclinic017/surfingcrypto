@@ -1,8 +1,12 @@
+"""
+time-series objects for cryptocurrencies.
+"""
 from numpy import sign
 import pandas as pd
 import mplfinance as mplf
 import matplotlib.pyplot as plt
 import pandas_ta as ta
+import os
 
 #warning di mplfinance per too many data in candlestick plot
 import warnings
@@ -38,9 +42,12 @@ class TS:
         """
         reads the data from data stored locally in `data/ts/` and saved in .csv format.
         """
-        self.df=pd.read_csv(self.config.data_folder+"/ts/"+self.coin+".csv")
-        self.df["Date"]=pd.to_datetime(self.df["Date"],utc=True)
-        self.df.set_index("Date",inplace=True)
+        if os.path.isfile(self.config.data_folder+"/ts/"+self.coin+".csv"):
+            self.df=pd.read_csv(self.config.data_folder+"/ts/"+self.coin+".csv")
+            self.df["Date"]=pd.to_datetime(self.df["Date"],utc=True)
+            self.df.set_index("Date",inplace=True)
+        else:
+            raise FileNotFoundError(f"{self.coin}.csv not found.")
 
     def percentage_diff(self,window=7):
         """

@@ -1,32 +1,31 @@
 """
 test ts class
 """
-import unittest
 import pytest 
-import pandas as pd
 
 from surfingcrypto.ts import TS 
 from surfingcrypto.config import config
 
-@pytest.mark.skip
-@pytest.mark.usefixtures("test_environment")
-class TestTS(unittest.TestCase):
 
-    def setUp(self):
-        parent=str(self.test_env / "config")
-        self.c=config(parent)
-        self.ts=TS(configuration=self.c,coin="BTC")
+@pytest.mark.wip
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [("config.json",)],
+    indirect=["temp_test_env"]
+    )
+def test_failed_load_data(temp_test_env):
+    root=temp_test_env
+    c=config(str(root/"config"))
+    with pytest.raises(FileNotFoundError):
+        assert TS(c,coin="BTC")
 
-    def test_ts_init(self):
-        self.assertEqual(self.ts.coin,"BTC")
-
-    def test_ts_df(self):
-        self.assertIsInstance(self.ts.df,pd.DataFrame)
-    
-    def test_ta_params(self):
-        self.assertEqual(self.ts.config.ts_params["sma"]["fast"],12)
-        self.assertEqual(self.ts.config.ts_params["sma"]["slow"],26)
-
-
-if __name__ == '__main__':
-    unittest.main()
+@pytest.mark.wip
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [(("config.json",),("BTC.csv",))],
+    indirect=["temp_test_env"]
+    )
+def test_failed_load_data(temp_test_env):
+    root=temp_test_env
+    c=config(str(root/"config"))
+    ts=TS(c,coin="BTC")

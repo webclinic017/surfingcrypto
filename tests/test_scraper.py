@@ -15,7 +15,6 @@ scenarios=[
     ((("config.json",),("BTC.csv",)),True,)
 ]
 
-@pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env,run",
     scenarios,

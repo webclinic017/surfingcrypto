@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 import pytest
 from pathlib import Path
 import shutil
@@ -26,11 +27,16 @@ def temp_test_env(request,tmp_path):
     """
     config_folder=tmp_path/"config"
     config_folder.mkdir()
-    if isinstance(request.param[0] ,str):
+    #param: empty tuple, do nothing
+    if not request.param:
+        pass
+    #param: x-tuple of string names of files to be copied in config folder
+    elif isinstance(request.param[0] ,str):
         for p in request.param:
             shutil.copy(
                 TEST_DATA/p,
                 tmp_path/"config"/p)
+    #param:c 2-tuple of x-tuples of files to be copied in config,data/ts folders
     elif isinstance(request.param[0] ,tuple) and len(request.param)==2:
         for c in request.param[0]:
             shutil.copy(
@@ -41,6 +47,8 @@ def temp_test_env(request,tmp_path):
             shutil.copy(
                 TEST_DATA/d,
                 tmp_path/"data"/"ts"/d)
+    else:
+        raise ValueError("Incorrect format. Pass x-tuple or 2-tuple of x-uple.")
 
     yield tmp_path
     def clean():
