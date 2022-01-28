@@ -18,6 +18,7 @@ class Scraper():
 
 	Arguments:
 		configuration (:obj:`surfingcrypto.config.config`): package configuration object
+		fiat (str): prices will be restituted in the selected fiat, defaults is `EUR`
 	
 	Attributes:
 		config (:obj:`surfingcrypto.config.config`): package configuration object
@@ -27,8 +28,9 @@ class Scraper():
 		output_descrition (str): Overall log string of ouput.
 	"""
 
-	def __init__(self,configuration):
+	def __init__(self,configuration,fiat="EUR"):
 		self.config=configuration
+		self.fiat=fiat
 
 	def log(self):
 		"""
@@ -127,7 +129,7 @@ class Scraper():
 		"""
 		last=(last+datetime.timedelta(1)).strftime("%d-%m-%Y")
 		end_day=end_day.strftime("%d-%m-%Y")
-		scraper = CmcScraper(key, last,end_day)
+		scraper = CmcScraper(key, last,end_day,fiat=self.fiat)
 		scraped=scraper.get_dataframe()
 		scraped.set_index("Date",inplace=True)
 		df=pd.concat([df,scraped])
