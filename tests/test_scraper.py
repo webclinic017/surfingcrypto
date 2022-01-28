@@ -10,9 +10,9 @@ from surfingcrypto.scraper import Scraper
 from surfingcrypto.config import config
 
 scenarios=[
-    (("config.json",),False,),
-    (("config.json",),True,),
-    ((("config.json",),("BTC.csv",)),True,)
+    (("config.json",),False,), #load config without running
+    (("config.json",),True,), # load config and run
+    ((("config.json",),("BTC.csv",)),True,) # load config, data to be updated and run
 ]
 
 @pytest.mark.parametrize(
@@ -31,5 +31,9 @@ def test_overall_run(temp_test_env,run):
         assert os.path.isfile(root/"data"/"ts"/"BTC.csv")
         df=pd.read_csv(root/"data"/"ts"/"BTC.csv")
         df["Date"]=pd.to_datetime(df["Date"])
+        #test no duplicates
         assert any(df["Date"].duplicated()) is False
+        #test continuous index
+        assert len(pd.date_range(df["Date"].iat[0], df["Date"].iat[-1], freq='D'))==len(df)
+        #test last of df is last price available
         assert df["Date"].iat[-1].date()== datetime.datetime.utcnow().date()+datetime.timedelta(-1)
