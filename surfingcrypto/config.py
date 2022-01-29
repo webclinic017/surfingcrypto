@@ -1,5 +1,5 @@
 """
-This module contains the configuration class that is passed throughout the package. 
+package configuration
 """
 import json
 import os

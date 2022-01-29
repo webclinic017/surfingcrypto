@@ -27,7 +27,7 @@ class CoinFigure:
         and `ta` that is candlecticks, volume + technical indicators.
 
     Arguments:
-        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS`object
+        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         kind (str) : string representing desired style of plot.
         trendlines (bool) : UNDER DEVELOPEMENT! - plot also trendlines calculated with `src.trend_line` class.
         graphstart (str) : date string in d-m-Y format (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.

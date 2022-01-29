@@ -10,7 +10,7 @@ def candlesticks(ts,ax,volume=False,vol_ax=None,style="candlesticks"):
     plotting candlesticks into a matplotlib.axes.Axes object.
 
     Args:
-        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS`object
+        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         ax (:class:`matplotlib.axes.Axes`) : matplotlib ax to plot candlesticks into.
         volume (bool,optional): plot volume histogram data into a another ax specified with `vol_ax`
         vol_ax (:class:`matplotlib.axes.Axes`) : matplotlib ax to plot volume histogram into.
@@ -45,6 +45,7 @@ def plot_moving_averages(ts,ax,windows=None):
     Default windows are 12 and 26 days. Can be customized by using lists of window-color pairs.
 
     Args:
+        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         windows (obj:`list` of obj:`int`,optional): list of windows to compute MA 
     """
 
@@ -65,6 +66,7 @@ def plot_macd(ts,ax,plot_lines=True):
 
 
     Args:
+        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         ax (:class:`matplotlib.axes.Axes`) : matplotlib ax to plot MACD into.
         plot_lines (bool): plot lines in addition to histogram.
 
@@ -103,6 +105,7 @@ def plot_bb(ts,iax):
     plot Bollinger bands indicator into a matplotlib.axes.Axes object.
 
     Args:
+        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         ax (:class:`matplotlib.axes.Axes`) : matplotlib ax to plot BB bands into.
     """
     length=str(ts.ta_params["bbands"]["length"])
@@ -122,6 +125,7 @@ def plot_RSI(ts,iax):
     plot RSI indicator into a matplotlib.axes.Axes object.
 
     Args:
+        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         ax (:class:`matplotlib.axes.Axes`) : matplotlib ax to plot RSI into.
     """
     timeperiod=str(ts.ta_params["rsi"]["timeperiod"])
