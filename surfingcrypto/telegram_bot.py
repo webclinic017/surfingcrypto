@@ -1,3 +1,6 @@
+"""
+telegram bot API wrapper
+"""
 from bob_telegram_tools.bot import TelegramBot
 import telegram
 import os

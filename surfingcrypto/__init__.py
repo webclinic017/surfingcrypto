@@ -1,5 +1,5 @@
 """
-customizable automated reporting of crypto prices
+customizable and automated reporting tool
 """
 __version__="0.0.1"
 
