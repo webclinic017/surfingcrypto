@@ -142,7 +142,7 @@ class Config:
             params[coin]={
                 "start":datetime.date(2017,10,1),
                 #timedelta is because today's close isnt yet realized
-                "end_day":datetime.date.today()+datetime.timedelta(-1),
+                "end_day":datetime.datetime.utcnow().date()+datetime.timedelta(-1),
             }
 
         self.scraping_req=params

@@ -38,6 +38,10 @@ def test_scraping_without_coinbase(temp_test_env, run, check_files):
             assert os.path.isfile(root / "data" / "ts" / file)
             df = pd.read_csv(root / "data" / "ts" / file)
             df["Date"] = pd.to_datetime(df["Date"])
+            if file[:-4]=="BTC":
+                #check price is downloaded in EUR by checking known values
+                assert df.set_index("Date").loc["2021-12-31","Close"]==40712.7200439697
+                assert df.set_index("Date").loc["2022-01-25,","Close"]==32693.35339746429
             # sorted
             assert df["Date"].is_monotonic_increasing is True
             # test no duplicates
