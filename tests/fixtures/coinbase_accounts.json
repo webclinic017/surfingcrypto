@@ -3,11 +3,20 @@
     "accounts": [
         {
             "currency": "SOL",
-            "account_id": "e5efeea6-737c-50bc-9e83-97a34eee6bd9",
+            "account_id": "XXXXXXXXXXXXX",
             "balance": "1.026155936",
             "timerange": {
                 "0": "2021-11-29T10:47:17Z",
                 "1": "2021-11-29T10:47:17Z"
+            }
+        },
+        {
+            "currency": "AAVE",
+            "account_id": "04899755-24da-5936-846c-d27237cd08b3",
+            "balance": "0.00000000",
+            "timerange": {
+                "0": "2021-08-26T19:45:56Z",
+                "1": "2021-07-04T21:58:17Z"
             }
         }
     ]
