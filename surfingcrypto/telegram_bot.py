@@ -1,14 +1,7 @@
 from bob_telegram_tools.bot import TelegramBot
-import matplotlib
-import matplotlib.pyplot as plt
-from numpy import matmul
 import telegram
-import json
 import os
 import pandas as pd
-from telegram import message
-from telegram import update
-from surfingcrypto.config import config
 
 class Tg_notifications:
     """

@@ -2,9 +2,7 @@
 test ts class
 """
 import pytest 
-
-from surfingcrypto.ts import TS 
-from surfingcrypto.config import config
+from surfingcrypto import Config,TS
 
 
 @pytest.mark.parametrize(
@@ -14,6 +12,6 @@ from surfingcrypto.config import config
     )
 def test_failed_load_data(temp_test_env):
     root=temp_test_env
-    c=config(str(root/"config"))
+    c=Config(str(root/"config"))
     with pytest.raises(FileNotFoundError):
         assert TS(c,coin="BTC")

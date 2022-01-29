@@ -1,6 +1,6 @@
 import unittest 
 from surfingcrypto.portfolio_tracker import Tracker 
-from surfingcrypto.config import config
+from surfingcrypto import Config
 import pytest
 import pandas as pd
 @pytest.mark.skip
@@ -8,7 +8,7 @@ class TestTracker(unittest.TestCase):
 
     def setUp(self):
         parent="/Users/giorgiocaizzi/Documents/GitHub/surfingcrypto/"
-        configuration=config(parent+"config",parent+"data")
+        configuration=Config(parent+"config",parent+"data")
 
         portfolio_df = pd.read_csv('temp/std_df.csv')
         print(portfolio_df)

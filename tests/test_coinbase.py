@@ -1,6 +1,6 @@
 import unittest 
 from surfingcrypto.coinbase import CB, MyCoinbase 
-from surfingcrypto.config import config
+from surfingcrypto import Config
 from coinbase.wallet.client import Client
 import pytest
 ## ?!? disable  unittest/suite.py:107: ResourceWarning: unclosed <ssl.SSLSocket 
@@ -9,7 +9,7 @@ class TestCB(unittest.TestCase):
 
     def setUp(self):
         parent="/Users/giorgiocaizzi/Documents/GitHub/surfingcrypto/"
-        configuration=config(parent+"config",parent+"data")
+        configuration=Config(parent+"config",parent+"data")
         self.userid="c5a7488f-1fe7-5259-8f61-39bd873e1699"
         self.cb=CB(configuration)
 
