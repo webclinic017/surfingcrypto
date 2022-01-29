@@ -8,7 +8,7 @@ import pathlib
 import datetime
 import dateutil
 
-class config:
+class Config:
     """
     Class for the package configuration.
     Contains API keys and user-specified parametrization of execution.

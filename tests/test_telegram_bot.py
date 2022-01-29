@@ -5,7 +5,7 @@ import pandas as pd
 import time
 import pytest
 from surfingcrypto.telegram_bot import Tg_notifications 
-from surfingcrypto import config
+from surfingcrypto import Config
 
 @pytest.mark.parametrize(
     "temp_test_env",
@@ -14,6 +14,6 @@ from surfingcrypto import config
     )
 def test_missing_configuration(temp_test_env):
     root=temp_test_env
-    c=config(str(root/"config"))
+    c=Config(str(root/"config"))
     with pytest.raises(ValueError):
         assert Tg_notifications(c)

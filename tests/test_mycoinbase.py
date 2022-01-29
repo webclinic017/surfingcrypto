@@ -1,6 +1,6 @@
 import unittest 
 from surfingcrypto.coinbase import MyCoinbase 
-from surfingcrypto.config import config
+from surfingcrypto import Config
 import pytest
 import pandas as pd
 @pytest.mark.skip
@@ -8,7 +8,7 @@ class TestMyCoinbase_active_accounts(unittest.TestCase):
 
     def setUp(self):
         parent="/Users/giorgiocaizzi/Documents/GitHub/surfingcrypto/"
-        configuration=config(parent+"config",parent+"data")
+        configuration=Config(parent+"config",parent+"data")
         self.my_c=MyCoinbase(configuration=configuration)
         return 
     
@@ -25,7 +25,7 @@ class TestMyCoinbase_historic_accounts(unittest.TestCase):
 
     def setUp(self):
         parent="/Users/giorgiocaizzi/Documents/GitHub/surfingcrypto/"
-        configuration=config(parent+"config",parent+"data")
+        configuration=Config(parent+"config",parent+"data")
         self.my_c=MyCoinbase(
             configuration=configuration,
             active_accounts=False,
