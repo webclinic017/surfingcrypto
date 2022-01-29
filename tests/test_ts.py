@@ -4,7 +4,7 @@ test ts class
 import pytest 
 
 from surfingcrypto.ts import TS 
-from surfingcrypto.config import config
+from surfingcrypto import config
 
 
 @pytest.mark.parametrize(

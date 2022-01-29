@@ -6,7 +6,7 @@ from unittest.mock import patch
 import os
 import datetime
 
-from surfingcrypto.config import config
+from surfingcrypto import config
 
 scenarios=[
     (("config.json",),dict,type(None)),

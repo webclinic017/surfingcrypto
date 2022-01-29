@@ -7,7 +7,7 @@ import pandas as pd
 import os
 
 from surfingcrypto.scraper import Scraper 
-from surfingcrypto.config import config
+from surfingcrypto import config
 
 scenarios=[
     #load config without running

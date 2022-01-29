@@ -5,7 +5,7 @@ import pandas as pd
 import time
 import pytest
 from surfingcrypto.telegram_bot import Tg_notifications 
-from surfingcrypto.config import config
+from surfingcrypto import config
 
 @pytest.mark.parametrize(
     "temp_test_env",
