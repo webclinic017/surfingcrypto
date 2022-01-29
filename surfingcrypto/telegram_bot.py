@@ -37,7 +37,7 @@ class Tg_notifications:
 
         self.error_log=[]
 
-        if "coinbase" in configuration.config:
+        if hasattr(configuration,"telegram"):
             
             self.configuration=configuration
 
@@ -59,10 +59,10 @@ class Tg_notifications:
                             print("# Checking new users")
                             self.new_users()
                 else:
-                    raise ValueError("config folder contain a csv file containing usernames and chat IDs.")        
+                    raise FileNotFoundError("config folder contain a csv file containing usernames and chat IDs.")        
             
         else:
-            raise Exception("config.json file must contain a telegram bot token.")
+            raise ValueError("config.json file must contain a telegram bot token.")
 
     def getUpdates(self):
         """
