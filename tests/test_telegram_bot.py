@@ -20,6 +20,7 @@ def test_missing_configuration(temp_test_env):
     with pytest.raises(ValueError):
         assert Tg_notifications(c)
 
+@pytest.mark.skip
 @pytest.mark.parametrize(
     "temp_test_env",
     [("config_telegram.json",)],
