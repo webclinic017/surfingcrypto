@@ -4,6 +4,10 @@ plotting methods.
 import mplfinance as mplf
 import matplotlib.pyplot as plt
 import pandas_ta as ta
+# warning di mplfinance per too many data in candlestick plot
+import warnings
+
+warnings.filterwarnings("ignore")
 
 def candlesticks(ts,ax,volume=False,vol_ax=None,style="candlesticks"):
     """

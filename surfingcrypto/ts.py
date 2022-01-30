@@ -4,12 +4,6 @@ time-series objects for cryptocurrencies.
 import pandas as pd
 import os
 
-# warning di mplfinance per too many data in candlestick plot
-import warnings
-
-warnings.filterwarnings("ignore")
-
-
 class TS:
     """
     This is an time-series oriented crypto price data object.
