@@ -38,7 +38,7 @@ class Tg_notifications:
             self.configuration=configuration
 
             self.channel_mode=channel_mode
-            self.token = self.configuration.config["telegram"]["token"]
+            self.token = self.configuration.telegram["token"]
             
             #init official bot
             self.bot=telegram.Bot(token=self.token)
