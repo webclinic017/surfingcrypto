@@ -21,17 +21,15 @@ class CB:
 
     Note:
         Requires an API Key and API Secret stored in `coinbase.json`.
-        The permissions required to run this code are *read-only* and are the following.::
-        ```
-        wallet:sells:read
-        wallet:accounts:read
-        wallet:buys:read
-        wallet:deposits:read
-        wallet:orders:read
-        wallet:trades:read
-        wallet:transactions:read
-        wallet:user:read
-        ```
+        The permissions required to run this code are *read-only* and are the following.
+
+        - ```wallet:sells:read```
+        - ```wallet:accounts:read```
+        - ```wallet:deposits:read```
+        - ```wallet:orders:read```
+        - ```wallet:trades:read```
+        - ```wallet:transactions:read```
+        - ```wallet:user:read```
 
     Arguments:
 		configuration (:obj:`surfingcrypto.config.config`): package configuration object
