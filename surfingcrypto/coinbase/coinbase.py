@@ -33,14 +33,16 @@ class CB:
 		configuration (:obj:`surfingcrypto.config.config`): package configuration object
 
     Attributes: 
+    	configuration (:obj:`surfingcrypto.config.config`): package configuration object
         client (:obj:`coinbase.wallet.client.Client`): client object for making requests to coinbase API
         user (:obj:`coinbase API object`): user API object
     """
 
     def __init__(self,configuration):
 
-        if "coinbase" in configuration.config:
-            credentials=configuration.config["coinbase"]
+        if hasattr(configuration,"coinbase"):
+            self.configuration=configuration
+            credentials=configuration.coinbase
             self.client = Client(credentials["key"],credentials["scrt"])
             self.user=self.client.get_current_user()
         else:
@@ -207,14 +209,14 @@ class MyCoinbase(CB):
             "datetime":datetime.datetime.today().strftime("%d-%m-%y"),
             "accounts":l
         }
-        with open(self.config.config_folder+"/coinbase_accounts.json","w") as f:
+        with open(self.configuration.config_folder+"/coinbase_accounts.json","w") as f:
             json.dump(dump,f,indent=4)
 
     def load_accounts(self):
         """
         load accounts from dumped `coinbase_accounts.json` file.
         """
-        with open(self.config.config_folder+"/coinbase_accounts.json","rb") as f:
+        with open(self.configuration.config_folder+"/coinbase_accounts.json","rb") as f:
             dict=json.load(f)
             accounts=dict["accounts"]
             last_updated=dict["datetime"]

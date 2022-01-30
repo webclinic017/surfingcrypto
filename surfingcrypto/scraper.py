@@ -110,7 +110,7 @@ class Scraper():
 		"""
 		start=start.strftime("%d-%m-%Y")
 		end_day=end_day.strftime("%d-%m-%Y")
-		scraper = CmcScraper(key, start,end_day)
+		scraper = CmcScraper(key, start,end_day,fiat=self.fiat)
 		scraped=scraper.get_dataframe()
 		scraped.set_index("Date",inplace=True)
 		scraped.sort_index(inplace=True)
