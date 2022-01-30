@@ -1,3 +1,6 @@
+"""
+get google search trend data
+"""
 from pytrends.request import TrendReq
 import pandas as pd
 
