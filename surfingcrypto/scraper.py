@@ -32,14 +32,6 @@ class Scraper():
 		self.config=configuration
 		self.fiat=fiat
 
-	def log(self):
-		"""
-		prints `output_description` for reading output.
-		"""
-		print("### SCRAPER")
-		print(self.output_description)
-		[print(i) for i in self.log_strings]
-
 	def run(self):
 		"""
 		runs the scraping process.
@@ -94,7 +86,6 @@ class Scraper():
 		self.log_strings=descriptions
 		self.log_bool=result
 		self.output=all(self.log_bool)
-		self.overall_output_description()
 		self.errors=errors
 		self.log()
 
@@ -153,14 +144,17 @@ class Scraper():
 		last=pd.to_datetime(df.index.values[-1])
 		return df,last
 
-	def overall_output_description(self):
+	def log(self):
 		"""
-		creates an overall verbose description of process.
+		prints `output_description` for reading output.
 		"""
 		if self.output:
 			self.output_description="Update successful."
 		else:
 			self.output_description="Update failed. Check log files for update"
+		print("### SCRAPER")
+		print(self.output_description)
+		[print(i) for i in self.log_strings]
 
 if __name__ == "__main__":
 	Scraper()
