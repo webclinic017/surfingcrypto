@@ -22,7 +22,7 @@ def test_valuerror(temp_test_env):
     root=temp_test_env
     c=Config(str(root/"config"))
     with pytest.raises(ValueError):
-        assert TS(c,coin=None)
+        TS(c,coin=None)
 
 
 @pytest.mark.parametrize(
@@ -35,7 +35,7 @@ def test_failed_load_data(temp_test_env):
     root=temp_test_env
     c=Config(str(root/"config"))
     with pytest.raises(FileNotFoundError):
-        assert TS(c,coin="BTC")
+        TS(c,coin="BTC")
 
 @pytest.mark.parametrize(
     "temp_test_env",
@@ -55,3 +55,34 @@ def test_load_data_and_default_parametrization(temp_test_env):
     assert ts.ta_params==DEFAULT_TA
 
 
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [(("config_ta.json",),("BTC.csv",))],
+    indirect=["temp_test_env"]
+    )
+def test_load_data_and_custom_params(temp_test_env):
+    """test loading pandas df and setting custom ta params"""
+    root=temp_test_env
+    c=Config(str(root/"config"))
+    ts=TS(c,coin="BTC")
+    #load dataframe
+    assert isinstance(ts.df,pd.DataFrame)
+    ts.parametrization()
+    assert hasattr(ts,"ta_params")
+    assert ts.ta_params["sma"]["fast"]==14
+    assert ts.ta_params["sma"]["slow"]==28
+
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [(("config_ta_error.json",),("BTC.csv",))],
+    indirect=["temp_test_env"]
+    )
+def test_invalid_ta_params(temp_test_env):
+    """test ValueError with invalid parametrization"""
+    root=temp_test_env
+    c=Config(str(root/"config"))
+    ts=TS(c,coin="BTC")
+    #load dataframe
+    assert isinstance(ts.df,pd.DataFrame)
+    with pytest.raises(ValueError):
+        ts.parametrization()

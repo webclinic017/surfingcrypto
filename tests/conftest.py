@@ -2,6 +2,7 @@ import pytest
 from pathlib import Path
 import shutil
 import os
+import re
 
 ##### MARKS #############################
 
@@ -14,7 +15,6 @@ def pytest_configure(config):
 
 CWD = Path(__file__).resolve()
 TEST_DATA = CWD.parent / "fixtures"
-
 
 @pytest.fixture
 def temp_test_env(request, tmp_path):
@@ -35,10 +35,14 @@ def temp_test_env(request, tmp_path):
     elif isinstance(request.param[0], str):
         for p in request.param:
             shutil.copy(TEST_DATA / p, tmp_path / "config" / p)
+            #rename test config file to correct format
+            rename_config(tmp_path, p)
     # param:c 2-tuple of x-tuples of files to be copied in config,data/ts folders
     elif isinstance(request.param[0], tuple) and len(request.param) == 2:
         for c in request.param[0]:
             shutil.copy(TEST_DATA / c, tmp_path / "config" / c)
+            #rename test config file to correct format
+            rename_config(tmp_path, c)
         for d in request.param[1]:
             os.makedirs(tmp_path / "data" / "ts")
             shutil.copy(TEST_DATA / d, tmp_path / "data" / "ts" / d)
@@ -51,4 +55,16 @@ def temp_test_env(request, tmp_path):
         shutil.rmtree(tmp_path)
 
     request.addfinalizer(clean)
+
+def rename_config(path, p):
+    """
+    rename fixtures of config.json so that can be found by config module.
+    """
+    if p!="config.json":
+        pattern = re.compile("config((_[a-zA-Z0-9]*)*).json")
+        if pattern.match(p):
+            os.rename(
+                        path / "config" / p,
+                        path / "config" / "config.json",
+                        )
 

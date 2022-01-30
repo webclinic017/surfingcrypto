@@ -107,8 +107,8 @@ class TS:
                 "bbands": {"length": 20, "std": 2},
                 "rsi": {"timeperiod": 14},
             }
-        elif isinstance(self.coins[self.coin], dict):
-            self.ta_params = self.coins[self.coin]
+        elif isinstance(self.config.coins[self.coin], dict):
+            self.ta_params = self.config.coins[self.coin]
         else:
             raise ValueError("Must provide TA parametrization in the correct format.")
 
