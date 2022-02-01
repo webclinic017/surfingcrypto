@@ -117,8 +117,8 @@ class Tg_notifications:
         send message to a specific user
 
         Arguments:
-            chat_id (int): chat_id code of chat to send the message to
             message (str): string containing message to send
+            chat_id (int): chat_id code of chat to send the message to
         """
         try:
             self.bot.sendMessage(chat_id=chat_id, text=message)
@@ -137,9 +137,35 @@ class Tg_notifications:
         with open(document,"rb") as d:
             self.bot.send_document(chat_id=chat_id,document=d,caption=caption)
 
+    def send_photo_to_all(self,photo):
+        """
+        send message to all known users
+        
+        Arguments:
+            photo (str): string path to photo
+        """
+        if self.channel_mode:
+            for chat_id in self.users["chat_id"].tolist():
+                self.send_photo(photo=photo,chat_id=chat_id)
+        else:
+            raise ValueError("This method is available only in channel mode.")
+
     def send_photo(self,photo,chat_id,caption=""):
         """
         send photo.
+    
+        Arguments:
+            photo (str): string path to photo
+            chat_id (int): chat_id code of chat to send the message to
+
         """
-        with open(photo,"rb") as p:
-            self.bot.send_photo(chat_id=chat_id,photo=p,caption=caption)
+        try:
+            with open(photo,"rb") as p:
+                self.bot.send_photo(chat_id=chat_id,photo=p,caption=caption)
+        except Exception as e:
+            print("SendPhotoError")
+            self.error_log.append({
+
+                "error":"SendPhotoError",
+                "e":e
+            })
