@@ -130,59 +130,16 @@ class Tg_notifications:
                 "e":e
             })
 
-
-    def send_doc(self,document,caption,chat_id,):
+    def send_doc(self,document,chat_id,caption=""):
+        """
+        send document.
+        """
         with open(document,"rb") as d:
             self.bot.send_document(chat_id=chat_id,document=d,caption=caption)
 
-    #### eliminabile (se vedi come fa capisci e si può replicare)
-    def send_plot_to_all(self,figure):
+    def send_photo(self,photo,chat_id,caption=""):
         """
-        send plot to all known users
-
-        Arguments:
-            figure (:class:`matplotlib.figure.Figure`): matplotlib figure object to send
-        
+        send photo.
         """
-        if self.channel_mode: 
-            for chat_id in self.users["chat_id"].tolist():
-                self.bob_bot=TelegramBot(token=self.token,user_ids=chat_id)
-                self.bob_bot.send_plot(figure)
-        else:
-            raise ValueError("This method is available only in channel mode.")
-
-    def send_plot(self,figure,chat_id):
-        """
-        send plot to specific user
-
-        Arguments:
-            chat_id (int): chat_id code of chat to send the plot to
-            figure (:class:`matplotlib.figure.Figure`): matplotlib figure object to send
-        
-        """
-        self.bob_bot=TelegramBot(token=self.token,user_ids=chat_id)
-        self.bob_bot.send_plot(figure)
-        self.bob_bot.clean_tmp_dir()
-    ################################################################
-    
-    #specifico per coinfig
-    def send_coinfig(self,figure=None,file=None,caption="",to="all"):
-        """
-        context handler to send figures from either matplotlib figure objects or local files
-        """
-        if file is None and figure is None:
-            raise ValueError("Must specify either a Matplolib ax object or a path to a locally saved figure.")
-        elif file is None and figure is not None:
-            if to=="all":
-                self.send_plot_to_all(figure)
-            elif type(to) is int:
-                self.send_plot(figure,chat_id=to)
-            else:
-                raise ValueError("Must be a string 'all' or an int ")
-        else:
-            if to=="all":
-                raise ValueError("Not yet implemented")
-            elif type(to) is int:
-                self.send_doc(file,caption,chat_id=to)
-            else:
-                raise ValueError("Must be 'all' or an int representing chat_id")
+        with open(photo,"rb") as p:
+            self.bot.send_photo(chat_id=chat_id,photo=p,caption=caption)
