@@ -15,6 +15,7 @@ if telegram:
 update = True
 if update:
     s = Scraper(c)
+    s.run()
     tg.send_message_to_all(message=s.output_description)
 
 for coin in c.coins:
@@ -26,5 +27,5 @@ for coin in c.coins:
         coin=coin,
         graphstart="3m",
     )
-    tg.send_message_to_all(fig.report_percentage_diff())
+    tg.send_message_to_all(ts.report_percentage_diff())
     tg.send_coinfig(figure=fig.f, to="all")
