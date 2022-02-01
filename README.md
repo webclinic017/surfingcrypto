@@ -9,26 +9,24 @@
 
 ## Installation
 
-1. With`conda` create new environtment for the project.
+1. Clone repo
+    ```shell
+    git clone git@github.com:giocaizzi/surfingcrypto.git
+    ```
+2. Install requirements.
 
     ```shell
-    conda env create -f environment.yml
+    pip install -r requirements.txt
     ```
 
-2. Activate env to use repository.
-
-    ```shell
-    conda activate cryptoenv
-    ```
-
-3. Install with pip
+3. Install package with `pip`
    ```shell
    pip install .
    ```
 
 ## Configuration
 
-In order to use the package, provide `surfingcrypto.config.config` class with the path to a folder containing a `config.json`. The json file must contain at least a dictionary of `coins`. It can also contain private keys for telegram and coinbase modules.
+In order to use the package, provide `surfingcrypto.Config` class with the path to a folder containing a `config.json`. The json file must contain at least a dictionary of `coins`. It can also contain private keys for `telegram` and `coinbase` modules.
 
 ```
 {
