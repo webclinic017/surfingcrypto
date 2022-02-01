@@ -10,3 +10,4 @@ python_telegram_bot
 pytrends
 trendln
 git+https://github.com/giocaizzi/cryptoCMD.git
+debugpy
