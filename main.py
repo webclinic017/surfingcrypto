@@ -33,6 +33,6 @@ for coin in c.coins:
         coin=coin,
         graphstart="3m",
     )
-    fig.save(parent+"temp/"+coin+"_"+timestr+".jpeg")
+    fig.save(c.temp_folder+"/"+coin+"_"+timestr+".jpeg")
     tg.send_message_to_all(ts.report_percentage_diff())
-    tg.send_photo_to_all(parent+"temp/"+coin+"_"+timestr+".jpeg")
+    tg.send_photo_to_all(c.temp_folder+"/"+coin+"_"+timestr+".jpeg")
