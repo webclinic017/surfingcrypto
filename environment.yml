@@ -17,6 +17,7 @@ dependencies:
   - mplfinance
   - python-telegram-bot
   - python-dateutil
+  - black
   - sphinx
   - sphinx_rtd_theme
   - myst-parser

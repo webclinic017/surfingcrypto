@@ -36,7 +36,7 @@ class Config:
         self.config_folder = config_folder
         self._set_attributes()
         self._set_data_folder(data_folder)
-        self._make_temp_dir()
+        self._temp_dir()
         
 	    ##ERROR LOG
         self.error_log=[]
@@ -90,17 +90,26 @@ class Config:
         """
         create data subdirectory structure.
         """
+        #data folder
         if not os.path.isdir(self.data_folder):
             os.mkdir(self.data_folder)
+        #data/ts subfolder
         if not os.path.isdir(self.data_folder+"/ts"):
             os.mkdir(self.data_folder+"/ts")
 
-    def _make_temp_dir(self):
+    def _temp_dir(self):
         """
-        temp directory for temporary storing plots to be sent.
+        Create temp directory for temporary storing plots to be sent.
+        If alreay exist, empty folder.
         """
-        if not os.path.isdir((pathlib.Path(self.config_folder).parent).joinpath("temp")):
-            os.mkdir((pathlib.Path(self.config_folder).parent).joinpath("temp"))
+        #data/temp
+        self.temp_folder=self.data_folder+"/temp"
+        if not os.path.isdir(self.temp_folder):
+            os.mkdir(self.temp_folder)
+        else:
+            for f in os.listdir(self.temp_folder):
+                os.remove(self.temp_folder+"/"+f)
+            
 
     def _read_coinbase_requirements(self):
         """
