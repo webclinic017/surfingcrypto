@@ -27,6 +27,5 @@ dependencies:
     - trendln
     - pandas-ta
     - git+https://github.com/giocaizzi/cryptoCMD.git
-    - bob-telegram-tools
     - backtrader
     - coinbase
