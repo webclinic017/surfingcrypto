@@ -3,7 +3,7 @@
 
 ![img](docsrc/source/images/logo.png)
 
-![Python](https://img.shields.io/badge/python-3.7-blue)
+![Python](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20-blue)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/giocaizzi/surfingcrypto/ci)
 ![Codecov](https://img.shields.io/codecov/c/gh/giocaizzi/surfingcrypto)
 
