@@ -7,8 +7,8 @@ from surfingcrypto.scraper import Scraper
 from surfingcrypto.reporting.figures import CoinFigure
 from surfingcrypto.telegram_bot import Tg_notifications
 
-# parent = "/home/ec2-user/surfingcrypto/" #to be used on ec2
-parent = "./" #to be used when local
+parent = "/home/ec2-user/surfingcrypto/" #to be used on ec2
+# parent = "./" #to be used when local
 #time of execution
 timestr = time.strftime("%Y%m%d-%H%M%S")
 
