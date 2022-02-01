@@ -39,5 +39,5 @@ docsrc/build
 # plotly
 ./*.html
 ####
-main.py
+# others
 tools
