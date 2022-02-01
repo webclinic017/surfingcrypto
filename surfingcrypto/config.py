@@ -36,19 +36,20 @@ class Config:
         self.config_folder = config_folder
         self._set_attributes()
         self._set_data_folder(data_folder)
+        self._make_temp_dir()
         
 	    ##ERROR LOG
         self.error_log=[]
         ##  DATA REQUIREMENTS
-        self.set_requirements()
+        self._set_requirements()
 
-    def set_requirements(self):
+    def _set_requirements(self):
         """
-        sets data requirements.
+        sets data requirements for scraping module.
         """
-        self.read_coinbase_requirements()
-        self.format_coinbase_req()
-        self.set_scraping_parameters()
+        self._read_coinbase_requirements()
+        self._format_coinbase_req()
+        self._set_scraping_parameters()
 
     def _set_attributes(self):
         """
@@ -94,7 +95,14 @@ class Config:
         if not os.path.isdir(self.data_folder+"/ts"):
             os.mkdir(self.data_folder+"/ts")
 
-    def read_coinbase_requirements(self):
+    def _make_temp_dir(self):
+        """
+        temp directory for temporary storing plots to be sent.
+        """
+        if not os.path.isdir((pathlib.Path(self.config_folder).parent).joinpath("temp")):
+            os.mkdir((pathlib.Path(self.config_folder).parent).joinpath("temp"))
+
+    def _read_coinbase_requirements(self):
         """
         gets the requirements for coinbase portfolio tracking.
         """
@@ -104,7 +112,7 @@ class Config:
         else:
             self.coinbase_req=None
 
-    def format_coinbase_req(self):
+    def _format_coinbase_req(self):
         """
         formats coinbase requirements parameteters to datetime
         """
@@ -129,7 +137,7 @@ class Config:
         #store coinbase requirements paresed correctly for portfolio tracker features
             self.coinbase_req=req
 
-    def set_scraping_parameters(self):
+    def _set_scraping_parameters(self):
         """
         sets the parameteters for the `surfingcrypto.Scraper` module
         """
