@@ -40,42 +40,42 @@ def test_init_testbot(temp_test_env):
     isinstance(t.updates,pd.DataFrame)
 
 
-# API_ID=decouple.config("TELEGRAM_API_ID")
-# API_HASH=decouple.config("TELEGRAM_API_HASH")
-# PASSWORD=decouple.config("TELEGRAM_2FA_PASSWORD")
+API_ID=decouple.config("TELEGRAM_API_ID")
+API_HASH=decouple.config("TELEGRAM_API_HASH")
+PASSWORD=decouple.config("TELEGRAM_2FA_PASSWORD")
 
-# @pytest.fixture
-# async def telegram_user():
-#     async def init():
-#         client=TelegramClient('anon', API_ID, API_HASH)
-#         await client.connect() 
-#         await client.sign_in(password=PASSWORD)
-#         return client
-#     return await init()
+@pytest.fixture
+async def telegram_user():
+    async def init():
+        client=TelegramClient('anon', API_ID, API_HASH)
+        await client.connect() 
+        await client.sign_in(password=PASSWORD)
+        return client
+    return await init()
 
-# @pytest.mark.wip
-# @pytest.mark.asyncio
-# @pytest.mark.parametrize(
-#     "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
-# )
-# async def test_init_testbot_getting_test_updates(temp_test_env,telegram_user):
-#     """send unique text to bot and process updates correctly"""
-#     root = temp_test_env
-#     c = Config(str(root / "config"))
-#     client=telegram_user
+@pytest.mark.wip
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
+)
+async def test_init_testbot_getting_test_updates(temp_test_env,telegram_user):
+    """send unique text to bot and process updates correctly"""
+    root = temp_test_env
+    c = Config(str(root / "config"))
+    client=telegram_user
 
-#     # This part is IMPORTANT, because it fills the entity cache.
-#     dialogs = await client.get_dialogs()
-#     entity=await client.get_entity('surfingcrypto_test_bot')
+    # This part is IMPORTANT, because it fills the entity cache.
+    dialogs = await client.get_dialogs()
+    entity=await client.get_entity('surfingcrypto_test_bot')
 
-#     await client.send_message(entity=entity,message="/start")
+    await client.send_message(entity=entity,message="/start")
 
-#     unique_test_message=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-#     await client.send_message(entity=entity,message=unique_test_message)
+    unique_test_message=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+    await client.send_message(entity=entity,message=unique_test_message)
 
-#     t = Tg_notifications(c)
-#     assert len(t.updates) > 0
-#     assert unique_test_message in t.updates["message"].tolist()
+    t = Tg_notifications(c)
+    assert len(t.updates) > 0
+    assert unique_test_message in t.updates["message"].tolist()
 
 # @pytest.mark.wip
 # @pytest.mark.asyncio
