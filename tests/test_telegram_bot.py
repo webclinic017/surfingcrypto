@@ -57,7 +57,9 @@ async def telegram_user():
         await client.send_message(entity=entity,message="/start")
         unique_test_message=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
         await client.send_message(entity=entity,message=unique_test_message)
+        return unique_test_message
     return await init()
+
 
 @pytest.mark.wip
 @pytest_asyncio.fixture
