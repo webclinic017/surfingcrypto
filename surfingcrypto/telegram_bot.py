@@ -12,7 +12,6 @@ class Tg_notifications:
     Arguments:
 		configuration (:obj:`surfingcrypto.config.config`) : package configuration object
         channel_mode (bool) : init class in channel_bot, send to all chat_id contained in telegram_users.csv
-        get_updates (bool) : get all updates from bot
         new_users_check (bool):  check for new users and add new ones to telegram_users.csv
     
     Attributes:
@@ -26,7 +25,6 @@ class Tg_notifications:
     def __init__(self,
         configuration,
         channel_mode=False,
-        get_updates=True,
         new_users_check=True,
         ):
 

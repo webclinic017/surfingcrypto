@@ -36,7 +36,7 @@ jobs:
         pip install pytest pytest-cov python-decouple telethon pytest_asyncio
         
     - run: |
-        pytest --cov=./surfingcrypto --cov-report=xml
+        pytest --cov=./surfingcrypto --cov-report=xml --asyncio-mode=strict
       
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v2

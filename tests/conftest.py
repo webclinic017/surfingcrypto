@@ -19,7 +19,7 @@ def pytest_configure(config):
 CWD = Path(__file__).resolve()
 TEST_DATA = CWD.parent / "fixtures"
 
-@pytest_asyncio.fixture
+@pytest.fixture
 def temp_test_env(request, tmp_path):
     """
     set up environment for testing.
