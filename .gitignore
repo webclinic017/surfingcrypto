@@ -12,6 +12,7 @@ data/ts/**
 #######
 #ignore private info and config
 config/*
+.env
 #######
 # AWS ec2 keys
 *.pem
