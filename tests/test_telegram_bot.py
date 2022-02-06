@@ -48,16 +48,7 @@ async def telegram_user():
     async def init():
         client=TelegramClient('anon', API_ID, API_HASH)
         await client.start()
-
-        # This part is IMPORTANT, because it fills the entity cache.
-        dialogs = await client.get_dialogs()
-
-        destination_user_username='surfingcrypto_test_bot'
-        entity=await client.get_entity(destination_user_username)
-        await client.send_message(entity=entity,message="/start")
-        unique_test_message=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        await client.send_message(entity=entity,message=unique_test_message)
-        return unique_test_message
+        return client
     return await init()
 
 
@@ -66,11 +57,21 @@ async def telegram_user():
 @pytest.mark.parametrize(
     "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
 )
-def test_init_testbot_getting_updates(temp_test_env,telegram_user):
+async def test_init_testbot_getting_updates(temp_test_env,telegram_user):
     """initialize class with testbot"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    unique_test_message=telegram_user
+    client=telegram_user
+
+    # This part is IMPORTANT, because it fills the entity cache.
+    dialogs = await client.get_dialogs()
+    destination_user_username='surfingcrypto_test_bot'
+    entity=await client.get_entity(destination_user_username)
+    await client.send_message(entity=entity,message="/start")
+
+    unique_test_message=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+    await client.send_message(entity=entity,message=unique_test_message)
+    
     t = Tg_notifications(c)
     assert len(t.updates) > 0
     assert unique_test_message in t.updates["message"].tolist()
