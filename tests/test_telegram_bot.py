@@ -8,6 +8,7 @@ from telethon import TelegramClient
 import decouple
 import pandas as pd
 import pytest_asyncio
+import random,string
 
 from surfingcrypto.telegram_bot import Tg_notifications
 from surfingcrypto import Config
@@ -40,16 +41,9 @@ def test_init_testbot(temp_test_env):
 
 API_ID=decouple.config("TELEGRAM_API_ID")
 API_HASH=decouple.config("TELEGRAM_API_HASH")
+#the first time the credentials are used, it is required to insert the phone number and authenticate
 
-# client=TelegramClient('anon', API_ID, API_HASH)
-
-# async def main():
-#     await client.start()
-
-# with client:
-#     client.loop.run_until_complete(main())
-
-@pytest.fixture
+@pytest_asyncio.fixture
 async def telegram_user():
     async def init():
         client=TelegramClient('anon', API_ID, API_HASH)
@@ -61,22 +55,23 @@ async def telegram_user():
         destination_user_username='surfingcrypto_test_bot'
         entity=await client.get_entity(destination_user_username)
         await client.send_message(entity=entity,message="/start")
-        await client.send_message(entity=entity,message="Ciao!")
-    await init()
+        unique_test_message=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        await client.send_message(entity=entity,message=unique_test_message)
+    return await init()
 
 @pytest.mark.wip
 @pytest_asyncio.fixture
 @pytest.mark.parametrize(
     "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
 )
-def test_init_testbot_channelmode(temp_test_env,telegram_user):
+def test_init_testbot_getting_updates(temp_test_env,telegram_user):
     """initialize class with testbot"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    telegram_user
+    unique_test_message=telegram_user
     t = Tg_notifications(c)
     assert len(t.updates) > 0
-    assert t.updates.loc[1,"message"]=="Ciao!"
+    assert unique_test_message in t.updates["message"].tolist()
     
     
 

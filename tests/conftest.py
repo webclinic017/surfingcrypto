@@ -1,5 +1,6 @@
 import pytest
 from pathlib import Path
+import pytest_asyncio
 import shutil
 import os
 import re
@@ -18,7 +19,7 @@ def pytest_configure(config):
 CWD = Path(__file__).resolve()
 TEST_DATA = CWD.parent / "fixtures"
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def temp_test_env(request, tmp_path):
     """
     set up environment for testing.
