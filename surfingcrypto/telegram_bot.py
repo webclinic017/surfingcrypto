@@ -41,18 +41,16 @@ class Tg_notifications:
             
             #init official bot
             self.bot=telegram.Bot(token=self.token)
+            self.getUpdates()
 
             if self.channel_mode:
                 if os.path.isfile(self.configuration.config_folder+"/telegram_users.csv"):
                     self.users=pd.read_csv(self.configuration.config_folder+"/telegram_users.csv")
                     self.users["date_joined"]=pd.to_datetime(self.users["date_joined"])
-                    if get_updates:
-                        #get updates
-                        self.getUpdates()
-                        if new_users_check:
-                            print("### TELEGRAM BOT")
-                            print("# Checking new users")
-                            self.new_users()
+                    if new_users_check:
+                        print("### TELEGRAM BOT")
+                        print("# Checking new users")
+                        self.new_users()
                 else:
                     raise FileNotFoundError("config folder contain a csv file containing usernames and chat IDs.")        
             

@@ -24,6 +24,7 @@ dependencies:
   - pytest
   - pytest-cov
   - python-decouple
+  - pytest-asyncio
   - pip
   - pip:
     - trendln
@@ -31,3 +32,4 @@ dependencies:
     - git+git://github.com/guptarohit/cryptoCMD.git
     - backtrader
     - coinbase
+    - telethon

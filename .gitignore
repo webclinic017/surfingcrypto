@@ -42,3 +42,4 @@ docsrc/build
 ####
 # others
 tools
+*.session
