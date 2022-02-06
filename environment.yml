@@ -27,6 +27,6 @@ dependencies:
   - pip:
     - trendln
     - pandas-ta
-    - git+https://github.com/giocaizzi/cryptoCMD.git
+    - git+git://github.com/guptarohit/cryptoCMD.git
     - backtrader
     - coinbase

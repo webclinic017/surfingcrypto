@@ -9,5 +9,5 @@ python_dateutil
 python_telegram_bot
 pytrends
 trendln
-git+https://github.com/giocaizzi/cryptoCMD.git
+git+git://github.com/guptarohit/cryptoCMD.git
 debugpy
