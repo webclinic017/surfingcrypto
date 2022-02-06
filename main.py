@@ -2,17 +2,20 @@
 script to be run on ec2 istance
 """
 import time
+from pathlib import Path
+
 from surfingcrypto import Config,TS
 from surfingcrypto.scraper import Scraper
 from surfingcrypto.reporting.figures import CoinFigure
 from surfingcrypto.telegram_bot import Tg_notifications
 
-parent = "/home/ec2-user/surfingcrypto/" #to be used on ec2
-# parent = "./" #to be used when local
+
+cwd = Path(__file__).resolve().parent 
+
 #time of execution
 timestr = time.strftime("%Y%m%d-%H%M%S")
 
-c = Config(parent + "config")
+c = Config(cwd + "config")
 
 telegram = True
 if telegram:

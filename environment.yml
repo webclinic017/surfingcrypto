@@ -23,6 +23,7 @@ dependencies:
   - myst-parser
   - pytest
   - pytest-cov
+  - python-decouple
   - pip
   - pip:
     - trendln

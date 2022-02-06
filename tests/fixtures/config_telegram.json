@@ -1,0 +1,11 @@
+{
+    "coins":
+    {
+        "BTC":"",
+        "ETH":"",
+        "MATIC":"",
+        "ADA":"",
+        "SOL":""
+    },
+    "telegram":{"token":"fixture"}  
+}

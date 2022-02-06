@@ -1,10 +1,8 @@
 """
 test telegram bot
 """
-from debugpy import configure
-import pandas as pd
-import time
 import pytest
+import telegram
 from surfingcrypto.telegram_bot import Tg_notifications
 from surfingcrypto import Config
 
@@ -20,7 +18,7 @@ def test_missing_configuration(temp_test_env):
         assert Tg_notifications(c)
 
 
-@pytest.mark.skip
+@pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
 )
@@ -32,3 +30,4 @@ def test_init_testbot(temp_test_env):
     assert isinstance(t.configuration, Config)
     assert t.token == c.telegram["token"]
     assert t.channel_mode is False
+    assert isinstance(t.bot,telegram.Bot)
