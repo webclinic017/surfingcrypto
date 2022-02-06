@@ -28,6 +28,18 @@ def temp_test_env(request, tmp_path):
     """
     config_folder = tmp_path / "config"
     config_folder.mkdir()
+    populate_test_env(request, tmp_path)
+
+    yield tmp_path
+
+    def clean():
+        shutil.rmtree(tmp_path)
+    request.addfinalizer(clean)
+
+def populate_test_env(request, tmp_path):
+    """
+    put fixture files for requestend test environment.
+    """
     # param: empty tuple, do nothing
     if not request.param:
         pass
@@ -48,13 +60,6 @@ def temp_test_env(request, tmp_path):
             shutil.copy(TEST_DATA / d, tmp_path / "data" / "ts" / d)
     else:
         raise ValueError("Incorrect format. Pass x-tuple or 2-tuple of x-uple.")
-
-    yield tmp_path
-
-    def clean():
-        shutil.rmtree(tmp_path)
-
-    request.addfinalizer(clean)
 
 def rename_config(path, p):
     """
