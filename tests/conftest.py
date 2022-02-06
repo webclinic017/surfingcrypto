@@ -82,10 +82,11 @@ def handle_config_json(path, p):
             #reading from testing environment variable
             with open(path / "config" / "config.json","rb") as f:
                 j=json.load(f)
-            if j["telegram"]["token"]=="fixture":
-                j["telegram"]["token"]=decouple.config("TELEGRAM_TOKEN")
-            with open(path / "config" / "config.json","w") as f:
-                json.dump(j,f)
+            if "telegram" in j.keys():
+                if j["telegram"]["token"]=="fixture":
+                    j["telegram"]["token"]=decouple.config("TELEGRAM_TOKEN")
+                with open(path / "config" / "config.json","w") as f:
+                    json.dump(j,f)
             
 
             
