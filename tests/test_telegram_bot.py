@@ -98,7 +98,6 @@ async def test_send_message(temp_test_env,telegram_user):
 
     unique_test_message=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
     t.send_message(unique_test_message,chat_id)
-    print(f"Message sent:{unique_test_message}")
     async for message in client.iter_messages(entity):
         if str(message.raw_text)==unique_test_message:
             found=True
