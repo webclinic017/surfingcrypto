@@ -102,10 +102,7 @@ async def test_send_message(temp_test_env,telegram_user):
     async for message in client.iter_messages(entity):
         if str(message.raw_text)==unique_test_message:
             found=True
-    if found:
-        assert True 
-    else:
-        assert False 
+    assert found is True
 
 
 
