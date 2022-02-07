@@ -4,11 +4,11 @@ test telegram bot
 import pytest
 import asyncio
 import telegram
-from telethon import TelegramClient
-from telethon.errors import EmailUnconfirmedError
+from telethon import TelegramClient,events
 import decouple
 import pandas as pd
 import pytest_asyncio
+import time
 import random,string
 
 from surfingcrypto.telegram_bot import Tg_notifications
@@ -45,20 +45,23 @@ API_HASH=decouple.config("TELEGRAM_API_HASH")
 PASSWORD=decouple.config("TELEGRAM_2FA_PASSWORD")
 
 @pytest.fixture
-async def telegram_user():
+async def telegram_user(request):
+    client=TelegramClient('anon', API_ID, API_HASH)
     async def init():
-        client=TelegramClient('anon', API_ID, API_HASH)
         await client.connect() 
         await client.sign_in(password=PASSWORD)
         return client
-    return await init()
+    yield await init()
+    def finalizer():
+        client.disconnect()
+    request.addfinalizer(finalizer)
 
 @pytest.mark.wip
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
 )
-async def test_init_testbot_getting_test_updates(temp_test_env,telegram_user):
+async def test_init_testbot_getting_updates(temp_test_env,telegram_user):
     """send unique text to bot and process updates correctly"""
     root = temp_test_env
     c = Config(str(root / "config"))
@@ -67,8 +70,6 @@ async def test_init_testbot_getting_test_updates(temp_test_env,telegram_user):
     # This part is IMPORTANT, because it fills the entity cache.
     dialogs = await client.get_dialogs()
     entity=await client.get_entity('surfingcrypto_test_bot')
-
-    await client.send_message(entity=entity,message="/start")
 
     unique_test_message=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
     await client.send_message(entity=entity,message=unique_test_message)
@@ -88,9 +89,23 @@ async def test_send_message(temp_test_env,telegram_user):
     c = Config(str(root / "config"))
     client=telegram_user
     t = Tg_notifications(c)
-    dialogs = await client.get_dialogs()
-    entity=await client.get_entity('surfingcrypto_test_bot')
-    print(entity.chat_id)
+
+    async for dialog in client.iter_dialogs():
+        if dialog.name=="surfingcrypto_testbot":
+            entity=dialog.entity
+            chat_id = dialog.message.from_id.user_id
+            break
+
+    unique_test_message=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+    t.send_message(unique_test_message,chat_id)
+    print(f"Message sent:{unique_test_message}")
+    async for message in client.iter_messages(entity):
+        if str(message.raw_text)==unique_test_message:
+            found=True
+    if found:
+        assert True 
+    else:
+        assert False 
 
 
 
