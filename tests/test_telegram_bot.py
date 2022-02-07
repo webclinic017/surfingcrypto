@@ -77,20 +77,20 @@ async def test_init_testbot_getting_test_updates(temp_test_env,telegram_user):
     assert len(t.updates) > 0
     assert unique_test_message in t.updates["message"].tolist()
 
-# @pytest.mark.wip
-# @pytest.mark.asyncio
-# @pytest.mark.parametrize(
-#     "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
-# )
-# async def test_send_message(temp_test_env,telegram_user):
-#     """send unique text to bot and process updates correctly"""
-#     root = temp_test_env
-#     c = Config(str(root / "config"))
-#     client=telegram_user
-#     t = Tg_notifications(c)
-#     dialogs = await client.get_dialogs()
-#     entity=await client.get_entity('surfingcrypto_test_bot')
-#     print(entity.chat_id)
+@pytest.mark.wip
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
+)
+async def test_send_message(temp_test_env,telegram_user):
+    """send unique text to bot and process updates correctly"""
+    root = temp_test_env
+    c = Config(str(root / "config"))
+    client=telegram_user
+    t = Tg_notifications(c)
+    dialogs = await client.get_dialogs()
+    entity=await client.get_entity('surfingcrypto_test_bot')
+    print(entity.chat_id)
 
 
 
