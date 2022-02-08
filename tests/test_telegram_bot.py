@@ -28,7 +28,6 @@ async def telegram_user(request):
 
     async def init():
         await client.connect()
-        await client.sign_in(password=PASSWORD)
         return client
 
     yield await init()
@@ -89,12 +88,12 @@ async def test_init_testbot_and_get_updates(temp_test_env, telegram_user):
     assert len(t.updates) > 0
     assert unique_test_message in t.updates["message"].tolist()
 
-
+@pytest.mark.wip
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
+    "temp_test_env", [("config_telegram.json","logo.jpg")], indirect=["temp_test_env"]
 )
-async def test_send_message(temp_test_env, telegram_user):
+async def test_send_message_and_photo(temp_test_env, telegram_user):
     """send unique text to bot and process updates correctly"""
     root = temp_test_env
     c = Config(str(root / "config"))
@@ -112,11 +111,19 @@ async def test_send_message(temp_test_env, telegram_user):
         random.choice(string.ascii_uppercase + string.digits) for _ in range(10)
     )
     t.send_message(unique_test_message, USER_ID)
+    #it was the easieast to store it there given fixture
+    t.send_photo(str(root/"config"/"logo.jpg"),USER_ID)
 
+    i=0
     async for message in client.iter_messages(entity):
+        if i==0 and message.media is not None:
+            photo= True
         if str(message.raw_text) == unique_test_message:
-            found = True
-    assert found is True
+            message = True
+        i=+1
+        
+    assert photo is True
+    assert photo is True
 
 
 @pytest.mark.wip
@@ -124,9 +131,28 @@ async def test_send_message(temp_test_env, telegram_user):
 @pytest.mark.parametrize(
     "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
 )
-async def test_send_message(temp_test_env, telegram_user):
+async def test_fail_send_message(temp_test_env, telegram_user):
     """send unique text to bot and process updates correctly"""
     root = temp_test_env
     c = Config(str(root / "config"))
     client = telegram_user
     t = Tg_notifications(c)
+    assert len(t.error_log)==0
+    t.send_message("FAILED MESSAGE", 0000000)
+    assert isinstance(t.error_log[0],dict)
+
+@pytest.mark.wip
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
+)
+async def test_fail_send_photo(temp_test_env, telegram_user):
+    """send unique text to bot and process updates correctly"""
+    root = temp_test_env
+    c = Config(str(root / "config"))
+    client = telegram_user
+    t = Tg_notifications(c)
+    assert len(t.error_log)==0
+    t.send_photo(str(root/"config"/"logo.jpg"), 0000000)
+    assert isinstance(t.error_log[0],dict)
+
