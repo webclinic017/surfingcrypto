@@ -33,3 +33,4 @@ dependencies:
     - backtrader
     - coinbase
     - telethon
+    - sphinxemoji
