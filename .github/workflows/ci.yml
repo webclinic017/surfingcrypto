@@ -16,12 +16,12 @@ env:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
     #allow the matrix to not fail completely if one fails
       fail-fast: false
       matrix:
-        os: [ubuntu-latest] #macos-latest
+        #os: [ubuntu-latest] #macos-latest
         python-version: ["3.7","3.8", "3.9"]
 
     steps:
