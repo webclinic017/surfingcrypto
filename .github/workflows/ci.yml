@@ -20,7 +20,7 @@ jobs:
     #allow the matrix to not fail completely if one fails
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest] #macos-latest
         python-version: ["3.7","3.8", "3.9"]
 
     steps:
@@ -35,7 +35,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest pytest-cov python-decouple telethon pytest_asyncio
-        
+
     - run: |
         pytest --cov=./surfingcrypto --cov-report=xml --asyncio-mode=auto
       

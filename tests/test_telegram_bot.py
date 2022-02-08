@@ -5,6 +5,7 @@ import pytest
 import asyncio
 import telegram
 from telethon import TelegramClient,events
+from telethon.sessions import StringSession
 import decouple
 import pandas as pd
 import pytest_asyncio
@@ -43,10 +44,11 @@ def test_init_testbot(temp_test_env):
 API_ID=decouple.config("TELEGRAM_API_ID")
 API_HASH=decouple.config("TELEGRAM_API_HASH")
 PASSWORD=decouple.config("TELEGRAM_2FA_PASSWORD")
+STRINGSESSION=decouple.config("TELETHON_STRINGSESSION")
 
 @pytest.fixture
 async def telegram_user(request):
-    client=TelegramClient('anon', API_ID, API_HASH)
+    client=TelegramClient(StringSession(STRINGSESSION), API_ID, API_HASH)
     async def init():
         await client.connect() 
         await client.sign_in(password=PASSWORD)
