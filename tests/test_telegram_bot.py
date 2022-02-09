@@ -2,6 +2,7 @@
 test telegram bot
 """
 import pytest
+from unittest.mock import patch
 import asyncio
 import pytest_asyncio
 import telegram
@@ -63,6 +64,26 @@ def test_init_testbot(temp_test_env):
     assert isinstance(t.bot, telegram.Bot)
     isinstance(t.updates, pd.DataFrame)
 
+@pytest.mark.parametrize(
+    "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
+)
+def test_init_testbot_channelmode_filenotfound(temp_test_env):
+    """fail initialize class with testbot in channel mode"""
+    root = temp_test_env
+    c = Config(str(root / "config"))
+    with pytest.raises(FileNotFoundError):
+        t = Tg_notifications(c,channel_mode=True)
+
+
+@pytest.mark.parametrize(
+    "temp_test_env", [("config_telegram.json","telegram_users.csv")], indirect=["temp_test_env"]
+)
+def test_init_testbot_channelmode(temp_test_env):
+    """initialize class with testbot in channel mode"""
+    root = temp_test_env
+    c = Config(str(root / "config"))
+    t = Tg_notifications(c,channel_mode=True)
+    assert isinstance(t.users,pd.DataFrame)
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
@@ -88,13 +109,12 @@ async def test_init_testbot_and_get_updates(temp_test_env, telegram_user):
     assert len(t.updates) > 0
     assert unique_test_message in t.updates["message"].tolist()
 
-@pytest.mark.wip
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "temp_test_env", [("config_telegram.json","logo.jpg")], indirect=["temp_test_env"]
 )
 async def test_send_message_and_photo(temp_test_env, telegram_user):
-    """send unique text to bot and process updates correctly"""
+    """send unique text to bot and a photo and process updates correctly"""
     root = temp_test_env
     c = Config(str(root / "config"))
     client = telegram_user
@@ -126,33 +146,40 @@ async def test_send_message_and_photo(temp_test_env, telegram_user):
     assert photo is True
 
 
-@pytest.mark.wip
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
 )
-async def test_fail_send_message(temp_test_env, telegram_user):
-    """send unique text to bot and process updates correctly"""
+def test_fail_send_message(temp_test_env):
+    """fail send message"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    client = telegram_user
     t = Tg_notifications(c)
     assert len(t.error_log)==0
     t.send_message("FAILED MESSAGE", 0000000)
     assert isinstance(t.error_log[0],dict)
 
-@pytest.mark.wip
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "temp_test_env", [("config_telegram.json",)], indirect=["temp_test_env"]
 )
-async def test_fail_send_photo(temp_test_env, telegram_user):
-    """send unique text to bot and process updates correctly"""
+def test_fail_send_photo(temp_test_env):
+    """fail send photo"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    client = telegram_user
     t = Tg_notifications(c)
     assert len(t.error_log)==0
     t.send_photo(str(root/"config"/"logo.jpg"), 0000000)
     assert isinstance(t.error_log[0],dict)
+
+@pytest.mark.wip
+@patch.object(Tg_notifications,"send_message") 
+@pytest.mark.parametrize(
+    "temp_test_env", [("config_telegram.json","telegram_users.csv")], indirect=["temp_test_env"]
+)
+def test_message_to_all(mock_getter,temp_test_env):
+    """send message to all stored contacts, without updates"""
+    root = temp_test_env
+    c = Config(str(root / "config"))
+    t = Tg_notifications(c,channel_mode=True,new_users_check=False)
+    t.send_message_to_all("fail")
+    assert mock_getter.call_count == 3
 

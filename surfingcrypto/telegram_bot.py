@@ -75,25 +75,22 @@ class Tg_notifications:
         check if unknown users have interacted with the telegram bot.
         If the new users are found, they are automatically added to known users csv files.
         """
-        if hasattr(self,"updates"):
-            if len(self.updates)>=1:
-                updates=self.updates.set_index("chat_id")[["username","date"]].drop_duplicates()
-                
-                new_users_mask=~updates.index.isin(self.users["chat_id"])
-                if any(new_users_mask):
-                    new_users=updates[new_users_mask].reset_index()
-                    new_users.rename({"date":"date_joined"},axis=1,inplace=True)
-                    self.users=self.users.append(new_users,ignore_index=True)
-                    self.users.sort_index(inplace=True)
-                    self.users.to_csv(self.configuration.config_folder+"/telegram_users.csv",index=False)
-                    print("Users successfully added!")
-                else:
-                    print("No new users.")
+        if len(self.updates)>=1:
+            updates=self.updates.set_index("chat_id")[["username","date"]].drop_duplicates()
+            
+            new_users_mask=~updates.index.isin(self.users["chat_id"])
+            if any(new_users_mask):
+                new_users=updates[new_users_mask].reset_index()
+                new_users.rename({"date":"date_joined"},axis=1,inplace=True)
+                self.users=self.users.append(new_users,ignore_index=True)
+                self.users.sort_index(inplace=True)
+                self.users.to_csv(self.configuration.config_folder+"/telegram_users.csv",index=False)
+                print("Users successfully added!")
             else:
-                print("No updates.")
-        # else:
-        #     raise ValueError("get updates first!")
-    
+                print("No new users.")
+        else:
+            print("No updates.")
+
     def send_message_to_all(self,message):
         """
         send message to all known users
