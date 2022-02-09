@@ -171,7 +171,7 @@ def test_fail_send_photo(temp_test_env):
     assert isinstance(t.error_log[0],dict)
 
 @pytest.mark.wip
-@patch.object(Tg_notifications,"send_message") 
+@patch.object(telegram.Bot,"sendMessage") 
 @pytest.mark.parametrize(
     "temp_test_env", [("config_telegram.json","telegram_users.csv")], indirect=["temp_test_env"]
 )
@@ -181,5 +181,18 @@ def test_message_to_all(mock_getter,temp_test_env):
     c = Config(str(root / "config"))
     t = Tg_notifications(c,channel_mode=True,new_users_check=False)
     t.send_message_to_all("fail")
+    assert mock_getter.call_count == 3
+
+@pytest.mark.wip
+@patch.object(telegram.Bot,"send_photo") 
+@pytest.mark.parametrize(
+    "temp_test_env", [("config_telegram.json","telegram_users.csv","logo.jpg")], indirect=["temp_test_env"]
+)
+def test_photo_to_all(mock_getter,temp_test_env):
+    """send photo to all stored contacts, without updates"""
+    root = temp_test_env
+    c = Config(str(root / "config"))
+    t = Tg_notifications(c,channel_mode=True,new_users_check=False)
+    t.send_photo_to_all(str(root/"config"/"logo.jpg"))
     assert mock_getter.call_count == 3
 
