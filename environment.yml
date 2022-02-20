@@ -3,34 +3,42 @@ channels:
   - conda-forge
 dependencies:
   - python=3.7
+#notebooks
   - ipython
   - ipykernel
-  - requests
-  - dataclasses
+#requirements
+  - matplotlib
+  - mplfinance
+  - numpy
   - pandas
-  - matplotlib==3.2.2
   - plotly
   - plotly_express
-  - docutils=0.16
-  - numpy
-  - pytrends
-  - mplfinance
-  - python-telegram-bot
   - python-dateutil
+  - python-telegram-bot
+  - pytrends
+#formatting
   - black
+#docs
   - sphinx
   - sphinx_rtd_theme
   - myst-parser
+  - docutils=0.16 #with py37 avoids bug in bullet points
+#tests
   - pytest
   - pytest-cov
-  - python-decouple
   - pytest-asyncio
+#env variables for testing
+  - python-decouple
   - pip
   - pip:
-    - trendln
-    - pandas-ta
-    - git+git://github.com/guptarohit/cryptoCMD.git
-    - backtrader
+    #package reqs only from pip
     - coinbase
+    - pandas-ta
+    - trendln
+    - cryptocmd
+    # dev 
+    - backtrader
+    #full python api wrapper for testing
     - telethon
+    #docs
     - sphinxemoji

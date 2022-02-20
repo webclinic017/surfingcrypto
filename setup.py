@@ -19,15 +19,7 @@ setup(
     tests_require=[],
     install_requires=[],
     extras_require={
-        "docs":[
-            "sphinx",
-            "nbsphinx",
-            "myst-parser",
-            "sphinx_rtd_theme",
-            # "docutils==0.16" 
-            ],
         "dev":[],
-        'test':['pytest',"pytest-cov"],
     },
     classifiers=[
         "Programming Language :: Python :: 3.7",
