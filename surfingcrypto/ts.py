@@ -3,6 +3,7 @@ time-series objects for cryptocurrencies.
 """
 import pandas as pd
 import os
+import pandas_ta as ta
 
 class TS:
     """
@@ -111,4 +112,10 @@ class TS:
             self.ta_params = self.config.coins[self.coin]
         else:
             raise ValueError("Must provide TA parametrization in the correct format.")
+
+    def distance_from_ath(self):
+        d={}
+        for idx in self.df.index:
+            d[idx]=abs(self.df.loc[idx,"Close"]-self.df[:idx]["Close"].max())
+        self.df["distance_ATH"]=pd.Series(d)
 
