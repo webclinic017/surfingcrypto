@@ -176,18 +176,18 @@ class MyCoinbase(CB):
             self.isHistoric = True
             if from_dict is True:
                 # last_updated for future developement of automatic update
-                accounts, last_updated = self.load_accounts()
+                accounts, last_updated = self._load_accounts()
                 self.accounts = self.get_accounts_from_list(accounts)
             else:
                 (
                     self.accounts,
                     self.timeranges,
                 ) = self.get_all_accounts_with_transactions()
-                self.dump_accounts()
+                self._dump_accounts()
         else:
             raise ValueError("Either true or false.")
 
-    def dump_accounts(self):
+    def _dump_accounts(self):
         """
         dumps fetched accounts for faster execution time in following sessions.
         """
@@ -210,7 +210,7 @@ class MyCoinbase(CB):
         ) as f:
             json.dump(dump, f, indent=4)
 
-    def load_accounts(self):
+    def _load_accounts(self):
         """
         load accounts from dumped `coinbase_accounts.json` file.
         """
@@ -247,7 +247,7 @@ class MyCoinbase(CB):
         else:
             raise ValueError("Must get accounts first.")
 
-class TransactionHandler:
+class TransactionsGetter:
     """
     This objects fetches all coinbase transactions and parses them into a known format.
 
@@ -255,6 +255,7 @@ class TransactionHandler:
         mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`): :obj:`MyCoinbase` object.
 
     Attributes:
+        known_types (list): list of string names of supported transaction types.
         mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`): :obj:`MyCoinbase` object.
         df (:obj:`pandas.DataFrame`): dataframe of all known transactions
         my_coinbase_obj (:obj:`list` of :obj:`coibase.model.ApiObject`): list of processed transactions.
@@ -263,6 +264,9 @@ class TransactionHandler:
     """
     def __init__(self,mycoinbase):
         self.mycoinbase=mycoinbase
+        self.load()
+
+    def load(self):
         if self.mycoinbase.isHistoric is True:
             ### ci sonotanti tipi di transactions
             self.unhandled_trans = []
