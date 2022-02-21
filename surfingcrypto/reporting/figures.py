@@ -1,8 +1,10 @@
 """
 figures built for crypto prices.
 """
+from attr import has
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from matplotlib.colors import LinearSegmentedColormap,Normalize
 import matplotlib.dates as mdates
 import dateutil
 import datetime
@@ -18,32 +20,17 @@ plt.style.use("dark_background")
 mpl.rcParams["font.size"] = 5
 
 
-class CoinFigure:
+class BaseFigure:
     """
-    This objects are complex matplotlib figures predisponed to fit OHLC + TA indicators data.
-
-    Note:
-        There are two styles implemented at the moment: `default` that is candlestick + volume
-        and `ta` that is candlecticks, volume + technical indicators.
+    This is the base class object for all figures.
 
     Arguments:
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
-        kind (str) : string representing desired style of plot.
-        trendlines (bool) : UNDER DEVELOPEMENT! - plot also trendlines calculated with `src.trend_line` class.
         graphstart (str) : date string in d-m-Y format (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
-        \*\*kwargs : Keyword arguments to `TS` module.
-
-
     """
 
     def __init__(
-        self,
-        ts,
-        kind="default",
-        trendlines=False,
-        graphstart="1-1-2021",
-        *args,
-        **kwargs,
+        self, ts, graphstart="1-1-2021",
     ):
 
         self.ts = ts
@@ -59,13 +46,6 @@ class CoinFigure:
         else:
             self.graphstart = dateutil.parser.parse(graphstart)
 
-        if kind == "default":
-            self.default_plot()
-        elif kind == "ta":
-            self.ta_plot(trendlines=trendlines)
-        else:
-            raise ValueError("Kind not implemented.")
-
     def save(self, path):
         """
         save fig to specified path.
@@ -78,6 +58,7 @@ class CoinFigure:
     def center_series(self, ax, on="Close"):
         """
         centers the active series in the graph.
+        This is useful when dealing only with "zoomed-in" views.
         
         Arguments:
             ax (:obj:`matplotlib.axes.Axes`) object is 
@@ -100,20 +81,42 @@ class CoinFigure:
         Arguments:
             xlims(:obj:`tuple`): tuple of xlims as datetime objects.
         """
+        if hasattr(self,"axes"):
+            for iax in self.axes:
+                iax.grid(which="major", axis="x", linewidth=0.1)
+                iax.grid(which="major", axis="y", linewidth=0.05)
+                iax.set_xlim(xlims)
+                iax.yaxis.set_label_position("left")
+                iax.yaxis.tick_left()
+        elif hasattr(self,"ax"):
+            self.ax.grid(which="major", axis="x", linewidth=0.1)
+            self.ax.grid(which="major", axis="y", linewidth=0.05)
+            self.ax.set_xlim(xlims)
+            self.ax.yaxis.set_label_position("left")
+            self.ax.yaxis.tick_left()
+        else:
+            raise NotImplementedError
 
-        for iax in self.axes:
-            iax.grid(which="major", axis="x", linewidth=0.1)
-            iax.grid(which="major", axis="y", linewidth=0.05)
-            iax.set_xlim(xlims)
-            iax.yaxis.set_label_position("left")
-            iax.yaxis.tick_left()
+
+
+class SimplePlot(BaseFigure):
+    """
+    This is the basic price plot.
+    Candlesticks + volume.
+
+    Arguments:
+        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
+        graphstart (str) : date string in d-m-Y format 
+            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.default_plot()
 
     def default_plot(self):
         """
-        this is the default plot. It shows candlesticks and volume data.
-
-        Arguments:
-            graphstart 
+        default plotting.
         """
 
         self.f, self.axes = plt.subplots(
@@ -141,13 +144,29 @@ class CoinFigure:
         )
         print(f"{self.ts.coin} plotted.")
 
+
+class TaPlot(BaseFigure):
+    """
+    this is the Technical Analysis plot.
+    It shows (at current time): candlesticks, volume and 3 TA Indicators (MACD, BB bands and RSI)
+    Can be easily modified to fit other and/or more indicators.
+
+    Arguments:
+        trendlines (bool) : UNDER DEVELOPEMENT! - plot also trendlines calculated with `src.trend_line` class.
+        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
+        graphstart (str) : date string in d-m-Y format 
+            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
+ 
+    """
+
+    def __init__(self, trendlines=False, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ta_plot(trendlines)
+
     def ta_plot(self, trendlines):
         """
-        this is the Technical Analysis plot.
-        It shows (at current time): candlesticks, volume and 3 TA Indicators (MACD, BB bands and RSI)
-        Can be easily modified to fit other and/or more indicators.
+        plotting function.
         """
-
         self.f, self.axes = plt.subplots(
             5,
             1,
@@ -195,4 +214,33 @@ class CoinFigure:
 
         print(f"{self.ts.coin} plotted.")
         self.center_series(self.axes[0], on="Close")
+
+
+class ATHPlot(BaseFigure):
+    """
+    distance from ATH plot.
+
+    Arguments:
+        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
+        graphstart (str) : date string in d-m-Y format 
+            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
+
+    """
+
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args, **kwargs)
+        self.plot()
+
+    def plot(self):
+        cmap = LinearSegmentedColormap.from_list('colorbar', ['green',"orange","red","magenta"])
+        self.f,self.ax=plt.subplots(dpi=300)
+        prova=self.ts.df.loc[:]
+        #normalizzato su tutto intervallo
+        norm=Normalize(vmin=self.ts.df['distance_ATH'].min(),vmax=self.ts.df['distance_ATH'].max())
+        colors = [mpl.colors.rgb2hex(x) for x in cmap(norm(prova['distance_ATH']))]
+        self.ax.scatter(prova.index,prova.Close,c=colors,s=2)
+        self.set_axes(
+            (self.graphstart, self.ts.df.index[-1] + datetime.timedelta(days=5))
+        )
+
 

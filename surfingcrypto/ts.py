@@ -12,7 +12,7 @@ class TS:
     Note:
         Data can be downloaded calling ```surfingcrypto.scraper.Scraper``` object.
 
-    Args:
+    Arguments:
     	configuration (:obj:`surfingcrypto.config.config`): configuration object
         coin (str): string representing the crypto coin of choice, eg. BTC,ETH
 
