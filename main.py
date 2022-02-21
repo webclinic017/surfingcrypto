@@ -6,7 +6,7 @@ from pathlib import Path
 
 from surfingcrypto import Config,TS
 from surfingcrypto.scraper import Scraper
-from surfingcrypto.reporting.figures import CoinFigure
+from surfingcrypto.reporting.figures import TaPlot
 from surfingcrypto.telegram_bot import Tg_notifications
 
 
@@ -29,13 +29,12 @@ if update:
 
 for coin in c.coins:
     ts=TS(c,coin=coin)
-    fig = CoinFigure(
-        ts,
-        kind="ta",
+    fig = TaPlot(
         trendlines=False,
-        coin=coin,
-        graphstart="3m",
+        ts=ts,
+        graphstart="3m"
     )
-    fig.save(c.temp_folder+"/"+coin+"_"+timestr+".jpeg")
+    tmpname=c.temp_folder+"/"+coin+"_"+timestr+".jpeg"
+    fig.save(tmpname)
     tg.send_message_to_all(ts.report_percentage_diff())
-    tg.send_photo_to_all(c.temp_folder+"/"+coin+"_"+timestr+".jpeg")
+    tg.send_photo_to_all(tmpname)
