@@ -147,7 +147,7 @@ class MyCoinbase(CB):
     Arguments:
         active_accounts (bool) : default `True`, select active (balance>0) accounts only.
         from_dict (bool) : dafault `False`, wether to load accounts list from local files or to fetch all data.
-		configuration (:obj:`surfingcrypto.config.config`) : package configuration object.
+        configuration (:obj:`surfingcrypto.config.config`) : package configuration object.
 
     Attributes:
         accounts (:obj:`list` of :obj:`coibase.model.ApiObject`): list of selected accounts.
