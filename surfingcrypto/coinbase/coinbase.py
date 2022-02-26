@@ -1,11 +1,9 @@
 """
 coinbase API client
 """
-import os
 import json
 from coinbase.wallet.client import Client
 import pandas as pd
-import time
 import json
 import datetime
 
@@ -147,15 +145,15 @@ class MyCoinbase(CB):
     It inherits from `surfingcrypto.coinbase.CB` client class all information regarding the user.
 
     Arguments:
-        active_accounts (bool): default `True`, select active (balance>0) accounts only.
-        from_dict (bool): dafualt `False`, wether to load accounts list from local files
-            or to fetch all data. 
-		configuration (:obj:`surfingcrypto.config.config`): package configuration object
+        active_accounts (bool) : default `True`, select active (balance>0) accounts only.
+        from_dict (bool) : dafault `False`, wether to load accounts list from local files or to fetch all data.
+		configuration (:obj:`surfingcrypto.config.config`) : package configuration object.
 
     Attributes:
         accounts (:obj:`list` of :obj:`coibase.model.ApiObject`): list of selected accounts.
         timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first and last transaction for each account
         isHistoric (bool): if module has been loaded in historic mode.
+
     """
 
     def __init__(self, active_accounts=True, from_dict=False, *args, **kwargs):
