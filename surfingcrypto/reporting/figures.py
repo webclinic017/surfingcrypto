@@ -246,6 +246,8 @@ class ATHPlot(BaseFigure):
         self.f,self.ax=plt.subplots(
             dpi=200,
             )
+        #compute distance
+        self.ts.distance_from_ath()
 
         #normalizzato su tutto intervallo
         vmin=self.ts.df['distance_ATH'].min()

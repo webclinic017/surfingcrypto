@@ -4,6 +4,7 @@ telegram bot API wrapper
 import telegram
 import os
 import pandas as pd
+import numpy as np
 
 
 class Tg_notifications:
@@ -126,10 +127,10 @@ class Tg_notifications:
         """
         if self.channel_mode:
             chat_id=self.users.set_index("username").loc[username,"chat_id"]
-            if len(chat_id)>1:
+            if not isinstance(chat_id,(int,np.int64)):
                 raise NotImplementedError
             else:
-                self.send_message(message=message, chat_id=chat_id)
+                self.send_message(message=message, chat_id=int(chat_id))
         else:
             raise ValueError("Module must be in channel mode.")
 
