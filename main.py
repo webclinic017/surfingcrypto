@@ -1,19 +1,20 @@
 """
 script to be run on ec2 istance
 """
-import time
+import datetime as dt
 from pathlib import Path
 
 from surfingcrypto import Config,TS
 from surfingcrypto.scraper import Scraper
-from surfingcrypto.reporting.figures import TaPlot
+from surfingcrypto.reporting.figures import ATHPlot, TaPlot
 from surfingcrypto.telegram_bot import Tg_notifications
 
 
 cwd = Path(__file__).resolve().parent 
 
 #time of execution
-timestr = time.strftime("%Y%m%d-%H%M%S")
+now=dt.datetime.today()
+timestr = now.strftime("%Y%m%d-%H%M%S")
 
 c = Config(cwd + "config")
 
@@ -38,3 +39,9 @@ for coin in c.coins:
     fig.save(tmpname)
     tg.send_message_to_all(ts.report_percentage_diff())
     tg.send_photo_to_all(tmpname)
+
+    if coin=="BTC" and now.weekday()==0:
+        ath=ATHPlot(ts,graphstart="1-1-2020")
+        tmpname=c.temp_folder+"/"+coin+"_ATH_"+timestr+".jpeg"
+        ath.save(tmpname)
+        tg.send_photo_to_all(tmpname)
