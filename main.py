@@ -39,7 +39,7 @@ for coin in c.coins:
     tg.send_photo_to_all(tmpname)
 
     # ATH(BTC) plot every monday
-    if coin == "BTC":# and now.weekday() == 0:
+    if coin == "BTC" and now.weekday() == 0:
         ath = ATHPlot(ts, graphstart="1-1-2020")
         tmpname = c.temp_folder + "/" + coin + "_ATH_" + timestr + ".jpeg"
         ath.save(tmpname)
