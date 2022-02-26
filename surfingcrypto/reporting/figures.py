@@ -269,4 +269,6 @@ class ATHPlot(BaseFigure):
         self.ax.set_title(
             "Distance from All Time High: "+self.ts.coin, fontsize=10, va="center", ha="center", pad=20
         )
+        #log
+        print(f"{self.ts.coin} ATH plotted.")
 
