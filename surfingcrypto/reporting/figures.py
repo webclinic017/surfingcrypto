@@ -1,11 +1,12 @@
 """
 figures built for crypto prices.
 """
-from attr import has
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.colors import LinearSegmentedColormap,Normalize
 import matplotlib.dates as mdates
+from matplotlib.cm import ScalarMappable
+
 import dateutil
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -17,7 +18,7 @@ from surfingcrypto.reporting.trend_line import trend_line
 
 ##GLOBAL VARIABLES (?!?) TO SET PLOT STYLE
 plt.style.use("dark_background")
-mpl.rcParams["font.size"] = 5
+mpl.rcParams["font.size"] = 4
 
 
 class BaseFigure:
@@ -118,19 +119,16 @@ class SimplePlot(BaseFigure):
         """
         default plotting.
         """
-
+        #figure
         self.f, self.axes = plt.subplots(
             2,
             1,
             sharex=True,
-            gridspec_kw={"height_ratios": [3, 1]},
+            gridspec_kw={"height_ratios": [4, 1]},
             dpi=200,
-            figsize=(7.5, 7.5),
+            figsize=(7.5, 5),
         )
-        self.axes[0].set_title(
-            self.ts.coin, fontsize=10, va="center", ha="center", pad=20
-        )
-
+        #plot
         scplot.candlesticks(
             self.ts,
             ax=self.axes[0],
@@ -138,10 +136,15 @@ class SimplePlot(BaseFigure):
             vol_ax=self.axes[1],
             style="candlesticks",
         )
-
+        #axes look
         self.set_axes(
             (self.graphstart, self.ts.df.index[-1] + datetime.timedelta(days=5))
         )
+        self.axes[0].set_title(
+            self.ts.coin, fontsize=10, va="center", ha="center", pad=20
+        )
+        self.center_series(self.axes[0], on="Close")
+        #log
         print(f"{self.ts.coin} plotted.")
 
 
@@ -167,6 +170,7 @@ class TaPlot(BaseFigure):
         """
         plotting function.
         """
+        #figure
         self.f, self.axes = plt.subplots(
             5,
             1,
@@ -175,12 +179,9 @@ class TaPlot(BaseFigure):
             dpi=200,
             figsize=(7.5, 7.5),
         )
-        self.axes[0].set_title(
-            self.ts.coin, fontsize=10, va="center", ha="center", pad=20
-        )
-
+        #ta indicators
         self.ts.ta_indicators()
-
+        #plots
         scplot.candlesticks(
             self.ts,
             ax=self.axes[0],
@@ -194,6 +195,7 @@ class TaPlot(BaseFigure):
         scplot.plot_bb(self.ts, self.axes[3])
         scplot.plot_RSI(self.ts, self.axes[4])
 
+        #trendlines
         if trendlines:
             pass
             # trend=trend_line(self,trendln_start="01-01-2021")
@@ -207,13 +209,16 @@ class TaPlot(BaseFigure):
             #     nbest=2,
             #     show_min_maxs=False
             #     )
-
+        #axes look
         self.set_axes(
             (self.graphstart, self.ts.df.index[-1] + datetime.timedelta(days=5))
         )
-
-        print(f"{self.ts.coin} plotted.")
+        self.axes[0].set_title(
+            self.ts.coin, fontsize=10, va="center", ha="center", pad=20
+        )
         self.center_series(self.axes[0], on="Close")
+        #log
+        print(f"{self.ts.coin} plotted.")
 
 
 class ATHPlot(BaseFigure):
@@ -232,15 +237,38 @@ class ATHPlot(BaseFigure):
         self.plot()
 
     def plot(self):
-        cmap = LinearSegmentedColormap.from_list('colorbar', ['green',"orange","red","magenta"])
-        self.f,self.ax=plt.subplots(dpi=300)
-        prova=self.ts.df.loc[:]
+        """
+        plot distance from ath points.
+
+        Note:
+            ATM it its a zoomed-in view.
+        """
+        #figure
+        self.f,self.ax=plt.subplots(
+            dpi=200,
+            figsize=(7.5, 7.5),
+            )
+
         #normalizzato su tutto intervallo
-        norm=Normalize(vmin=self.ts.df['distance_ATH'].min(),vmax=self.ts.df['distance_ATH'].max())
-        colors = [mpl.colors.rgb2hex(x) for x in cmap(norm(prova['distance_ATH']))]
-        self.ax.scatter(prova.index,prova.Close,c=colors,s=2)
+        vmin=self.ts.df['distance_ATH'].min()
+        vmax=self.ts.df['distance_ATH'].max()
+
+        #cmap normalized and mappable
+        norm=Normalize(vmin=vmin,vmax=vmax)
+        cmap = LinearSegmentedColormap.from_list('colorbar', ['green',"orange","red","magenta"])
+        colors = [mpl.colors.rgb2hex(x) for x in cmap(norm(self.ts.df['distance_ATH']))]
+        cmappable = ScalarMappable(norm,cmap=cmap)
+
+        #points
+        self.ax.scatter(self.ts.df.index,self.ts.df.Close,c=colors,s=2)
+        #colorbar
+        self.f.colorbar(cmappable)
+
+        #axes look
         self.set_axes(
             (self.graphstart, self.ts.df.index[-1] + datetime.timedelta(days=5))
         )
-
+        self.ax.set_title(
+            "Distance from All Time High: "+self.ts.coin, fontsize=10, va="center", ha="center", pad=20
+        )
 
