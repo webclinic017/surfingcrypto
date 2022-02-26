@@ -15,10 +15,6 @@ class CB:
     """
     Interface to the coinbase python api.
 
-    - https://github.com/coinbase/coinbase-python
-    - https://levelup.gitconnected.com/tracking-your-coinbase-portfolio-performance-using-python-google-sheets-57d86d687547
-    - https://github.com/Mfbeeck/coinbase-tracker/blob/master/coinbase_tracker.py
-
     Note:
         Requires an API Key and API Secret stored in `coinbase.json`.
         The permissions required to run this code are *read-only* and are the following.
@@ -67,13 +63,13 @@ class CB:
                 break
         return all_items
 
-    def get_accounts(self, limit=100):
+    def _get_accounts(self, limit=100):
         """
         get all accounts through pagination.
         """
         return self._get_paginated_items(self.client.get_accounts, limit=100)
 
-    def get_transactions(self, account, limit=100):
+    def _get_transactions(self, account, limit=100):
         """
         get all transaction from specified account through pagination.
         
@@ -90,7 +86,7 @@ class CB:
             active (:obj:`list` of :obj:`coinbase.ApiObject`): list of coinbase accounts
         """
         active = []
-        accounts = self.get_accounts()
+        accounts = self._get_accounts()
         for account in accounts:
             if account["native_balance"]["amount"] != "0.00":
                 active.append(account)
@@ -119,7 +115,7 @@ class CB:
             if verbose:
                 print(f"## {i+1} of {l}")
                 print(account["currency"])
-            transactions = self.get_transactions(account)
+            transactions = self._get_transactions(account)
             if len(transactions) > 0:
                 timerange = {
                     0: transactions[0]["created_at"],
@@ -154,15 +150,12 @@ class MyCoinbase(CB):
         active_accounts (bool): default `True`, select active (balance>0) accounts only.
         from_dict (bool): dafualt `False`, wether to load accounts list from local files
             or to fetch all data. 
+		configuration (:obj:`surfingcrypto.config.config`): package configuration object
 
     Attributes:
         accounts (:obj:`list` of :obj:`coibase.model.ApiObject`): list of selected accounts.
         timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first and last transaction for each account
         isHistoric (bool): if module has been loaded in historic mode.
-        my_coinbase (:obj:`pandas.DataFrame`): dataframe of all user's transactions.
-        my_coinbase_obj (:obj:`list` of :obj:`coibase.model.ApiObject`): list of processed transactions.
-        unhandled_trans (:obj:`list` of :obj:`dict`): list informations of unhandled transactions.
-        error_log (:obj:`list` of :obj:`dict`): list informations of transactions that resulted in an error.
     """
 
     def __init__(self, active_accounts=True, from_dict=False, *args, **kwargs):
@@ -184,18 +177,18 @@ class MyCoinbase(CB):
             self.isHistoric = True
             if from_dict is True:
                 # last_updated for future developement of automatic update
-                accounts, last_updated = self.load_accounts()
+                accounts, last_updated = self._load_accounts()
                 self.accounts = self.get_accounts_from_list(accounts)
             else:
                 (
                     self.accounts,
                     self.timeranges,
                 ) = self.get_all_accounts_with_transactions()
-                self.dump_accounts()
+                self._dump_accounts()
         else:
             raise ValueError("Either true or false.")
 
-    def dump_accounts(self):
+    def _dump_accounts(self):
         """
         dumps fetched accounts for faster execution time in following sessions.
         """
@@ -218,7 +211,7 @@ class MyCoinbase(CB):
         ) as f:
             json.dump(dump, f, indent=4)
 
-    def load_accounts(self):
+    def _load_accounts(self):
         """
         load accounts from dumped `coinbase_accounts.json` file.
         """
@@ -255,29 +248,46 @@ class MyCoinbase(CB):
         else:
             raise ValueError("Must get accounts first.")
 
-    def history(self):
-        """
-        gets all transactions info and sets a pandas df.
-        """
-        if self.isHistoric is True:
+class TransactionsGetter:
+    """
+    This objects fetches all coinbase transactions and parses them into a known format.
+
+    Arguments:
+        mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`): :obj:`MyCoinbase` object.
+
+    Attributes:
+        known_types (list): list of string names of supported transaction types.
+        mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`): :obj:`MyCoinbase` object.
+        df (:obj:`pandas.DataFrame`): dataframe of all known transactions
+        my_coinbase_obj (:obj:`list` of :obj:`coibase.model.ApiObject`): list of processed transactions.
+        unhandled_trans (:obj:`list` of :obj:`dict`): list informations of unhandled transactions.
+        error_log (:obj:`list` of :obj:`dict`): list informations of transactions that resulted in an error.
+    """
+    def __init__(self,mycoinbase):
+        self.mycoinbase=mycoinbase
+        self.load()
+
+    def load(self):
+        if self.mycoinbase.isHistoric is True:
             ### ci sonotanti tipi di transactions
             self.unhandled_trans = []
             # error log for when failing handling known transactions types
             self.error_log = []
 
-            self.my_coinbase = []
+            self.df = []
             self.my_coinbase_obj = []
-            if hasattr(self, "accounts"):
-                for account in self.accounts:
+
+            if hasattr(self.mycoinbase, "accounts"):
+                for account in self.mycoinbase.accounts:
                     self.handle_transactions(account)
-                self.my_coinbase = pd.DataFrame(self.my_coinbase).set_index("datetime")
+                self.df = pd.DataFrame(self.df).set_index("datetime")
                 order = ["type", "amount", "symbol", "native_amount", "nat_symbol"]
                 neworder = order + [
-                    c for c in self.my_coinbase.columns if c not in order
+                    c for c in self.df.columns if c not in order
                 ]
-                self.my_coinbase = self.my_coinbase.reindex(columns=neworder)
+                self.df = self.df.reindex(columns=neworder)
             else:
-                raise ValueError("Must get accounts first.")
+                raise ValueError("MyCoinbase objects must have an accounts attribute.")
 
             if len(self.unhandled_trans) > 0:
                 print(
@@ -302,7 +312,7 @@ class MyCoinbase(CB):
             "fiat_withdrawal",
             "fiat_deposit",
         ]
-        for transaction in self.get_transactions(account):
+        for transaction in self.mycoinbase._get_transactions(account):
             try:
                 if transaction["type"] in self.known_types:
                     self.process_transaction(account, transaction)
@@ -346,7 +356,7 @@ class MyCoinbase(CB):
         else:
             trade_id = None
 
-        self.my_coinbase.append(
+        self.df.append(
             {
                 "type": transaction["type"],
                 "datetime": datetime,
@@ -384,15 +394,15 @@ class MyCoinbase(CB):
         gets required additional data (eg. fees) from different kinds of transactions.
         """
         if transaction["type"] == "sell":
-            t = self.client.get_sell(account["id"], transaction["sell"]["id"])
+            t = self.mycoinbase.client.get_sell(account["id"], transaction["sell"]["id"])
         elif transaction["type"] == "buy":
-            t = self.client.get_buy(account["id"], transaction["buy"]["id"])
+            t = self.mycoinbase.client.get_buy(account["id"], transaction["buy"]["id"])
         elif transaction["type"] == "fiat_withdrawal":
-            t = self.client.get_withdrawal(
+            t = self.mycoinbase.client.get_withdrawal(
                 account["id"], transaction["fiat_withdrawal"]["id"]
             )
         elif transaction["type"] == "fiat_deposit":
-            t = self.client.get_deposit(
+            t = self.mycoinbase.client.get_deposit(
                 account["id"], transaction["fiat_deposit"]["id"]
             )
         elif transaction["type"] in ["send", "trade"]:
