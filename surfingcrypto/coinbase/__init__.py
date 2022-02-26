@@ -1,4 +1,4 @@
 """
 coinbase API wrapper
 """
-from surfingcrypto.coinbase.coinbase import *
+from surfingcrypto.coinbase.coinbase import MyCoinbase

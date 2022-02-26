@@ -2,10 +2,13 @@
 coinbase API client
 """
 import json
-from coinbase.wallet.client import Client
+import os
 import pandas as pd
 import json
 import datetime
+
+from coinbase.wallet.client import Client
+
 
 
 class CB:
@@ -103,11 +106,11 @@ class CB:
         Return:
             has_transactions (:obj:`list` of :obj:`coinbase.ApiObject`): list of coinbase accounts
             timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first 
-            and last transaction for each account in `has_transactions`
+                and last transaction for each account in `has_transactions`
         """
         has_transactions = []
         timeranges = []
-        accounts = self.get_accounts()
+        accounts = self._get_accounts()
         l = len(accounts)
         for account, i in zip(accounts, range(l)):
             if verbose:
@@ -143,40 +146,50 @@ class MyCoinbase(CB):
     """
     This class is the user's portfolio.
     It inherits from `surfingcrypto.coinbase.CB` client class all information regarding the user.
+    It automatically dumps temporary data in order to load accounts faster.
 
     Arguments:
         active_accounts (bool) : default `True`, select active (balance>0) accounts only.
-        from_dict (bool) : dafault `False`, wether to load accounts list from local files or to fetch all data.
         configuration (:obj:`surfingcrypto.config.config`) : package configuration object.
 
     Attributes:
         accounts (:obj:`list` of :obj:`coibase.model.ApiObject`): list of selected accounts.
         timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first and last transaction for each account
         isHistoric (bool): if module has been loaded in historic mode.
+        json_path (str): path to json dump file
 
     """
 
-    def __init__(self, active_accounts=True, from_dict=False, *args, **kwargs):
+    def __init__(self, active_accounts=True, *args, **kwargs):
         super(MyCoinbase, self).__init__(*args, **kwargs)
-        self.start(active_accounts, from_dict)
+        self.start(active_accounts)
         return
 
-    def start(self, active_accounts, from_dict):
+    def start(self, active_accounts):
         """
         start MyCoinbase module, loading accounts as specified.
 
         Arguments:
             active_accounts()
         """
+        self.json_path=self.configuration.config_folder + "/coinbase_accounts.json"
+
         if active_accounts:
             self.accounts = self.get_active_accounts()
             self.isHistoric = False
         elif active_accounts == False:
             self.isHistoric = True
-            if from_dict is True:
-                # last_updated for future developement of automatic update
+            if os.path.isfile(self.json_path):
                 accounts, last_updated = self._load_accounts()
-                self.accounts = self.get_accounts_from_list(accounts)
+                last_updated = datetime.datetime.strptime(last_updated, '%d-%m-%Y')
+                if datetime.datetime.now()-last_updated<datetime.timedelta(days=7):
+                    self.accounts = self.get_accounts_from_list(accounts)
+                else:
+                    (
+                        self.accounts,
+                        self.timeranges,
+                    ) = self.get_all_accounts_with_transactions()
+                    self._dump_accounts()
             else:
                 (
                     self.accounts,
@@ -201,11 +214,11 @@ class MyCoinbase(CB):
                 }
             )
         dump = {
-            "datetime": datetime.datetime.today().strftime("%d-%m-%y"),
+            "datetime": datetime.datetime.today().strftime("%d-%m-%Y"),
             "accounts": l,
         }
         with open(
-            self.configuration.config_folder + "/coinbase_accounts.json", "w"
+            self.json_path, "w"
         ) as f:
             json.dump(dump, f, indent=4)
 
@@ -214,7 +227,7 @@ class MyCoinbase(CB):
         load accounts from dumped `coinbase_accounts.json` file.
         """
         with open(
-            self.configuration.config_folder + "/coinbase_accounts.json", "rb"
+            self.json_path, "rb"
         ) as f:
             dict = json.load(f)
             accounts = dict["accounts"]
