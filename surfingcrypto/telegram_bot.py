@@ -116,6 +116,24 @@ class Tg_notifications:
         else:
             raise ValueError("This method is available only in channel mode.")
 
+    def send_message_to_user(self,message,username):
+        """
+        send message to specific user.
+
+        Arguments:
+            message (str): string containing message to send
+            username (str): string username, as saved in `telegram_users.csv` file.
+        """
+        if self.channel_mode:
+            chat_id=self.users.set_index("username").loc[username,"chat_id"]
+            if len(chat_id)>1:
+                raise NotImplementedError
+            else:
+                self.send_message(message=message, chat_id=chat_id)
+        else:
+            raise ValueError("Module must be in channel mode.")
+
+
     def send_message(
         self, message, chat_id,
     ):
