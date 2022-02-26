@@ -126,7 +126,6 @@ class SimplePlot(BaseFigure):
             sharex=True,
             gridspec_kw={"height_ratios": [4, 1]},
             dpi=200,
-            figsize=(7.5, 5),
         )
         #plot
         scplot.candlesticks(
@@ -246,7 +245,6 @@ class ATHPlot(BaseFigure):
         #figure
         self.f,self.ax=plt.subplots(
             dpi=200,
-            figsize=(7.5, 7.5),
             )
 
         #normalizzato su tutto intervallo
