@@ -176,7 +176,7 @@ class MyCoinbase(CB):
             last updates of account list.
         timeranges (:obj:`list` of :obj:`dict`): list of
             dictionaries with dates of first and last transaction for
-                each account
+            each account
         isHistoric (bool): if module has been loaded in historic mode.
         json_path (str): path to json dump file
 
@@ -265,8 +265,8 @@ class MyCoinbase(CB):
 
     def mycoinbase_report(self):
         """
-        nicely formatted report of accounts portfolio and
-        user's total balance in EUR.
+        Nicely formatted report of accounts portfolio and user total
+        balance in EUR.
 
         Returns:
             s (str): text
