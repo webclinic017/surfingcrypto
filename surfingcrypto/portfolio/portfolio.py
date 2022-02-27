@@ -61,7 +61,8 @@ class Portfolio:
         gets live value of given currency and amount.
 
         Arguments:
-            client (:obj:`surfingcrypto.coinbase.CB.client`) : client to coinbase account.
+            client (:obj:`surfingcrypto.coinbase.CB.client`) : client
+                to coinbase account.
             amount (float): amount of currency
             currency (str): symbol of currency
         """
@@ -74,10 +75,13 @@ class Portfolio:
         gets live value of portfolio.
 
         Arguments:
-            client (:obj:`surfingcrypto.coinbase.CB.client`) : client to coinbase account.
+            client (:obj:`surfingcrypto.coinbase.CB.client`) : client to
+                coinbase account.
         """
         balance = (
-            self.coinbase.df[self.coinbase.df["type"].isin(["buy", "sell", "trade", "send"])]
+            self.coinbase.df[
+                self.coinbase.df["type"].isin(["buy", "sell", "trade", "send"])
+            ]
             .groupby("symbol")[["amount"]]
             .sum()
         )
@@ -96,12 +100,14 @@ class Portfolio:
 
     def standardize(self):
         """
-        creates a dataframe of only `buy` and `sell` orders, for easier portfolio analysis.
+        creates a dataframe of only `buy` and `sell` orders,
+        for easier portfolio analysis.
 
         It calculates missing fee information of `trade` transactions.
 
         Note:
-            At the moment does not include `send`,`deposit` or `withdrawal` transactions
+            At the moment does not include `send`,`deposit`
+            or `withdrawal` transactions
 
         """
         self.std_df = self.coinbase.df.copy()
@@ -133,4 +139,3 @@ class Portfolio:
                     raise ValueError(
                         "Did not find 2 trades with matching trade_id"
                     )
-

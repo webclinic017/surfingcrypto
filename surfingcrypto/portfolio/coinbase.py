@@ -291,7 +291,7 @@ class MyCoinbase(CB):
 
     def transactions_history(self):
         """
-        start a TransactionsGetter object 
+        start a TransactionsGetter object
         """
         self.history = TransactionsGetter(self)
         pass
