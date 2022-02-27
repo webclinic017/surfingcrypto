@@ -289,6 +289,13 @@ class MyCoinbase(CB):
         else:
             raise ValueError("Must get accounts first.")
 
+    def transactions_history(self):
+        """
+        start a TransactionsGetter object 
+        """
+        self.history = TransactionsGetter(self)
+        pass
+
     def __repr__(self):
         return f"MyCoinbase( isHistoric:{self.isHistoric},"\
             f" last_updated:{self.last_updated},"\
@@ -310,13 +317,11 @@ class TransactionsGetter:
             :obj:`MyCoinbase` object.
 
     Attributes:
-        known_types (list): list of string names
-            of supported transaction types.
-        mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`):
-            :obj:`MyCoinbase` object.
         df (:obj:`pandas.DataFrame`): dataframe of all known transactions
         transactions (:obj:`list` of :obj:`coibase.model.ApiObject`): list
             of processed transactions.
+        known_types (list): list of string names
+            of supported transaction types.
         unhandled_trans (:obj:`list` of :obj:`dict`): list informations of
             unhandled transactions.
         error_log (:obj:`list` of :obj:`dict`): list informations of
@@ -324,7 +329,7 @@ class TransactionsGetter:
     """
 
     def __init__(self, mycoinbase):
-        self.mycoinbase = mycoinbase
+        self._mycoinbase = mycoinbase
         self.known_types = [
             "buy",
             "sell",
@@ -333,10 +338,10 @@ class TransactionsGetter:
             "fiat_withdrawal",
             "fiat_deposit",
         ]
-        self.load()
+        self._start()
 
-    def load(self):
-        if self.mycoinbase.isHistoric is True:
+    def _start(self):
+        if self._mycoinbase.isHistoric is True:
             # ci sonotanti tipi di transactions
             self.unhandled_trans = []
             # error log for when failing handling known transactions types
@@ -345,9 +350,9 @@ class TransactionsGetter:
             self.df = []
             self.transactions = []
 
-            if hasattr(self.mycoinbase, "accounts"):
-                for account in self.mycoinbase.accounts:
-                    self.handle_transactions(account)
+            if hasattr(self._mycoinbase, "accounts"):
+                for account in self._mycoinbase.accounts:
+                    self._handle_transactions(account)
                 self.df = pd.DataFrame(self.df).set_index("datetime")
                 order = [
                     "type",
@@ -364,28 +369,17 @@ class TransactionsGetter:
                 raise ValueError(
                     "MyCoinbase objects must have an accounts attribute."
                 )
-
-            if len(self.unhandled_trans) > 0:
-                print(
-                    f"Warning! There are {len(self.unhandled_trans)} unknown"
-                    "transaction types and therefore they have been skipped."
-                )
-            if len(self.error_log) > 0:
-                print(
-                    f"Warning! There were {len(self.error_log)} errors during"
-                    " the handling of transactions."
-                )
         else:
             raise ValueError("Must load historic data.")
 
-    def handle_transactions(self, account):
+    def _handle_transactions(self, account):
         """
         handles the transactions based on type.
         """
-        for transaction in self.mycoinbase._get_transactions(account):
+        for transaction in self._mycoinbase._get_transactions(account):
             try:
                 if transaction["type"] in self.known_types:
-                    self.process_transaction(account, transaction)
+                    self._process_transaction(account, transaction)
                     self.transactions.append(transaction)
                 else:
                     self.unhandled_trans.append(
@@ -396,7 +390,7 @@ class TransactionsGetter:
                         }
                     )
             except Exception as e:
-                symbol, amount, datetime = self.get_transact_info(transaction)
+                symbol, amount, datetime = self._get_transact_info(transaction)
                 self.error_log.append(
                     {
                         "transaction_type": transaction["type"],
@@ -411,14 +405,14 @@ class TransactionsGetter:
                     }
                 )
 
-    def process_transaction(self, account, transaction):
+    def _process_transaction(self, account, transaction):
         """
         process a transaction.
         """
         # spot price??
-        symbol, amount, datetime = self.get_transact_info(transaction)
-        nat_amount, nat_symbol = self.get_native_amount(transaction)
-        total, subtotal, total_fee = self.get_transact_data(
+        symbol, amount, datetime = self._get_transact_info(transaction)
+        nat_amount, nat_symbol = self._get_native_amount(transaction)
+        total, subtotal, total_fee = self._get_transact_data(
             account, transaction
         )
 
@@ -448,7 +442,7 @@ class TransactionsGetter:
             }
         )
 
-    def get_transact_info(self, transaction):
+    def _get_transact_info(self, transaction):
         """
         get basic info from transaction.
         """
@@ -457,7 +451,7 @@ class TransactionsGetter:
         datetime = transaction["created_at"]
         return symbol, amount, datetime
 
-    def get_native_amount(self, transaction):
+    def _get_native_amount(self, transaction):
         """
         gets native amount from transaction
         """
@@ -465,25 +459,25 @@ class TransactionsGetter:
         native_symbol = transaction["native_amount"]["currency"]
         return native_amount, native_symbol
 
-    def get_transact_data(self, account, transaction):
+    def _get_transact_data(self, account, transaction):
         """
         gets required additional data (eg. fees)
         from different kinds of transactions.
         """
         if transaction["type"] == "sell":
-            t = self.mycoinbase.client.get_sell(
+            t = self._mycoinbase.client.get_sell(
                 account["id"], transaction["sell"]["id"]
             )
         elif transaction["type"] == "buy":
-            t = self.mycoinbase.client.get_buy(
+            t = self._mycoinbase.client.get_buy(
                 account["id"], transaction["buy"]["id"]
             )
         elif transaction["type"] == "fiat_withdrawal":
-            t = self.mycoinbase.client.get_withdrawal(
+            t = self._mycoinbase.client.get_withdrawal(
                 account["id"], transaction["fiat_withdrawal"]["id"]
             )
         elif transaction["type"] == "fiat_deposit":
-            t = self.mycoinbase.client.get_deposit(
+            t = self._mycoinbase.client.get_deposit(
                 account["id"], transaction["fiat_deposit"]["id"]
             )
         elif transaction["type"] in ["send", "trade"]:
@@ -505,3 +499,17 @@ class TransactionsGetter:
         else:
             total, subtotal, total_fee = None, None, None
         return total, subtotal, total_fee
+
+    def __repr__(self):
+        return f"TransactionGetter(" \
+            f"Processed transactions:{len(self.df)}, "\
+            f"Unhandled:{len(self.unhandled_trans)}, "\
+            f"Errors:{len(self.error_log)} "\
+            ")"
+
+    def __str__(self):
+        return f"TransactionGetter(" \
+            f"Processed transactions:{len(self.df)}, "\
+            f"Unhandled:{len(self.unhandled_trans)}, "\
+            f"Errors:{len(self.error_log)} "\
+            ")"
