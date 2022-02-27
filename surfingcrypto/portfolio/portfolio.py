@@ -1,41 +1,51 @@
-import pandas as pd
+"""
+portfolio objects.
+"""
+from surfingcrypto.portfolio import MyCoinbase
 
 
-class PortfolioAnalysis:
+class Portfolio:
     """
-    This class is a Coinbase portfolio analysis.
+    User portfolio.
 
-    Has methods for assessing portfolio values, grouping transactions by type, 
+    At the moment the only supported :obj:`portfolio_type` is Coinbase, via
+    the :obj:`surfingcrypto.portfolio.coinbase` submodule.
+
+    Has methods for assessing portfolio values, grouping transactions by type,
     calculate total fees, etc.
 
-    With `Portfolio.Analysis.standardize()` it is possible to adapt 
-    the `surfingcrypto.coinbase.MyCoinbase` object to a standard form 
-    where there are only `buy` or `sell` trades 
-    and the amounts are always positive. 
+    With `Portfolio.Analysis.standardize()` it is possible to adapt
+    the `surfingcrypto.coinbase.MyCoinbase` object to a standard form
+    where there are only `buy` or `sell` trades
+    and the amounts are always positive.
 
     This standard portfolio allows to reconstruct easily the timeline
     of the portfolio value, at each given instant in time.
 
     Arguments:
-        mycoinbase_df (:obj:`pandas.DataFrame`):coinbase transaction 
-            history, eg. `surfingcrypto.coinbase.MyCoinbase.my_coinbase` 
 
     Attributes:
-        df (:obj:`pandas.DataFrame`): coinbase transaction 
+        portfolio_type (string): type of portfolio
+        df (:obj:`pandas.DataFrame`): coinbase transaction
             history as from the `surfingcrypto.coinbase.MyCoinbase` output
         std_df (:obj:`pandas.DataFrame`): standardized transaction history,
              contains only `buy` or `sell`
     """
 
-    def __init__(self, mycoinbase_df):
-        self.df = mycoinbase_df
-        self.standardize()
+    def __init__(self, **kwargs):
+        portfolio_type = "coinbase"
+        if portfolio_type.lower() == "coinbase":
+            self.coinbase = MyCoinbase(active_accounts=False, **kwargs)
+            self.coinbase.history()
+            self.standardize()
+        else:
+            raise NotImplementedError
 
     def total_fees(self):
         """
         total fees paid by user for th
         """
-        return self.df["total_fee"].sum()
+        return self.coinbase.df["total_fee"].sum()
 
     def total_by_type(self):
         """
@@ -44,7 +54,7 @@ class PortfolioAnalysis:
         Return:
             :obj:`pandas.DataFrame`
         """
-        return self.df.groupby("type")[["native_amount"]].sum()
+        return self.coinbase.df.groupby("type")[["native_amount"]].sum()
 
     def live_value(self, client, amount, currency):
         """
@@ -67,7 +77,7 @@ class PortfolioAnalysis:
             client (:obj:`surfingcrypto.coinbase.CB.client`) : client to coinbase account.
         """
         balance = (
-            self.df[self.df["type"].isin(["buy", "sell", "trade", "send"])]
+            self.coinbase.df[self.coinbase.df["type"].isin(["buy", "sell", "trade", "send"])]
             .groupby("symbol")[["amount"]]
             .sum()
         )
@@ -94,7 +104,7 @@ class PortfolioAnalysis:
             At the moment does not include `send`,`deposit` or `withdrawal` transactions
 
         """
-        self.std_df = self.df.copy()
+        self.std_df = self.coinbase.df.copy()
         # exclude fiat deposit and withdrawals AND SEND
         self.std_df = self.std_df[
             self.std_df["type"].isin(["buy", "sell", "trade"])

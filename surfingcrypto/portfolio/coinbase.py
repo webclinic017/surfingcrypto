@@ -153,7 +153,7 @@ class CB:
 
 class MyCoinbase(CB):
     """
-    This class is the user's Coinbase.
+    This class is the user's Coinbase account.
 
     It stores all cryptocurrency accounts - either active or historic.
 

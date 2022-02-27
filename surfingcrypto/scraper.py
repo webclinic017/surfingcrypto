@@ -9,34 +9,36 @@ import os
 
 class Scraper:
     """
-	This is a wrapper of GitHub repo `cryptocmd` that scrapes data from
-    coinmarketcap.com.
+    wrapper of GitHub repo `cryptocmd`.
 
-	It scrapes data for the crypto coins specified in the keys of the 
-    customizable coins.json file.Saves data in a `*.csv` file 
+    Scrapes data from coinmarketcap.com.
+
+    It scrapes data for the crypto coins specified in the keys of the
+    customizable coins.json file.Saves data in a `*.csv` file
     stored in `data/ts/`.
-	Checks if the file exists, if not it is downloaded.
-	If it exists, it check last element of datetime index and compares it
-    with today's date. If required, it updates the `*.csv` file 
+    Checks if the file exists, if not it is downloaded.
+    If it exists, it check last element of datetime index and compares it
+    with today's date. If required, it updates the `*.csv` file
     to today\'s date.
 
-	Arguments:
-		configuration (:obj:`surfingcrypto.config.config`): package 
+    Arguments:
+        configuration (:obj:`surfingcrypto.config.config`): package
             configuration object
-		fiat (str): prices will be restituted in the selected fiat,
+        fiat (str): prices will be restituted in the selected fiat,
             defaults is `EUR`
 
-	Attributes:
-		config (:obj:`surfingcrypto.config.config`): package 
+    Attributes:
+        config (:obj:`surfingcrypto.config.config`): package
             configuration object
-		log_strings(:obj:`list` of :obj:`str`): list of log 
+        log_strings(:obj:`list` of :obj:`str`): list of log
             strings for output of process, one for each coin.
-		log_bool (:obj:`list` of :obj:`bool`): list of boolean 
+        log_bool (:obj:`list` of :obj:`bool`): list of boolean
             output of process, one for each coin.
-		output (bool): Overall boolean output of process. If 
+        output (bool): Overall boolean output of process. If
             everything went well.
-		output_descrition (str): Overall log string of ouput.
-	"""
+        output_descrition (str): Overall log string of ouput.
+
+    """
 
     def __init__(self, configuration, fiat="EUR"):
         self.config = configuration
@@ -91,14 +93,14 @@ class Scraper:
 
     def scrape_alltime_data(self, start, end_day, key, path):
         """
-		scrape all time data.
+        scrape all time data.
 
-		Arguments:
-			start (:obj:`datetime.datetime`):  start day
-			end_day (:obj:`datetime.datetime`): end day
-			key (str): symbol of crypto
-			path (str): path to csv file
-		"""
+        Arguments:
+            start (:obj:`datetime.datetime`):  start day
+            end_day (:obj:`datetime.datetime`): end day
+            key (str): symbol of crypto
+            path (str): path to csv file
+        """
         start = start.strftime("%d-%m-%Y")
         end_day = end_day.strftime("%d-%m-%Y")
         scraper = CmcScraper(key, start, end_day, fiat=self.fiat)
@@ -109,19 +111,19 @@ class Scraper:
 
     def scrape_missing_data(self, last, end_day, key, path, df):
         """
-		scrapes the missing data and concatenates it to existing df.
+        scrapes the missing data and concatenates it to existing df.
 
-		Arguments:
-			last (:obj:`datetime.datetime`): date parsed as string 
+        Arguments:
+            last (:obj:`datetime.datetime`): date parsed as string
                 with d-m-Y format of last known price
-			end_day (:obj:`datetime.datetime`):  date parsed 
-                as string with d-m-Y format for limiting the 
+            end_day (:obj:`datetime.datetime`):  date parsed
+                as string with d-m-Y format for limiting the
                 dowload of data to a specific date.
-			key (str): symbol of crypto
-			path (str): path to csv file
-			df (:obj:`pandas.DataFrame`): dataframe of 
+            key (str): symbol of crypto
+            path (str): path to csv file
+            df (:obj:`pandas.DataFrame`): dataframe of
                 locally stored data
-		"""
+        """
         last = (last + datetime.timedelta(1)).strftime("%d-%m-%Y")
         end_day = end_day.strftime("%d-%m-%Y")
         scraper = CmcScraper(key, last, end_day, fiat=self.fiat)
@@ -133,16 +135,16 @@ class Scraper:
 
     def load_csv(self, path):
         """
-		load csv data from directory specified as `data_folder`
+        load csv data from directory specified as `data_folder`
         in package config
 
-		Arguments:
-			path (str): path to csv file
-		
-		Return:
-			last (str): date parsed as d-m-Y of last known price
-			df (:obj:`pandas.DataFrame`): dataframe of locally stored data
-		"""
+        Arguments:
+            path (str): path to csv file
+
+        Return:
+            last (str): date parsed as d-m-Y of last known price
+            df (:obj:`pandas.DataFrame`): dataframe of locally stored data
+        """
         df = pd.read_csv(path)
         df["Date"] = pd.to_datetime(df["Date"])
         df.set_index("Date", inplace=True)
@@ -151,8 +153,8 @@ class Scraper:
 
     def log(self):
         """
-		prints `output_description` for reading output.
-		"""
+        prints `output_description` for reading output.
+        """
         if self.output:
             self.output_description = "Update successful."
         else:
