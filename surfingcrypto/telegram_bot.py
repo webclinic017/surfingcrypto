@@ -126,11 +126,15 @@ class Tg_notifications:
             username (str): string username, as saved in `telegram_users.csv` file.
         """
         if self.channel_mode:
-            chat_id=self.users.set_index("username").loc[username,"chat_id"]
-            if not isinstance(chat_id,(int,np.int64)):
-                raise NotImplementedError
-            else:
-                self.send_message(message=message, chat_id=int(chat_id))
+            try:
+                chat_id=self.users.set_index("username").loc[username,"chat_id"]
+                if not isinstance(chat_id,(int,np.int64)):
+                    raise NotImplementedError
+                else:
+                    self.send_message(message=message, chat_id=int(chat_id))
+            except Exception as e:
+                print("UserNotFoundError")
+                self.error_log.append({"error": "UserNotFoundError", "e": e})
         else:
             raise ValueError("Module must be in channel mode.")
 
