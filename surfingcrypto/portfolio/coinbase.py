@@ -4,8 +4,7 @@ coinbase API client and custom objects.
 import json
 import os
 import pandas as pd
-import json
-import datetime
+import datetime as dt
 
 from coinbase.wallet.client import Client
 
@@ -17,7 +16,8 @@ class CB:
 
     Note:
         Requires an API Key and API Secret stored in `coinbase.json`.
-        The permissions required to run this code are *read-only* and are the following.
+        The permissions required to run this code are *read-only* and are the
+        following.
 
         - ```wallet:sells:read```
         - ```wallet:accounts:read```
@@ -28,11 +28,14 @@ class CB:
         - ```wallet:user:read```
 
     Arguments:
-		configuration (:obj:`surfingcrypto.config.config`): package configuration object
+        configuration (:obj:`surfingcrypto.config.config`): package
+            configuration object
 
-    Attributes: 
-    	configuration (:obj:`surfingcrypto.config.config`): package configuration object
-        client (:obj:`coinbase.wallet.client.Client`): client object for making requests to coinbase API
+    Attributes:
+        configuration (:obj:`surfingcrypto.config.config`): package
+            configuration object
+        client (:obj:`coinbase.wallet.client.Client`): client object for
+            making requests to coinbase API
         user (:obj:`coinbase API object`): user API object
     """
 
@@ -48,8 +51,8 @@ class CB:
             raise ValueError("config.json file must contain a coinbase token.")
 
     def _get_paginated_items(self, api_method, limit=100):
-        """Generic getter for paginated items
-        - https://stackoverflow.com/questions/44351034/pagination-on-coinbase-python-api
+        """
+        Generic getter for paginated items
         """
         all_items = []
         starting_after = None
@@ -72,9 +75,10 @@ class CB:
     def _get_transactions(self, account, limit=100):
         """
         get all transaction from specified account through pagination.
-        
+
         Arguments
-            account (:obj:`coinbase.wallet.model.ApiObject`) : coinbase account object.
+            account (:obj:`coinbase.wallet.model.ApiObject`) : coinbase
+                account object.
         """
         return self._get_paginated_items(account.get_transactions, limit)
 
@@ -83,7 +87,8 @@ class CB:
         get active accounts (balance > 0)
 
         Return:
-            active (:obj:`list` of :obj:`coinbase.ApiObject`): list of coinbase accounts
+            active (:obj:`list` of :obj:`coinbase.ApiObject`): list of
+                coinbase accounts
         """
         active = []
         accounts = self._get_accounts()
@@ -95,24 +100,27 @@ class CB:
     def get_all_accounts_with_transactions(self, verbose=False):
         """
         get all accounts with recorded transactions.
-        
+
         Note:
             SUPER FUCKING SLOW!!!
 
         Params:
             verbose (bool): verbose mode in order to check status
-        
+
         Return:
-            has_transactions (:obj:`list` of :obj:`coinbase.ApiObject`): list of coinbase accounts
-            timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first and last transaction for each account in `has_transactions`
+            has_transactions (:obj:`list` of :obj:`coinbase.ApiObject`): list
+                of coinbase accounts
+            timeranges (:obj:`list` of :obj:`dict`): list of
+                dictionaries with dates of first and last transaction
+                for each account in `has_transactions`
         """
         has_transactions = []
         timeranges = []
         accounts = self._get_accounts()
-        l = len(accounts)
-        for account, i in zip(accounts, range(l)):
+        _list = len(accounts)
+        for account, i in zip(accounts, range(_list)):
             if verbose:
-                print(f"## {i+1} of {l}")
+                print(f"## {i+1} of {_list}")
                 print(account["currency"])
             transactions = self._get_transactions(account)
             if len(transactions) > 0:
@@ -124,17 +132,20 @@ class CB:
                 timeranges.append(timerange)
         return has_transactions, timeranges
 
-    def get_accounts_from_list(self, l=None):
+    def get_accounts_from_list(self, _list=None):
         """
         gets accounts from a list dumped locally in the config folder.
 
         Return:
-            from_list (:obj:`list` of :obj:`coinbase.ApiObject`): list of coinbase accounts
+            from_list (:obj:`list` of :obj:`coinbase.ApiObject`): list
+                of coinbase accounts
         """
-        if isinstance(l, list):
+        if isinstance(_list, list):
             from_list = []
-            for account in l:
-                from_list.append(self.client.get_account(account["account_id"]))
+            for account in _list:
+                from_list.append(
+                    self.client.get_account(account["account_id"])
+                )
         else:
             raise ValueError("Must be a list.")
         return from_list
@@ -146,48 +157,62 @@ class MyCoinbase(CB):
 
     It stores all cryptocurrency accounts - either active or historic.
 
-    It inherits from `surfingcrypto.coinbase.CB` the client methods and all information regarding the user.
+    It inherits from `surfingcrypto.coinbase.CB` the client methods
+    and all information regarding the user.
     It automatically dumps temporary data in order to load accounts faster.
 
     Arguments:
-        active_accounts (bool) : default `True`, select active (balance>0) accounts only.
-        force (bool): force update from API even if local cache is found.
-        configuration (:obj:`surfingcrypto.config.config`) : package configuration object.
+        active_accounts (bool) : default `True`, select
+            active (balance>0) accounts only.
+        force (bool): force update from API even if
+            local cache is found.
+        configuration (:obj:`surfingcrypto.config.config`) : package
+            configuration object.
 
     Attributes:
-        accounts (:obj:`list` of :obj:`coibase.model.ApiObject`): list of selected accounts.
-        last_updated (:obj:`datetime.datetime`): datetime of last updates of account list.
-        timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first and last transaction for each account
+        accounts (:obj:`list` of :obj:`coibase.model.ApiObject`):
+            list of selected accounts.
+        last_updated (:obj:`datetime.datetime`): datetime of
+            last updates of account list.
+        timeranges (:obj:`list` of :obj:`dict`): list of
+            dictionaries with dates of first and last transaction for
+                each account
         isHistoric (bool): if module has been loaded in historic mode.
         json_path (str): path to json dump file
 
     """
 
-    def __init__(self, active_accounts=True,force=False, *args, **kwargs):
+    def __init__(self, active_accounts=True, force=False, *args, **kwargs):
         super(MyCoinbase, self).__init__(*args, **kwargs)
-        self.start(active_accounts,force)
+        self.start(active_accounts, force)
         return
 
-    def start(self, active_accounts,force):
+    def start(self, active_accounts, force):
         """
         start MyCoinbase module, loading accounts as specified.
 
         Arguments:
-            active_accounts (bool): get only active (balance>0) accounts 
+            active_accounts (bool): get only active (balance>0) accounts
             force (bool): force update from API even if local cache is found.
         """
-        self.json_path = self.configuration.config_folder + "/coinbase_accounts.json"
+        self.json_path = (
+            self.configuration.config_folder + "/coinbase_accounts.json"
+        )
 
         if active_accounts:
             self.accounts = self.get_active_accounts()
             self.isHistoric = False
-            self.last_updated=datetime.datetime.utcnow()
+            self.last_updated = dt.datetime.utcnow()
         elif active_accounts is False:
             self.isHistoric = True
             if os.path.isfile(self.json_path) and not force:
                 accounts, last_updated = self._load_accounts()
-                self.last_updated = datetime.datetime.strptime(last_updated,"%Y-%m-%dT%H:%M:%SZ")
-                if datetime.datetime.utcnow() - self.last_updated < datetime.timedelta(days=7):
+                self.last_updated = dt.datetime.strptime(
+                    last_updated, "%Y-%m-%dT%H:%M:%SZ"
+                )
+                if dt.datetime.utcnow() - self.last_updated < dt.timedelta(
+                    days=7
+                ):
                     self.accounts = self.get_accounts_from_list(accounts)
                 else:
                     (
@@ -201,7 +226,7 @@ class MyCoinbase(CB):
                     self.timeranges,
                 ) = self.get_all_accounts_with_transactions()
                 self._dump_accounts()
-                self.last_updated=datetime.datetime.utcnow()
+                self.last_updated = dt.datetime.utcnow()
         else:
             raise ValueError("Either true or false.")
 
@@ -209,9 +234,9 @@ class MyCoinbase(CB):
         """
         dumps fetched accounts for faster execution time in following sessions.
         """
-        l = []
+        _list = []
         for account, timerange in zip(self.accounts, self.timeranges):
-            l.append(
+            _list.append(
                 {
                     "currency": account["currency"],
                     "account_id": account["id"],
@@ -220,11 +245,13 @@ class MyCoinbase(CB):
                 }
             )
         dump = {
-            "datetime": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "accounts": l,
+            "datetime": dt.datetime.utcnow().strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            ),
+            "accounts": _list,
         }
         with open(self.json_path, "w") as f:
-            json.dump(dump, f, indent=4,default=str)
+            json.dump(dump, f, indent=4, default=str)
 
     def _load_accounts(self):
         """
@@ -238,8 +265,9 @@ class MyCoinbase(CB):
 
     def mycoinbase_report(self):
         """
-        nicely formatted report of accounts portfolio and user's total balance in EUR
-        
+        nicely formatted report of accounts portfolio and
+        user's total balance in EUR.
+
         Returns:
             s (str): text
         """
@@ -262,35 +290,54 @@ class MyCoinbase(CB):
             raise ValueError("Must get accounts first.")
 
     def __repr__(self):
-        return f"MyCoinbase( isHistoric:{self.isHistoric}, last_updated:{self.last_updated}, N_accounts:{len(self.accounts)})"
+        return f"MyCoinbase( isHistoric:{self.isHistoric},"\
+            f" last_updated:{self.last_updated},"\
+            f" N_accounts:{len(self.accounts)})"
 
     def __str__(self):
-        return f"MyCoinbase( isHistoric:{self.isHistoric},  last updated:{self.last_updated}, N_accounts:{len(self.accounts)})"
+        return f"MyCoinbase( isHistoric:{self.isHistoric},"\
+            f" last updated:{self.last_updated},"\
+            f" N_accounts:{len(self.accounts)})"
 
 
 class TransactionsGetter:
     """
-    This objects fetches all coinbase transactions and parses them into a known format.
+    This objects fetches all coinbase transactions and parses them into a
+    known format.
 
     Arguments:
-        mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`): :obj:`MyCoinbase` object.
+        mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`):
+            :obj:`MyCoinbase` object.
 
     Attributes:
-        known_types (list): list of string names of supported transaction types.
-        mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`): :obj:`MyCoinbase` object.
+        known_types (list): list of string names
+            of supported transaction types.
+        mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`):
+            :obj:`MyCoinbase` object.
         df (:obj:`pandas.DataFrame`): dataframe of all known transactions
-        transactions (:obj:`list` of :obj:`coibase.model.ApiObject`): list of processed transactions.
-        unhandled_trans (:obj:`list` of :obj:`dict`): list informations of unhandled transactions.
-        error_log (:obj:`list` of :obj:`dict`): list informations of transactions that resulted in an error.
+        transactions (:obj:`list` of :obj:`coibase.model.ApiObject`): list
+            of processed transactions.
+        unhandled_trans (:obj:`list` of :obj:`dict`): list informations of
+            unhandled transactions.
+        error_log (:obj:`list` of :obj:`dict`): list informations of
+            transactions that resulted in an error.
     """
 
     def __init__(self, mycoinbase):
         self.mycoinbase = mycoinbase
+        self.known_types = [
+            "buy",
+            "sell",
+            "trade",
+            "send",
+            "fiat_withdrawal",
+            "fiat_deposit",
+        ]
         self.load()
 
     def load(self):
         if self.mycoinbase.isHistoric is True:
-            ### ci sonotanti tipi di transactions
+            # ci sonotanti tipi di transactions
             self.unhandled_trans = []
             # error log for when failing handling known transactions types
             self.error_log = []
@@ -302,19 +349,31 @@ class TransactionsGetter:
                 for account in self.mycoinbase.accounts:
                     self.handle_transactions(account)
                 self.df = pd.DataFrame(self.df).set_index("datetime")
-                order = ["type", "amount", "symbol", "native_amount", "nat_symbol"]
-                neworder = order + [c for c in self.df.columns if c not in order]
+                order = [
+                    "type",
+                    "amount",
+                    "symbol",
+                    "native_amount",
+                    "nat_symbol",
+                ]
+                neworder = order + [
+                    c for c in self.df.columns if c not in order
+                ]
                 self.df = self.df.reindex(columns=neworder)
             else:
-                raise ValueError("MyCoinbase objects must have an accounts attribute.")
+                raise ValueError(
+                    "MyCoinbase objects must have an accounts attribute."
+                )
 
             if len(self.unhandled_trans) > 0:
                 print(
-                    f"Warning! There are {len(self.unhandled_trans)} unknown transaction types and therefore they have been skipped."
+                    f"Warning! There are {len(self.unhandled_trans)} unknown"
+                    "transaction types and therefore they have been skipped."
                 )
             if len(self.error_log) > 0:
                 print(
-                    f"Warning! There were {len(self.error_log)} errors during the handling of transactions."
+                    f"Warning! There were {len(self.error_log)} errors during"
+                    " the handling of transactions."
                 )
         else:
             raise ValueError("Must load historic data.")
@@ -323,14 +382,6 @@ class TransactionsGetter:
         """
         handles the transactions based on type.
         """
-        self.known_types = [
-            "buy",
-            "sell",
-            "trade",
-            "send",
-            "fiat_withdrawal",
-            "fiat_deposit",
-        ]
         for transaction in self.mycoinbase._get_transactions(account):
             try:
                 if transaction["type"] in self.known_types:
@@ -351,7 +402,11 @@ class TransactionsGetter:
                         "transaction_type": transaction["type"],
                         "account_id": account["id"],
                         "transaction_id": transaction["id"],
-                        "info": {"amount": amount, "symbol": symbol, "date": datetime},
+                        "info": {
+                            "amount": amount,
+                            "symbol": symbol,
+                            "date": datetime,
+                        },
                         "error_log": e,
                     }
                 )
@@ -363,7 +418,9 @@ class TransactionsGetter:
         # spot price??
         symbol, amount, datetime = self.get_transact_info(transaction)
         nat_amount, nat_symbol = self.get_native_amount(transaction)
-        total, subtotal, total_fee = self.get_transact_data(account, transaction)
+        total, subtotal, total_fee = self.get_transact_data(
+            account, transaction
+        )
 
         if subtotal is None:
             spot_price = nat_amount / amount
@@ -410,14 +467,17 @@ class TransactionsGetter:
 
     def get_transact_data(self, account, transaction):
         """
-        gets required additional data (eg. fees) from different kinds of transactions.
+        gets required additional data (eg. fees)
+        from different kinds of transactions.
         """
         if transaction["type"] == "sell":
             t = self.mycoinbase.client.get_sell(
                 account["id"], transaction["sell"]["id"]
             )
         elif transaction["type"] == "buy":
-            t = self.mycoinbase.client.get_buy(account["id"], transaction["buy"]["id"])
+            t = self.mycoinbase.client.get_buy(
+                account["id"], transaction["buy"]["id"]
+            )
         elif transaction["type"] == "fiat_withdrawal":
             t = self.mycoinbase.client.get_withdrawal(
                 account["id"], transaction["fiat_withdrawal"]["id"]
@@ -445,4 +505,3 @@ class TransactionsGetter:
         else:
             total, subtotal, total_fee = None, None, None
         return total, subtotal, total_fee
-
