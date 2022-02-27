@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class PortfolioAnalysis:
     """
     This class is a Coinbase portfolio analysis.
@@ -26,8 +27,8 @@ class PortfolioAnalysis:
              contains only `buy` or `sell`
     """
 
-    def __init__(self,mycoinbase_df):
-        self.df=mycoinbase_df
+    def __init__(self, mycoinbase_df):
+        self.df = mycoinbase_df
         self.standardize()
 
     def total_fees(self):
@@ -35,7 +36,7 @@ class PortfolioAnalysis:
         total fees paid by user for th
         """
         return self.df["total_fee"].sum()
-    
+
     def total_by_type(self):
         """
         total EUR by transaction type.
@@ -45,7 +46,7 @@ class PortfolioAnalysis:
         """
         return self.df.groupby("type")[["native_amount"]].sum()
 
-    def live_value(self,client,amount,currency):
+    def live_value(self, client, amount, currency):
         """
         gets live value of given currency and amount.
 
@@ -54,22 +55,34 @@ class PortfolioAnalysis:
             amount (float): amount of currency
             currency (str): symbol of currency
         """
-        change=client.get_spot_price(currency_pair = currency+'-EUR')
-        change=float(change["amount"])
-        return amount*change
+        change = client.get_spot_price(currency_pair=currency + "-EUR")
+        change = float(change["amount"])
+        return amount * change
 
-    def portfolio_value(self,client):
+    def portfolio_value(self, client):
         """
         gets live value of portfolio.
 
         Arguments:
             client (:obj:`surfingcrypto.coinbase.CB.client`) : client to coinbase account.
         """
-        balance=self.df[self.df["type"].isin(["buy","sell","trade","send"])].groupby("symbol")[["amount"]].sum()
-        balance=balance.loc[~(balance.round(10)==0.0).all(axis=1)].reset_index()
-        balance["live_value"]=balance.apply(lambda x:self.live_value(client,x["amount"],x["symbol"]),axis=1)
+        balance = (
+            self.df[self.df["type"].isin(["buy", "sell", "trade", "send"])]
+            .groupby("symbol")[["amount"]]
+            .sum()
+        )
+        balance = balance.loc[
+            ~(balance.round(10) == 0.0).all(axis=1)
+        ].reset_index()
+        balance["live_value"] = balance.apply(
+            lambda x: self.live_value(client, x["amount"], x["symbol"]), axis=1
+        )
         print(balance)
-        print("Total portfolio balance: "+"{:.2f}".format(balance["live_value"].sum())+" EUR")
+        print(
+            "Total portfolio balance: "
+            + "{:.2f}".format(balance["live_value"].sum())
+            + " EUR"
+        )
 
     def standardize(self):
         """
@@ -81,26 +94,33 @@ class PortfolioAnalysis:
             At the moment does not include `send`,`deposit` or `withdrawal` transactions
 
         """
-        self.std_df=self.df.copy()
-        #exclude fiat deposit and withdrawals AND SEND
-        self.std_df=self.std_df[self.std_df["type"].isin(["buy","sell","trade"])]
-        #set trades as buy or sell transactions
-        m=(self.std_df["type"]=="trade")&(self.std_df["amount"]<0)
-        self.std_df.loc[m,"type"]="sell"
-        m=(self.std_df["type"]=="trade")&(self.std_df["amount"]>0)
-        self.std_df.loc[m,"type"]="buy"
-        #make all floats positive
-        self.std_df["amount"]=self.std_df["amount"].abs()
-        self.std_df["native_amount"]=self.std_df["native_amount"].abs()
+        self.std_df = self.df.copy()
+        # exclude fiat deposit and withdrawals AND SEND
+        self.std_df = self.std_df[
+            self.std_df["type"].isin(["buy", "sell", "trade"])
+        ]
+        # set trades as buy or sell transactions
+        m = (self.std_df["type"] == "trade") & (self.std_df["amount"] < 0)
+        self.std_df.loc[m, "type"] = "sell"
+        m = (self.std_df["type"] == "trade") & (self.std_df["amount"] > 0)
+        self.std_df.loc[m, "type"] = "buy"
+        # make all floats positive
+        self.std_df["amount"] = self.std_df["amount"].abs()
+        self.std_df["native_amount"] = self.std_df["native_amount"].abs()
 
         for trade in self.std_df.trade_id.unique():
             if trade is not None:
-                t=self.std_df[self.std_df["trade_id"]==trade]
-                if len(t)==2:
-                    fee=t["native_amount"].diff()
-                    self.std_df.loc[(self.std_df["trade_id"]==trade),"total_fee"]=fee[-1]/2
+                t = self.std_df[self.std_df["trade_id"] == trade]
+                if len(t) == 2:
+                    fee = t["native_amount"].diff()
+                    self.std_df.loc[
+                        (self.std_df["trade_id"] == trade), "total_fee"
+                    ] = (fee[-1] / 2)
 
-                elif len(t)>2:
+                elif len(t) > 2:
                     raise ValueError("More than 2 trades found.")
                 else:
-                    raise ValueError("Did not find 2 trades with matching trade_id")
+                    raise ValueError(
+                        "Did not find 2 trades with matching trade_id"
+                    )
+

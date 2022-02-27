@@ -3,7 +3,7 @@ figures built for crypto prices.
 """
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from matplotlib.colors import LinearSegmentedColormap,Normalize
+from matplotlib.colors import LinearSegmentedColormap, Normalize
 import matplotlib.dates as mdates
 from matplotlib.cm import ScalarMappable
 
@@ -82,14 +82,14 @@ class BaseFigure:
         Arguments:
             xlims(:obj:`tuple`): tuple of xlims as datetime objects.
         """
-        if hasattr(self,"axes"):
+        if hasattr(self, "axes"):
             for iax in self.axes:
                 iax.grid(which="major", axis="x", linewidth=0.1)
                 iax.grid(which="major", axis="y", linewidth=0.05)
                 iax.set_xlim(xlims)
                 iax.yaxis.set_label_position("left")
                 iax.yaxis.tick_left()
-        elif hasattr(self,"ax"):
+        elif hasattr(self, "ax"):
             self.ax.grid(which="major", axis="x", linewidth=0.1)
             self.ax.grid(which="major", axis="y", linewidth=0.05)
             self.ax.set_xlim(xlims)
@@ -97,7 +97,6 @@ class BaseFigure:
             self.ax.yaxis.tick_left()
         else:
             raise NotImplementedError
-
 
 
 class SimplePlot(BaseFigure):
@@ -119,15 +118,11 @@ class SimplePlot(BaseFigure):
         """
         default plotting.
         """
-        #figure
+        # figure
         self.f, self.axes = plt.subplots(
-            2,
-            1,
-            sharex=True,
-            gridspec_kw={"height_ratios": [4, 1]},
-            dpi=200,
+            2, 1, sharex=True, gridspec_kw={"height_ratios": [4, 1]}, dpi=200,
         )
-        #plot
+        # plot
         scplot.candlesticks(
             self.ts,
             ax=self.axes[0],
@@ -135,15 +130,18 @@ class SimplePlot(BaseFigure):
             vol_ax=self.axes[1],
             style="candlesticks",
         )
-        #axes look
+        # axes look
         self.set_axes(
-            (self.graphstart, self.ts.df.index[-1] + datetime.timedelta(days=5))
+            (
+                self.graphstart,
+                self.ts.df.index[-1] + datetime.timedelta(days=5),
+            )
         )
         self.axes[0].set_title(
             self.ts.coin, fontsize=10, va="center", ha="center", pad=20
         )
         self.center_series(self.axes[0], on="Close")
-        #log
+        # log
         print(f"{self.ts.coin} plotted.")
 
 
@@ -169,7 +167,7 @@ class TaPlot(BaseFigure):
         """
         plotting function.
         """
-        #figure
+        # figure
         self.f, self.axes = plt.subplots(
             5,
             1,
@@ -178,9 +176,9 @@ class TaPlot(BaseFigure):
             dpi=200,
             figsize=(7.5, 7.5),
         )
-        #ta indicators
+        # ta indicators
         self.ts.ta_indicators()
-        #plots
+        # plots
         scplot.candlesticks(
             self.ts,
             ax=self.axes[0],
@@ -194,7 +192,7 @@ class TaPlot(BaseFigure):
         scplot.plot_bb(self.ts, self.axes[3])
         scplot.plot_RSI(self.ts, self.axes[4])
 
-        #trendlines
+        # trendlines
         if trendlines:
             pass
             # trend=trend_line(self,trendln_start="01-01-2021")
@@ -208,15 +206,18 @@ class TaPlot(BaseFigure):
             #     nbest=2,
             #     show_min_maxs=False
             #     )
-        #axes look
+        # axes look
         self.set_axes(
-            (self.graphstart, self.ts.df.index[-1] + datetime.timedelta(days=5))
+            (
+                self.graphstart,
+                self.ts.df.index[-1] + datetime.timedelta(days=5),
+            )
         )
         self.axes[0].set_title(
             self.ts.coin, fontsize=10, va="center", ha="center", pad=20
         )
         self.center_series(self.axes[0], on="Close")
-        #log
+        # log
         print(f"{self.ts.coin} plotted.")
 
 
@@ -231,7 +232,7 @@ class ATHPlot(BaseFigure):
 
     """
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.plot()
 
@@ -242,35 +243,45 @@ class ATHPlot(BaseFigure):
         Note:
             ATM it its a zoomed-in view.
         """
-        #figure
-        self.f,self.ax=plt.subplots(
-            dpi=200,
-            )
-        #compute distance
+        # figure
+        self.f, self.ax = plt.subplots(dpi=200,)
+        # compute distance
         self.ts.distance_from_ath()
 
-        #normalizzato su tutto intervallo
-        vmin=self.ts.df['distance_ATH'].min()
-        vmax=self.ts.df['distance_ATH'].max()
+        # normalizzato su tutto intervallo
+        vmin = self.ts.df["distance_ATH"].min()
+        vmax = self.ts.df["distance_ATH"].max()
 
-        #cmap normalized and mappable
-        norm=Normalize(vmin=vmin,vmax=vmax)
-        cmap = LinearSegmentedColormap.from_list('colorbar', ['green',"orange","red","magenta"])
-        colors = [mpl.colors.rgb2hex(x) for x in cmap(norm(self.ts.df['distance_ATH']))]
-        cmappable = ScalarMappable(norm,cmap=cmap)
+        # cmap normalized and mappable
+        norm = Normalize(vmin=vmin, vmax=vmax)
+        cmap = LinearSegmentedColormap.from_list(
+            "colorbar", ["green", "orange", "red", "magenta"]
+        )
+        colors = [
+            mpl.colors.rgb2hex(x)
+            for x in cmap(norm(self.ts.df["distance_ATH"]))
+        ]
+        cmappable = ScalarMappable(norm, cmap=cmap)
 
-        #points
-        self.ax.scatter(self.ts.df.index,self.ts.df.Close,c=colors,s=2)
-        #colorbar
+        # points
+        self.ax.scatter(self.ts.df.index, self.ts.df.Close, c=colors, s=2)
+        # colorbar
         self.f.colorbar(cmappable)
 
-        #axes look
+        # axes look
         self.set_axes(
-            (self.graphstart, self.ts.df.index[-1] + datetime.timedelta(days=5))
+            (
+                self.graphstart,
+                self.ts.df.index[-1] + datetime.timedelta(days=5),
+            )
         )
         self.ax.set_title(
-            "Distance from All Time High: "+self.ts.coin, fontsize=10, va="center", ha="center", pad=20
+            "Distance from All Time High: " + self.ts.coin,
+            fontsize=10,
+            va="center",
+            ha="center",
+            pad=20,
         )
-        #log
+        # log
         print(f"{self.ts.coin} ATH plotted.")
 

@@ -16,13 +16,14 @@ dependencies:
   - python-dateutil
   - python-telegram-bot
   - pytrends
-#formatting
+#formatting and linting
   - black
+  - flake8
 #docs
   - sphinx
   - sphinx_rtd_theme
   - myst-parser
-  - docutils=0.16 #with py37 avoids bug in bullet points
+  - docutils=0.16 #rtd_theme & py37 avoids bug in bullet points
   - nbsphinx
 #tests
   - pytest
