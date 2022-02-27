@@ -2,7 +2,6 @@
 plotting methods.
 """
 import mplfinance as mplf
-import matplotlib.pyplot as plt
 
 # warning di mplfinance per too many data in candlestick plot
 import warnings
@@ -16,10 +15,14 @@ def candlesticks(ts, ax, volume=False, vol_ax=None, style="candlesticks"):
 
     Args:
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
-        ax (:class:`matplotlib.axes.Axes`) : matplotlib ax to plot candlesticks into.
-        volume (bool,optional): plot volume histogram data into a another ax specified with `vol_ax`
-        vol_ax (:class:`matplotlib.axes.Axes`) : matplotlib ax to plot volume histogram into.
-        style (str,optional): style of plotting candlesticks, `candlesticks` is default but `ohlc` style is used in BB bands plotting.
+        ax (:class:`matplotlib.axes.Axes`) : matplotlib ax to plot
+            candlesticks into.
+        volume (bool,optional): plot volume histogram data into a
+            another ax specified with `vol_ax`
+        vol_ax (:class:`matplotlib.axes.Axes`) : matplotlib ax
+             to plot volume histogram into.
+        style (str,optional): style of plotting candlesticks, `candlesticks`
+            is default but `ohlc` style is used in BB bands plotting.
     """
     if style == "candlesticks":
         if volume is False:
@@ -54,11 +57,13 @@ def candlesticks(ts, ax, volume=False, vol_ax=None, style="candlesticks"):
 def plot_moving_averages(ts, ax, windows=None):
     """
     Plot two simple moving averages.
-    Default windows are 12 and 26 days. Can be customized by using lists of window-color pairs.
+    Default windows are 12 and 26 days. Can be customized by using
+    lists of window-color pairs.
 
     Args:
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
-        windows (obj:`list` of obj:`int`,optional): list of windows to compute MA 
+        windows (obj:`list` of obj:`int`,optional): list of
+            windows to compute MA
     """
 
     colors = ["yellow", "orange"]
@@ -79,7 +84,7 @@ def plot_moving_averages(ts, ax, windows=None):
 
 def plot_macd(ts, ax, plot_lines=True):
     """
-    plot macd indicator into a matplotlib.axes.Axes object.     
+    plot macd indicator into a matplotlib.axes.Axes object.
 
 
     Args:
@@ -95,8 +100,8 @@ def plot_macd(ts, ax, plot_lines=True):
 
     prices = ts.df["Open"]
     macd = ts.df["MACD_" + fast + "_" + slow + "_" + sign]
-    signal = ts.df[f"MACDs_" + fast + "_" + slow + "_" + sign]
-    hist = ts.df[f"MACDh_" + fast + "_" + slow + "_" + sign]
+    signal = ts.df["MACDs_" + fast + "_" + slow + "_" + sign]
+    hist = ts.df["MACDh_" + fast + "_" + slow + "_" + sign]
 
     if plot_lines:
         # ax1.plot(prices)
@@ -138,7 +143,8 @@ def plot_bb(ts, iax):
 
     Args:
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
-        ax (:class:`matplotlib.axes.Axes`) : matplotlib ax to plot BB bands into.
+        ax (:class:`matplotlib.axes.Axes`) : matplotlib ax
+            to plot BB bands into.
     """
     length = str(ts.ta_params["bbands"]["length"])
     std = "{0:.1f}".format(ts.ta_params["bbands"]["std"])
@@ -187,4 +193,3 @@ def plot_RSI(ts, iax):
     iax.axhspan(30, 70, facecolor="white", alpha=0.1)
     iax.axhline(30, color="coral", linewidth=0.5, alpha=0.3)
     iax.axhline(70, color="greenyellow", linewidth=0.5, alpha=0.3)
-
