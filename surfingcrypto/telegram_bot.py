@@ -9,19 +9,24 @@ import numpy as np
 
 class TelegramBot:
     """
-    Wrapper of official telegram API to send notifications from a BOT initiaed manually with @BotFather.
+    Wrapper of official telegram API to send notifications from a BOT
+    initiaed manually with @BotFather.
 
     Arguments:
-        configuration (:obj:`surfingcrypto.config.config`) : package configuration object
-        channel_mode (bool) : init class in channel_bot, send to all chat_id contained in telegram_users.csv
-        new_users_check (bool):  check for new users and add new ones to telegram_users.csv
-    
+        configuration (:obj:`surfingcrypto.config.config`) : package
+            configuration object
+        channel_mode (bool) : init class in channel_bot, send to all
+            chat_id contained in telegram_users.csv
+        new_users_check (bool):  check for new users and add new ones
+            to telegram_users.csv
+
     Attributes:
         token (str): token of telegram bot
-        users (:obj:`pandas.DataFrame`): dataframe containing usernames and chat_id of known users following the bot
-        updates (:obj:`pandas.DataFrame`): dataframe containing all updates fetched from bot
+        users (:obj:`pandas.DataFrame`): dataframe containing usernames
+            and chat_id of known users following the bot
+        updates (:obj:`pandas.DataFrame`): dataframe containing all updates
+            fetched from bot
         channel_mode (bool): channel_mode is active
-    
     """
 
     def __init__(
@@ -46,7 +51,8 @@ class TelegramBot:
                     self.configuration.config_folder + "/telegram_users.csv"
                 ):
                     self.users = pd.read_csv(
-                        self.configuration.config_folder + "/telegram_users.csv"
+                        self.configuration.config_folder
+                        + "/telegram_users.csv"
                     )
                     self.users["date_joined"] = pd.to_datetime(
                         self.users["date_joined"]
@@ -57,11 +63,14 @@ class TelegramBot:
                         self.new_users()
                 else:
                     raise FileNotFoundError(
-                        "config folder contain a csv file containing usernames and chat IDs."
+                        "config folder contain a csv file containing usernames"
+                        " and chat IDs."
                     )
 
         else:
-            raise ValueError("config.json file must contain a telegram bot token.")
+            raise ValueError(
+                "config.json file must contain a telegram bot token."
+            )
 
     def getUpdates(self):
         """
@@ -81,7 +90,8 @@ class TelegramBot:
     def new_users(self):
         """
         check if unknown users have interacted with the telegram bot.
-        If the new users are found, they are automatically added to known users csv files.
+        If the new users are found, they are automatically added to known users
+        csv files.
         """
         if len(self.updates) >= 1:
             updates = self.updates.set_index("chat_id")[
@@ -107,7 +117,7 @@ class TelegramBot:
     def send_message_to_all(self, message):
         """
         send message to all known users
-        
+            
         Arguments:
             message (str): string containing message to send
         """
@@ -117,18 +127,21 @@ class TelegramBot:
         else:
             raise ValueError("This method is available only in channel mode.")
 
-    def send_message_to_user(self,message,username):
+    def send_message_to_user(self, message, username):
         """
         send message to specific user.
 
         Arguments:
             message (str): string containing message to send
-            username (str): string username, as saved in `telegram_users.csv` file.
+            username (str): string username, as saved in `telegram_users.csv`
+            file.
         """
         if self.channel_mode:
             try:
-                chat_id=self.users.set_index("username").loc[username,"chat_id"]
-                if not isinstance(chat_id,(int,np.int64)):
+                chat_id = self.users.set_index("username").loc[
+                    username, "chat_id"
+                ]
+                if not isinstance(chat_id, (int, np.int64)):
                     raise NotImplementedError
                 else:
                     self.send_message(message=message, chat_id=int(chat_id))
@@ -137,7 +150,6 @@ class TelegramBot:
                 self.error_log.append({"error": "UserNotFoundError", "e": e})
         else:
             raise ValueError("Module must be in channel mode.")
-
 
     def send_message(
         self, message, chat_id,
@@ -160,7 +172,9 @@ class TelegramBot:
         send document.
         """
         with open(document, "rb") as d:
-            self.bot.send_document(chat_id=chat_id, document=d, caption=caption)
+            self.bot.send_document(
+                chat_id=chat_id, document=d, caption=caption
+            )
 
     def send_photo_to_all(self, photo):
         """
@@ -178,7 +192,7 @@ class TelegramBot:
     def send_photo(self, photo, chat_id, caption=""):
         """
         send photo.
-    
+        
         Arguments:
             photo (str): string path to photo
             chat_id (int): chat_id code of chat to send the message to
@@ -190,4 +204,3 @@ class TelegramBot:
         except Exception as e:
             print("SendPhotoError")
             self.error_log.append({"error": "SendPhotoError", "e": e})
-

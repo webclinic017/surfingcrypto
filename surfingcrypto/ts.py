@@ -5,19 +5,25 @@ import pandas as pd
 import os
 import pandas_ta as ta
 
+
 class TS:
     """
     This is an time-series oriented crypto price data object.
 
     Note:
-        Data can be downloaded calling ```surfingcrypto.scraper.Scraper``` object.
+        Data can be downloaded calling ```surfingcrypto.scraper.Scraper```
+        object.
 
     Arguments:
-    	configuration (:obj:`surfingcrypto.config.config`): configuration object
-        coin (str): string representing the crypto coin of choice, eg. BTC,ETH
+        configuration (:obj:`surfingcrypto.config.config`): configuration
+            object
+        coin (str): string representing the crypto coin of choice,
+            eg. BTC,ETH
 
     Attributes:
-        df (:obj:`pandas.DataFrame`): dataframe with datetime index of ohlc data. Could store also TA indicators if these are computed invoking the relative method.
+        df (:obj:`pandas.DataFrame`): dataframe with datetime index
+            of ohlc data. Could store also TA indicators if these are
+            computed invoking the relative method.
         ta_params (dict): dictionary containing TA parametrization
     """
 
@@ -33,10 +39,15 @@ class TS:
 
     def build_ts(self):
         """
-        reads the data from data stored locally in `data/ts/` and saved in .csv format.
+        reads the data from data stored locally in `data/ts/` and
+        saved in .csv format.
         """
-        if os.path.isfile(self.config.data_folder + "/ts/" + self.coin + ".csv"):
-            self.df = pd.read_csv(self.config.data_folder + "/ts/" + self.coin + ".csv")
+        if os.path.isfile(
+            self.config.data_folder + "/ts/" + self.coin + ".csv"
+        ):
+            self.df = pd.read_csv(
+                self.config.data_folder + "/ts/" + self.coin + ".csv"
+            )
             self.df["Date"] = pd.to_datetime(self.df["Date"], utc=True)
             self.df.set_index("Date", inplace=True)
         else:
@@ -47,7 +58,8 @@ class TS:
         Percentage difference given a window size.
 
         Arguments:
-            window (int): number of days used to computer percentage difference.
+            window (int): number of days used to computer percentage
+                difference.
         """
         return (
             (self.df.Close[-1] - self.df.Close[-window - 1])
@@ -57,10 +69,12 @@ class TS:
 
     def report_percentage_diff(self, windows=[1, 3, 7, 14, 60]):
         """
-        Produces verbose and pretty report on latest price difference from a given list of windows.
+        Produces verbose and pretty report on latest price
+        difference from a given list of windows.
 
         Arguments:
-            windows (:obj:`list` of :obj:`int`): list of windows to compute percentage difference.
+            windows (:obj:`list` of :obj:`int`): list of windows
+                to compute percentage difference.
 
         """
         s = f"**{self.coin}**\n"
@@ -93,7 +107,9 @@ class TS:
             std=self.ta_params["bbands"]["std"],
             append=True,
         )
-        self.df.ta.rsi(timeperiod=self.ta_params["rsi"]["timeperiod"], append=True)
+        self.df.ta.rsi(
+            timeperiod=self.ta_params["rsi"]["timeperiod"], append=True
+        )
 
     def parametrization(self):
         """
@@ -111,11 +127,14 @@ class TS:
         elif isinstance(self.config.coins[self.coin], dict):
             self.ta_params = self.config.coins[self.coin]
         else:
-            raise ValueError("Must provide TA parametrization in the correct format.")
+            raise ValueError(
+                "Must provide TA parametrization in the correct format."
+            )
 
     def distance_from_ath(self):
-        d={}
+        d = {}
         for idx in self.df.index:
-            d[idx]=abs(self.df.loc[idx,"Close"]-self.df[:idx]["Close"].max())
-        self.df["distance_ATH"]=pd.Series(d)
-
+            d[idx] = abs(
+                self.df.loc[idx, "Close"] - self.df[:idx]["Close"].max()
+            )
+        self.df["distance_ATH"] = pd.Series(d)

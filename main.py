@@ -18,7 +18,7 @@ now = dt.datetime.today()
 timestr = now.strftime("%Y%m%d-%H%M%S")
 
 # config
-c = Config(str(cwd)+"/config")
+c = Config(str(cwd) + "/config")
 
 # telegram bot in channel mode
 tg = TelegramBot(c, channel_mode=True)
@@ -26,7 +26,9 @@ tg = TelegramBot(c, channel_mode=True)
 # scrape required data
 s = Scraper(c)
 s.run()
-tg.send_message_to_all(message=s.output_description)  # send scraper log to telegram
+tg.send_message_to_all(
+    message=s.output_description
+)  # send scraper log to telegram
 
 # produce reports for each coin in configuration
 for coin in c.coins:
@@ -45,5 +47,5 @@ for coin in c.coins:
         ath.save(tmpname)
         tg.send_photo_to_all(tmpname)
 
-cb=MyCoinbase(configuration=c)
-tg.send_message_to_user(cb.mycoinbase_report(),"admin")
+cb = MyCoinbase(configuration=c)
+tg.send_message_to_user(cb.mycoinbase_report(), "admin")
