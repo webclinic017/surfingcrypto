@@ -156,6 +156,7 @@ class MyCoinbase(CB):
 
     Attributes:
         accounts (:obj:`list` of :obj:`coibase.model.ApiObject`): list of selected accounts.
+        last_updated (:obj:`datetime.datetime`): datetime of last updates of account list.
         timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first and last transaction for each account
         isHistoric (bool): if module has been loaded in historic mode.
         json_path (str): path to json dump file
@@ -180,12 +181,13 @@ class MyCoinbase(CB):
         if active_accounts:
             self.accounts = self.get_active_accounts()
             self.isHistoric = False
+            self.last_updated=datetime.datetime.utcnow()
         elif active_accounts is False:
             self.isHistoric = True
             if os.path.isfile(self.json_path) and not force:
                 accounts, last_updated = self._load_accounts()
-                last_updated = datetime.datetime.strptime(last_updated,"%Y-%m-%dT%H:%M:%SZ")
-                if datetime.datetime.utcnow() - last_updated < datetime.timedelta(days=7):
+                self.last_updated = datetime.datetime.strptime(last_updated,"%Y-%m-%dT%H:%M:%SZ")
+                if datetime.datetime.utcnow() - self.last_updated < datetime.timedelta(days=7):
                     self.accounts = self.get_accounts_from_list(accounts)
                 else:
                     (
@@ -199,6 +201,7 @@ class MyCoinbase(CB):
                     self.timeranges,
                 ) = self.get_all_accounts_with_transactions()
                 self._dump_accounts()
+                self.last_updated=datetime.datetime.utcnow()
         else:
             raise ValueError("Either true or false.")
 
@@ -257,6 +260,12 @@ class MyCoinbase(CB):
             return s
         else:
             raise ValueError("Must get accounts first.")
+
+    def __repr__(self):
+        return f"MyCoinbase( isHistoric:{self.isHistoric}, last_updated:{self.last_updated}, N_accounts:{len(self.accounts)})"
+
+    def __str__(self):
+        return f"MyCoinbase( isHistoric:{self.isHistoric},  last updated:{self.last_updated}, N_accounts:{len(self.accounts)})"
 
 
 class TransactionsGetter:
