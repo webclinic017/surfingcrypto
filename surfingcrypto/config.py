@@ -135,7 +135,7 @@ class Config:
                         req[account["currency"]]={
                             "start":dateutil.parser.parse(account["timerange"]["1"]).date(),
                             #timedelta is because today's close isnt yet realized
-                            "end_day":datetime.date.today()+datetime.timedelta(-1),
+                            "end_day":datetime.datetime.utcnow().date()+datetime.timedelta(-1),
                         }
                     #historic account
                     else :
