@@ -10,7 +10,6 @@ import datetime
 from coinbase.wallet.client import Client
 
 
-
 class CB:
 
     """
@@ -105,8 +104,7 @@ class CB:
         
         Return:
             has_transactions (:obj:`list` of :obj:`coinbase.ApiObject`): list of coinbase accounts
-            timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first 
-                and last transaction for each account in `has_transactions`
+            timeranges (:obj:`list` of :obj:`dict`): list of dictionaries with dates of first and last transaction for each account in `has_transactions`
         """
         has_transactions = []
         timeranges = []
@@ -172,7 +170,7 @@ class MyCoinbase(CB):
         Arguments:
             active_accounts()
         """
-        self.json_path=self.configuration.config_folder + "/coinbase_accounts.json"
+        self.json_path = self.configuration.config_folder + "/coinbase_accounts.json"
 
         if active_accounts:
             self.accounts = self.get_active_accounts()
@@ -181,8 +179,8 @@ class MyCoinbase(CB):
             self.isHistoric = True
             if os.path.isfile(self.json_path):
                 accounts, last_updated = self._load_accounts()
-                last_updated = datetime.datetime.strptime(last_updated, '%d-%m-%Y')
-                if datetime.datetime.now()-last_updated<datetime.timedelta(days=7):
+                last_updated = datetime.datetime.strptime(last_updated, "%d-%m-%Y")
+                if datetime.datetime.now() - last_updated < datetime.timedelta(days=7):
                     self.accounts = self.get_accounts_from_list(accounts)
                 else:
                     (
@@ -217,18 +215,14 @@ class MyCoinbase(CB):
             "datetime": datetime.datetime.today().strftime("%d-%m-%Y"),
             "accounts": l,
         }
-        with open(
-            self.json_path, "w"
-        ) as f:
+        with open(self.json_path, "w") as f:
             json.dump(dump, f, indent=4)
 
     def _load_accounts(self):
         """
         load accounts from dumped `coinbase_accounts.json` file.
         """
-        with open(
-            self.json_path, "rb"
-        ) as f:
+        with open(self.json_path, "rb") as f:
             dict = json.load(f)
             accounts = dict["accounts"]
             last_updated = dict["datetime"]
@@ -259,6 +253,7 @@ class MyCoinbase(CB):
         else:
             raise ValueError("Must get accounts first.")
 
+
 class TransactionsGetter:
     """
     This objects fetches all coinbase transactions and parses them into a known format.
@@ -274,8 +269,9 @@ class TransactionsGetter:
         unhandled_trans (:obj:`list` of :obj:`dict`): list informations of unhandled transactions.
         error_log (:obj:`list` of :obj:`dict`): list informations of transactions that resulted in an error.
     """
-    def __init__(self,mycoinbase):
-        self.mycoinbase=mycoinbase
+
+    def __init__(self, mycoinbase):
+        self.mycoinbase = mycoinbase
         self.load()
 
     def load(self):
@@ -293,9 +289,7 @@ class TransactionsGetter:
                     self.handle_transactions(account)
                 self.df = pd.DataFrame(self.df).set_index("datetime")
                 order = ["type", "amount", "symbol", "native_amount", "nat_symbol"]
-                neworder = order + [
-                    c for c in self.df.columns if c not in order
-                ]
+                neworder = order + [c for c in self.df.columns if c not in order]
                 self.df = self.df.reindex(columns=neworder)
             else:
                 raise ValueError("MyCoinbase objects must have an accounts attribute.")
@@ -405,7 +399,9 @@ class TransactionsGetter:
         gets required additional data (eg. fees) from different kinds of transactions.
         """
         if transaction["type"] == "sell":
-            t = self.mycoinbase.client.get_sell(account["id"], transaction["sell"]["id"])
+            t = self.mycoinbase.client.get_sell(
+                account["id"], transaction["sell"]["id"]
+            )
         elif transaction["type"] == "buy":
             t = self.mycoinbase.client.get_buy(account["id"], transaction["buy"]["id"])
         elif transaction["type"] == "fiat_withdrawal":
