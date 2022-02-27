@@ -23,6 +23,7 @@ dependencies:
   - sphinx_rtd_theme
   - myst-parser
   - docutils=0.16 #with py37 avoids bug in bullet points
+  - nbsphinx
 #tests
   - pytest
   - pytest-cov

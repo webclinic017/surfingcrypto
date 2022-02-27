@@ -1,5 +1,5 @@
 """
-coinbase API client
+coinbase API client and custom objects.
 """
 import json
 import os
@@ -13,7 +13,7 @@ from coinbase.wallet.client import Client
 class CB:
 
     """
-    Interface to the coinbase python api.
+    Interface to the Coinbase python API.
 
     Note:
         Requires an API Key and API Secret stored in `coinbase.json`.
@@ -142,12 +142,16 @@ class CB:
 
 class MyCoinbase(CB):
     """
-    This class is the user's portfolio.
-    It inherits from `surfingcrypto.coinbase.CB` client class all information regarding the user.
+    This class is the user's Coinbase.
+
+    It stores all cryptocurrency accounts - either active or historic.
+
+    It inherits from `surfingcrypto.coinbase.CB` the client methods and all information regarding the user.
     It automatically dumps temporary data in order to load accounts faster.
 
     Arguments:
         active_accounts (bool) : default `True`, select active (balance>0) accounts only.
+        force (bool): force update from API even if local cache is found.
         configuration (:obj:`surfingcrypto.config.config`) : package configuration object.
 
     Attributes:
@@ -158,29 +162,30 @@ class MyCoinbase(CB):
 
     """
 
-    def __init__(self, active_accounts=True, *args, **kwargs):
+    def __init__(self, active_accounts=True,force=False, *args, **kwargs):
         super(MyCoinbase, self).__init__(*args, **kwargs)
-        self.start(active_accounts)
+        self.start(active_accounts,force)
         return
 
-    def start(self, active_accounts):
+    def start(self, active_accounts,force):
         """
         start MyCoinbase module, loading accounts as specified.
 
         Arguments:
-            active_accounts()
+            active_accounts (bool): get only active (balance>0) accounts 
+            force (bool): force update from API even if local cache is found.
         """
         self.json_path = self.configuration.config_folder + "/coinbase_accounts.json"
 
         if active_accounts:
             self.accounts = self.get_active_accounts()
             self.isHistoric = False
-        elif active_accounts == False:
+        elif active_accounts is False:
             self.isHistoric = True
-            if os.path.isfile(self.json_path):
+            if os.path.isfile(self.json_path) and not force:
                 accounts, last_updated = self._load_accounts()
-                last_updated = datetime.datetime.strptime(last_updated, "%d-%m-%Y")
-                if datetime.datetime.now() - last_updated < datetime.timedelta(days=7):
+                last_updated = datetime.datetime.strptime(last_updated,"%Y-%m-%dT%H:%M:%SZ")
+                if datetime.datetime.utcnow() - last_updated < datetime.timedelta(days=7):
                     self.accounts = self.get_accounts_from_list(accounts)
                 else:
                     (
@@ -212,11 +217,11 @@ class MyCoinbase(CB):
                 }
             )
         dump = {
-            "datetime": datetime.datetime.today().strftime("%d-%m-%Y"),
+            "datetime": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             "accounts": l,
         }
         with open(self.json_path, "w") as f:
-            json.dump(dump, f, indent=4)
+            json.dump(dump, f, indent=4,default=str)
 
     def _load_accounts(self):
         """
@@ -265,7 +270,7 @@ class TransactionsGetter:
         known_types (list): list of string names of supported transaction types.
         mycoinbase (:obj:`surfingcrypto.coinbase.coinbase.MyCoinbase`): :obj:`MyCoinbase` object.
         df (:obj:`pandas.DataFrame`): dataframe of all known transactions
-        my_coinbase_obj (:obj:`list` of :obj:`coibase.model.ApiObject`): list of processed transactions.
+        transactions (:obj:`list` of :obj:`coibase.model.ApiObject`): list of processed transactions.
         unhandled_trans (:obj:`list` of :obj:`dict`): list informations of unhandled transactions.
         error_log (:obj:`list` of :obj:`dict`): list informations of transactions that resulted in an error.
     """
@@ -282,7 +287,7 @@ class TransactionsGetter:
             self.error_log = []
 
             self.df = []
-            self.my_coinbase_obj = []
+            self.transactions = []
 
             if hasattr(self.mycoinbase, "accounts"):
                 for account in self.mycoinbase.accounts:
@@ -321,7 +326,7 @@ class TransactionsGetter:
             try:
                 if transaction["type"] in self.known_types:
                     self.process_transaction(account, transaction)
-                    self.my_coinbase_obj.append(transaction)
+                    self.transactions.append(transaction)
                 else:
                     self.unhandled_trans.append(
                         {
