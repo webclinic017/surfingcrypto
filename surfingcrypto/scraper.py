@@ -6,7 +6,7 @@ import datetime
 import pandas as pd
 import os
 
-class Scraper():
+class Scraper:
 	"""
 
 	This is a wrapper of GitHub repo `cryptocmd` that scrapes data from coinmarketcap.com.
