@@ -1,5 +1,5 @@
 import unittest 
-from surfingcrypto.coinbase import MyCoinbase 
+from surfingcrypto.portfolio import MyCoinbase 
 from surfingcrypto import Config
 import pytest
 import pandas as pd

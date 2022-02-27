@@ -41,7 +41,7 @@ def test_init_with_datafolder(temp_test_env, scrp_req, cb_req):
 @pytest.mark.parametrize(
     "temp_test_env,scrp_req,cb_req", scenarios, indirect=["temp_test_env"]
 )
-def test_init_with_datafolder(temp_test_env, scrp_req, cb_req):
+def test_init_without_datafolder(temp_test_env, scrp_req, cb_req):
     """
     test initialization of config class without specifying a data folder
     """

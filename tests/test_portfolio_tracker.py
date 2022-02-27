@@ -1,5 +1,5 @@
 import unittest 
-from surfingcrypto.coinbase.portfolio_tracker import Tracker 
+from surfingcrypto.portfolio.portfolio_tracker import Tracker 
 from surfingcrypto import Config
 import pytest
 import pandas as pd

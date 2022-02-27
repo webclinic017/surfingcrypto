@@ -8,7 +8,7 @@ from surfingcrypto import Config, TS
 from surfingcrypto.scraper import Scraper
 from surfingcrypto.reporting.figures import ATHPlot, TaPlot
 from surfingcrypto.telegram_bot import Tg_notifications
-from surfingcrypto.coinbase import MyCoinbase
+from surfingcrypto.portfolio import MyCoinbase
 
 
 cwd = Path(__file__).resolve().parent

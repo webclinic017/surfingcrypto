@@ -1,6 +1,6 @@
 import unittest 
-from surfingcrypto.coinbase import MyCoinbase 
-from surfingcrypto.coinbase.coinbase import CB 
+from surfingcrypto.portfolio import MyCoinbase 
+from surfingcrypto.portfolio.coinbase import CB 
 
 from surfingcrypto import Config
 from coinbase.wallet.client import Client
