@@ -12,7 +12,7 @@ import decouple
 import pandas as pd
 import random, string
 
-from surfingcrypto.telegram_bot import Tg_notifications
+from surfingcrypto.telegram_bot import TelegramBot
 from surfingcrypto import Config
 
 API_ID = decouple.config("TELEGRAM_API_ID")
@@ -47,7 +47,7 @@ def test_missing_configuration(temp_test_env):
     root = temp_test_env
     c = Config(str(root / "config"))
     with pytest.raises(ValueError):
-        assert Tg_notifications(c)
+        assert TelegramBot(c)
 
 
 @pytest.mark.parametrize(
@@ -57,7 +57,7 @@ def test_init_testbot(temp_test_env):
     """initialize class with testbot"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    t = Tg_notifications(c)
+    t = TelegramBot(c)
     assert isinstance(t.configuration, Config)
     assert t.token == c.telegram["token"]
     assert t.channel_mode is False
@@ -72,7 +72,7 @@ def test_init_testbot_channelmode_filenotfound(temp_test_env):
     root = temp_test_env
     c = Config(str(root / "config"))
     with pytest.raises(FileNotFoundError):
-        t = Tg_notifications(c,channel_mode=True)
+        t = TelegramBot(c,channel_mode=True)
 
 
 @pytest.mark.parametrize(
@@ -82,7 +82,7 @@ def test_init_testbot_channelmode(temp_test_env):
     """initialize class with testbot in channel mode"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    t = Tg_notifications(c,channel_mode=True)
+    t = TelegramBot(c,channel_mode=True)
     assert isinstance(t.users,pd.DataFrame)
 
 @pytest.mark.asyncio
@@ -105,7 +105,7 @@ async def test_init_testbot_and_get_updates(temp_test_env, telegram_user):
     )
     await client.send_message(entity=entity, message=unique_test_message)
 
-    t = Tg_notifications(c)
+    t = TelegramBot(c)
     assert len(t.updates) > 0
     assert unique_test_message in t.updates["message"].tolist()
 
@@ -118,7 +118,7 @@ async def test_send_message_and_photo(temp_test_env, telegram_user):
     root = temp_test_env
     c = Config(str(root / "config"))
     client = telegram_user
-    t = Tg_notifications(c)
+    t = TelegramBot(c)
 
     # fetch id of user interacting with bot
     async for dialog in client.iter_dialogs():
@@ -153,7 +153,7 @@ def test_fail_send_message(temp_test_env):
     """fail send message"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    t = Tg_notifications(c)
+    t = TelegramBot(c)
     assert len(t.error_log)==0
     t.send_message("FAILED MESSAGE", 0000000)
     assert isinstance(t.error_log[0],dict)
@@ -165,7 +165,7 @@ def test_fail_send_photo(temp_test_env):
     """fail send photo"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    t = Tg_notifications(c)
+    t = TelegramBot(c)
     assert len(t.error_log)==0
     t.send_photo(str(root/"config"/"logo.jpg"), 0000000)
     assert isinstance(t.error_log[0],dict)
@@ -179,7 +179,7 @@ def test_message_to_all(mock_getter,temp_test_env):
     """send message to all stored contacts, without updates"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    t = Tg_notifications(c,channel_mode=True,new_users_check=False)
+    t = TelegramBot(c,channel_mode=True,new_users_check=False)
     t.send_message_to_all("fail")
     assert mock_getter.call_count == 3
 
@@ -192,7 +192,7 @@ def test_photo_to_all(mock_getter,temp_test_env):
     """send photo to all stored contacts, without updates"""
     root = temp_test_env
     c = Config(str(root / "config"))
-    t = Tg_notifications(c,channel_mode=True,new_users_check=False)
+    t = TelegramBot(c,channel_mode=True,new_users_check=False)
     t.send_photo_to_all(str(root/"config"/"logo.jpg"))
     assert mock_getter.call_count == 3
 

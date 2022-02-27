@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 
-class Tg_notifications:
+class TelegramBot:
     """
     Wrapper of official telegram API to send notifications from a BOT initiaed manually with @BotFather.
 

@@ -7,7 +7,7 @@ from pathlib import Path
 from surfingcrypto import Config, TS
 from surfingcrypto.scraper import Scraper
 from surfingcrypto.reporting.figures import ATHPlot, TaPlot
-from surfingcrypto.telegram_bot import Tg_notifications
+from surfingcrypto.telegram_bot import TelegramBot
 from surfingcrypto.portfolio import MyCoinbase
 
 
@@ -21,7 +21,7 @@ timestr = now.strftime("%Y%m%d-%H%M%S")
 c = Config(str(cwd)+"/config")
 
 # telegram bot in channel mode
-tg = Tg_notifications(c, channel_mode=True)
+tg = TelegramBot(c, channel_mode=True)
 
 # scrape required data
 s = Scraper(c)
