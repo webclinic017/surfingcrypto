@@ -14,7 +14,7 @@ class Portfolio:
     Has methods for assessing portfolio values, grouping transactions by type,
     calculate total fees, etc.
 
-    With `Portfolio.Analysis.standardize()` it is possible to adapt
+    With `Portfolio.Analysis._standardize()` it is possible to adapt
     the `surfingcrypto.coinbase.MyCoinbase` object to a standard form
     where there are only `buy` or `sell` trades
     and the amounts are always positive.
@@ -32,12 +32,11 @@ class Portfolio:
              contains only `buy` or `sell`
     """
 
-    def __init__(self, **kwargs):
-        portfolio_type = "coinbase"
+    def __init__(self, portfolio_type, **kwargs):
         if portfolio_type.lower() == "coinbase":
             self.coinbase = MyCoinbase(active_accounts=False, **kwargs)
-            self.coinbase.history()
-            self.standardize()
+            self.coinbase.get_history()
+            self._standardize()
         else:
             raise NotImplementedError
 
@@ -45,7 +44,7 @@ class Portfolio:
         """
         total fees paid by user for th
         """
-        return self.coinbase.df["total_fee"].sum()
+        return self.coinbase.history.df["total_fee"].sum()
 
     def total_by_type(self):
         """
@@ -54,7 +53,9 @@ class Portfolio:
         Return:
             :obj:`pandas.DataFrame`
         """
-        return self.coinbase.df.groupby("type")[["native_amount"]].sum()
+        return self.coinbase.history.df.groupby("type")[
+            ["native_amount"]
+        ].sum()
 
     def live_value(self, client, amount, currency):
         """
@@ -79,8 +80,10 @@ class Portfolio:
                 coinbase account.
         """
         balance = (
-            self.coinbase.df[
-                self.coinbase.df["type"].isin(["buy", "sell", "trade", "send"])
+            self.coinbase.history.df[
+                self.coinbase.history.df["type"].isin(
+                    ["buy", "sell", "trade", "send"]
+                )
             ]
             .groupby("symbol")[["amount"]]
             .sum()
@@ -98,7 +101,7 @@ class Portfolio:
             + " EUR"
         )
 
-    def standardize(self):
+    def _standardize(self):
         """
         creates a dataframe of only `buy` and `sell` orders,
         for easier portfolio analysis.
@@ -110,7 +113,7 @@ class Portfolio:
             or `withdrawal` transactions
 
         """
-        self.std_df = self.coinbase.df.copy()
+        self.std_df = self.coinbase.history.df.copy()
         # exclude fiat deposit and withdrawals AND SEND
         self.std_df = self.std_df[
             self.std_df["type"].isin(["buy", "sell", "trade"])
@@ -139,3 +142,6 @@ class Portfolio:
                     raise ValueError(
                         "Did not find 2 trades with matching trade_id"
                     )
+        if len(self.std_df) != len(self.coinbase.history.df):
+            n = len(self.coinbase.history.df) - len(self.std_df)
+            print(f"Warning! There are {n} NOT processed.")

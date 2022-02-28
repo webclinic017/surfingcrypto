@@ -177,7 +177,8 @@ class MyCoinbase(CB):
         timeranges (:obj:`list` of :obj:`dict`): list of
             dictionaries with dates of first and last transaction for
             each account
-        isHistoric (bool): if module has been loaded in historic mode.
+        isHistoric (bool): if module has been loaded in historic mode,
+            a.k.a. all accounts with a transaction in the record
         json_path (str): path to json dump file
 
     """
@@ -289,11 +290,11 @@ class MyCoinbase(CB):
         else:
             raise ValueError("Must get accounts first.")
 
-    def transactions_history(self):
+    def get_history(self):
         """
-        start a TransactionsGetter object
+        start a TransactionsHistory object
         """
-        self.history = TransactionsGetter(self)
+        self.history = TransactionsHistory(self)
         pass
 
     def __repr__(self):
@@ -307,7 +308,7 @@ class MyCoinbase(CB):
             f" N_accounts:{len(self.accounts)})"
 
 
-class TransactionsGetter:
+class TransactionsHistory:
     """
     This objects fetches all coinbase transactions and parses them into a
     known format.
@@ -501,14 +502,14 @@ class TransactionsGetter:
         return total, subtotal, total_fee
 
     def __repr__(self):
-        return f"TransactionGetter(" \
+        return f"TransactionsHistory(" \
             f"Processed transactions:{len(self.df)}, "\
             f"Unhandled:{len(self.unhandled_trans)}, "\
             f"Errors:{len(self.error_log)} "\
             ")"
 
     def __str__(self):
-        return f"TransactionGetter(" \
+        return f"TransactionsHistory(" \
             f"Processed transactions:{len(self.df)}, "\
             f"Unhandled:{len(self.unhandled_trans)}, "\
             f"Errors:{len(self.error_log)} "\
