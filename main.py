@@ -24,6 +24,7 @@ c = Config(str(cwd) + "/config")
 tg = TelegramBot(c, channel_mode=True)
 
 # scrape required data
+print("### Scraper")
 s = Scraper(c)
 s.run()
 tg.send_message_to_all(
