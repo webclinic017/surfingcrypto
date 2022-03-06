@@ -56,16 +56,15 @@ class Scraper:
             if hasattr(run, "error"):
                 errors.append(run)
 
-        if len(errors)==0:
+        if len(errors) == 0:
             self.output_description = "Update successful."
-            self.output=True
+            self.output = True
         else:
             self.output_description = (
-                "Update failed."
-                f" There are ({len(errors)}/{length}) errors."
+                "Update failed." f" There are ({len(errors)}/{length}) errors."
             )
-            self.output=False
-        
+            self.output = False
+
         if self.verbose:
             print(self.output_description)
 
