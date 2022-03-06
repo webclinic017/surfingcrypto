@@ -246,9 +246,7 @@ class MyCoinbase(CB):
                 }
             )
         dump = {
-            "datetime": dt.datetime.utcnow().strftime(
-                "%Y-%m-%dT%H:%M:%SZ"
-            ),
+            "datetime": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             "accounts": _list,
         }
         with open(self.json_path, "w") as f:
@@ -298,14 +296,18 @@ class MyCoinbase(CB):
         pass
 
     def __repr__(self):
-        return f"MyCoinbase( isHistoric:{self.isHistoric},"\
-            f" last_updated:{self.last_updated},"\
+        return (
+            f"MyCoinbase( isHistoric:{self.isHistoric},"
+            f" last_updated:{self.last_updated},"
             f" N_accounts:{len(self.accounts)})"
+        )
 
     def __str__(self):
-        return f"MyCoinbase( isHistoric:{self.isHistoric},"\
-            f" last updated:{self.last_updated},"\
+        return (
+            f"MyCoinbase( isHistoric:{self.isHistoric},"
+            f" last updated:{self.last_updated},"
             f" N_accounts:{len(self.accounts)})"
+        )
 
 
 class TransactionsHistory:
@@ -334,8 +336,8 @@ class TransactionsHistory:
         self.known_types = [
             "buy",
             "sell",
-            "trade",
-            "send",
+            "trade",  # verify
+            "send",  # verify
             "fiat_withdrawal",
             "fiat_deposit",
         ]
@@ -502,15 +504,31 @@ class TransactionsHistory:
         return total, subtotal, total_fee
 
     def __repr__(self):
-        return f"TransactionsHistory(" \
-            f"Processed transactions:{len(self.df)}, "\
-            f"Unhandled:{len(self.unhandled_trans)}, "\
-            f"Errors:{len(self.error_log)} "\
+        return (
+            f"TransactionsHistory("
+            f"Processed transactions:{len(self.df)}, "
+            f"Unhandled:{len(self.unhandled_trans)}, "
+            f"Errors:{len(self.error_log)} "
             ")"
+        )
 
     def __str__(self):
-        return f"TransactionsHistory(" \
-            f"Processed transactions:{len(self.df)}, "\
-            f"Unhandled:{len(self.unhandled_trans)}, "\
-            f"Errors:{len(self.error_log)} "\
+        return (
+            f"TransactionsHistory("
+            f"Processed transactions:{len(self.df)}, "
+            f"Unhandled:{len(self.unhandled_trans)}, "
+            f"Errors:{len(self.error_log)} "
             ")"
+        )
+
+    def executed_without_errors(self) -> bool:
+        """
+        check if the object was executed with errors
+
+        Returns:
+            bool: execution resulted in errors
+        """
+        if len(self.unhandled_trans) + len(self.error_log) > 0:
+            return False
+        else:
+            return True

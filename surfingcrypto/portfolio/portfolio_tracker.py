@@ -17,7 +17,7 @@ class Tracker:
         self.configuration = configuration
 
         self.portfolio_df = self._format_df(df)
-
+        # for now, sets time limits to all transactions
         self.stocks_start = pd.Timestamp(
             self.portfolio_df["Open date"].min().date(), tz="utc"
         )
@@ -37,18 +37,27 @@ class Tracker:
         Returns:
             portfolio_df (:obj:`pandas.DataFrame`): dataframe in required format
         """
-        portfolio_df = df.copy().rename(
-            {
-                "datetime": "Open date",
-                "type": "Type",
-                "symbol": "Symbol",
-                "amount": "Qty",
-                "spot_price": "Adj cost per share",
-                "native_amount": "Adj cost",
-            },
-            axis=1,
+        portfolio_df = (
+            df.reset_index()
+            .copy()
+            .rename(
+                {
+                    "datetime": "Open date",
+                    "type": "Type",
+                    "symbol": "Symbol",
+                    "amount": "Qty",
+                    "spot_price": "Adj cost per share",
+                    "native_amount": "Adj cost",
+                },
+                axis=1,
+            )
         )
-        portfolio_df.drop("trade_id", axis=1, inplace=True)
+        #drop unused columns
+        portfolio_df.drop(
+            ["trade_id", "nat_symbol", "total", "subtotal", "total_fee"],
+            axis=1,
+            inplace=True,
+        )
 
         portfolio_df["Open date"] = pd.to_datetime(portfolio_df["Open date"])
         return portfolio_df
@@ -91,11 +100,11 @@ class Tracker:
         else:
             raise ValueError("Local data is not sufficient for purpose.")
 
-    def portfolio_start_balance(self, portfolio, start_date):
-        positions_before_start = portfolio[
-            portfolio["Open date"] <= start_date
+    def portfolio_start_balance(self):
+        positions_before_start = self.portfolio_df[
+            self.portfolio_df["Open date"] <= self.stocks_start
         ]
-        future_positions = portfolio[portfolio["Open date"] >= start_date]
+        future_positions = self.portfolio_df[self.portfolio_df["Open date"] >= self.stocks_start]
         sales = (
             positions_before_start[positions_before_start["Type"] == "sell"]
             .groupby(["Symbol"])["Qty"]
@@ -114,10 +123,16 @@ class Tracker:
         adj_positions_df = adj_positions_df[adj_positions_df["Qty"] > 0]
         return adj_positions_df
 
-    def time_fill(self, portfolio):
+    def time_fill(self):
+        """_summary_
+
+        Returns:
+            per_day_balance (:obj:`list` of :obj:`pandas.DataFrame`): list of dfs
+        """
         calendar = pd.date_range(
             start=self.stocks_start, end=self.stocks_end, freq="1d"
         )
+        portfolio=self.portfolio_df
         sales = (
             portfolio[portfolio["Type"] == "sell"]
             .groupby(["Symbol", "Open date"])["Qty"]

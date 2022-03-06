@@ -37,6 +37,7 @@ class Portfolio:
             self.coinbase = MyCoinbase(active_accounts=False, **kwargs)
             self.coinbase.get_history()
             self._standardize()
+            self._init_log()
         else:
             raise NotImplementedError
 
@@ -142,6 +143,16 @@ class Portfolio:
                     raise ValueError(
                         "Did not find 2 trades with matching trade_id"
                     )
+
+    def _init_log(self):
+        """
+        prints log of initialization status.
+        """
         if len(self.std_df) != len(self.coinbase.history.df):
             n = len(self.coinbase.history.df) - len(self.std_df)
-            print(f"Warning! There are {n} NOT processed.")
+            print(
+                f"Warning! There are {n} transactions"\
+                "that were EXCLUDED in std_df."
+                )
+        if not self.coinbase.history.executed_without_errors():
+            print(self.coinbase.history)
