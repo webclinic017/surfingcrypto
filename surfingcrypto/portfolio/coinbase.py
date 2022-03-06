@@ -329,6 +329,8 @@ class TransactionsHistory:
             of supported transaction types.
         unhandled_trans (:obj:`list` of :obj:`dict`): list informations of
             unhandled transactions.
+        errors (:obj:`list` of :obj:`coibase.model.ApiObject`): list of 
+            transactions that resulted in an error
         error_log (:obj:`list` of :obj:`dict`): list informations of
             transactions that resulted in an error.
     """
@@ -351,6 +353,7 @@ class TransactionsHistory:
             self.unhandled_trans = []
             # error log for when failing handling known transactions types
             self.error_log = []
+            self.errors = []
 
             self.df = []
             self.transactions = []
@@ -359,6 +362,7 @@ class TransactionsHistory:
                 for account in self._mycoinbase.accounts:
                     self._handle_transactions(account)
                 self.df = pd.DataFrame(self.df).set_index("datetime")
+                self.df.sort_index(inplace=True)
                 order = [
                     "type",
                     "amount",
@@ -382,31 +386,14 @@ class TransactionsHistory:
         handles the transactions based on type.
         """
         for transaction in self._mycoinbase._get_transactions(account):
-            try:
-                if transaction["type"] in self.known_types:
-                    self._process_transaction(account, transaction)
-                    self.transactions.append(transaction)
-                else:
-                    self.unhandled_trans.append(
-                        {
-                            "transaction_type": transaction["type"],
-                            "account_id": account["id"],
-                            "transaction_id": transaction["id"],
-                        }
-                    )
-            except Exception as e:
-                symbol, amount, datetime = self._get_transact_info(transaction)
-                self.error_log.append(
+            if transaction["type"] in self.known_types:
+                self._process_transaction(account, transaction)
+            else:
+                self.unhandled_trans.append(
                     {
                         "transaction_type": transaction["type"],
                         "account_id": account["id"],
                         "transaction_id": transaction["id"],
-                        "info": {
-                            "amount": amount,
-                            "symbol": symbol,
-                            "date": datetime,
-                        },
-                        "error_log": e,
                     }
                 )
 
@@ -417,9 +404,28 @@ class TransactionsHistory:
         # spot price??
         symbol, amount, datetime = self._get_transact_info(transaction)
         nat_amount, nat_symbol = self._get_native_amount(transaction)
-        total, subtotal, total_fee = self._get_transact_data(
-            account, transaction
-        )
+        try:
+            total, subtotal, total_fee = self._get_transact_data(
+                account, transaction
+            )
+            self.transactions.append(transaction)
+        except Exception as e:
+            total, subtotal, total_fee = None, None, None
+
+            self.errors.append(transaction)
+            self.error_log.append(
+                {
+                    "transaction_type": transaction["type"],
+                    "account_id": account["id"],
+                    "transaction_id": transaction["id"],
+                    "info": {
+                        "amount": amount,
+                        "symbol": symbol,
+                        "date": datetime,
+                    },
+                    "error_log": e,
+                }
+            )
 
         if subtotal is None:
             spot_price = nat_amount / amount
@@ -508,18 +514,20 @@ class TransactionsHistory:
     def __repr__(self):
         return (
             f"TransactionsHistory("
-            f"Processed transactions:{len(self.df)}, "
-            f"Unhandled:{len(self.unhandled_trans)}, "
-            f"Errors:{len(self.error_log)} "
+            f"Transactions:{len(self.transactions)+len(self.unhandled_trans)+len(self.error_log)} "
+            f"- Processed:{len(self.df)}, "
+            f"Unhandled:{len(self.unhandled_trans)} "
+            f"- Errors:{len(self.error_log)}"
             ")"
         )
 
     def __str__(self):
         return (
             f"TransactionsHistory("
-            f"Processed transactions:{len(self.df)}, "
-            f"Unhandled:{len(self.unhandled_trans)}, "
-            f"Errors:{len(self.error_log)} "
+            f"Transactions:{len(self.transactions)+len(self.unhandled_trans)+len(self.error_log)} "
+            f"- Processed:{len(self.df)}, "
+            f"Unhandled:{len(self.unhandled_trans)} "
+            f"- Errors:{len(self.error_log)}"
             ")"
         )
 
