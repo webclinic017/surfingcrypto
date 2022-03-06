@@ -41,7 +41,7 @@ class Scraper:
         """runs the scraping process."""
         self.runs = []
         for key in self.config.scraping_req:
-            c = CoinScraper(key, self.config)
+            c = CoinScraper(key, self.fiat,self.config)
             self.runs.append(c)
 
         self._log()
@@ -85,6 +85,7 @@ class CoinScraper:
 
     Arguments:
         key (str): symbol of crypto
+        self.fiat = fiat
         configuration (:obj:`surfingcrypto.config.config`): package
             configuration object
 
@@ -100,8 +101,9 @@ class CoinScraper:
         error (:obj:`Excection`): generic error
     """
 
-    def __init__(self, key, configuration):
+    def __init__(self, key, fiat, configuration):
         self.key = key
+        self.fiat = fiat
         self.config = configuration
         self.start = self.config.scraping_req[key]["start"]
         self.end_day = self.config.scraping_req[key]["end_day"]
