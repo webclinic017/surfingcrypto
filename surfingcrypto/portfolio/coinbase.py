@@ -172,6 +172,8 @@ class MyCoinbase(CB):
     Attributes:
         accounts (:obj:`list` of :obj:`coibase.model.ApiObject`):
             list of selected accounts.
+        history (:obj:`surfingcrypto.portfolio.coinbase.TransactionsHistory`):
+            `TransactionsHistory` object
         last_updated (:obj:`datetime.datetime`): datetime of
             last updates of account list.
         timeranges (:obj:`list` of :obj:`dict`): list of
