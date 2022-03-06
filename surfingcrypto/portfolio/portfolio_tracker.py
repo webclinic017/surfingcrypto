@@ -13,19 +13,32 @@ from surfingcrypto.ts import TS
 
 
 class Tracker:
-    def __init__(self, df, configuration):
+    def __init__(
+        self, df, stocks_start=None, stocks_end=None, configuration=None
+    ):
         self.configuration = configuration
 
         self.portfolio_df = self._format_df(df)
         # for now, sets time limits to all transactions
-        self.stocks_start = pd.Timestamp(
-            self.portfolio_df["Open date"].min().date(), tz="utc"
-        )
-        self.stocks_end = pd.Timestamp(
-            datetime.datetime.now(datetime.timezone.utc).date()
-            + datetime.timedelta(-1),
-            tz="utc",
-        )
+        if stocks_start is None:
+            self.stocks_start = pd.Timestamp(
+                self.portfolio_df["Open date"].min().date(), tz="utc"
+            )
+        else:
+            self.stocks_start = pd.Timestamp(
+                datetime.datetime.strptime(stocks_start,"%d-%m-%Y"), tz="utc"
+            )
+
+        if stocks_end is None:
+            self.stocks_end = pd.Timestamp(
+                datetime.datetime.now(datetime.timezone.utc).date()
+                + datetime.timedelta(-1),
+                tz="utc",
+            )
+        else:
+            self.stocks_end = pd.Timestamp(
+                datetime.datetime.strptime(stocks_end,"%d-%m-%Y"), tz="utc"
+            )
 
     def _format_df(self, df):
         """
@@ -52,7 +65,8 @@ class Tracker:
                 axis=1,
             )
         )
-        #drop unused columns
+
+        # drop unused columns
         portfolio_df.drop(
             ["trade_id", "nat_symbol", "total", "subtotal", "total_fee"],
             axis=1,
@@ -104,7 +118,9 @@ class Tracker:
         positions_before_start = self.portfolio_df[
             self.portfolio_df["Open date"] <= self.stocks_start
         ]
-        future_positions = self.portfolio_df[self.portfolio_df["Open date"] >= self.stocks_start]
+        future_positions = self.portfolio_df[
+            self.portfolio_df["Open date"] >= self.stocks_start
+        ]
         sales = (
             positions_before_start[positions_before_start["Type"] == "sell"]
             .groupby(["Symbol"])["Qty"]
@@ -132,7 +148,7 @@ class Tracker:
         calendar = pd.date_range(
             start=self.stocks_start, end=self.stocks_end, freq="1d"
         )
-        portfolio=self.portfolio_df
+        portfolio = self.portfolio_df
         sales = (
             portfolio[portfolio["Type"] == "sell"]
             .groupby(["Symbol", "Open date"])["Qty"]
@@ -273,6 +289,7 @@ def benchmark_portfolio_calcs(portfolio, benchmark):
     return portfolio
 
 
+# ERROR RETURNS LESS SYMBOLS
 def portfolio_end_of_year_stats(portfolio, adj_close_end):
     adj_close_end = adj_close_end[
         adj_close_end["Date"] == adj_close_end["Date"].max()
@@ -287,16 +304,18 @@ def portfolio_end_of_year_stats(portfolio, adj_close_end):
     return portfolio_end_data
 
 
-# Merge the overall dataframe with the adj close start of year dataframe for YTD tracking of tickers.
+# ERROR RETURNS EMPTY
+# Merge the overall dataframe with the adj close start of year dataframe for
+# YTD tracking of tickers.
 def portfolio_start_of_year_stats(portfolio, adj_close_start):
     adj_close_start = adj_close_start[
         adj_close_start["Date"] == adj_close_start["Date"].min()
     ]
-    portfolio_start = pd.merge(
-        portfolio,
-        adj_close_start[["symbol", "Close", "Date"]],
-        left_on="Symbol",
-        right_on="symbol",
+    portfolio.Symbol = portfolio.Symbol.astype("string")
+    adj_close_start.symbol = adj_close_start.symbol.astype("string")
+
+    portfolio_start = portfolio.merge(
+        adj_close_start, left_on="Symbol", right_on="symbol",
     )
     portfolio_start.rename(
         columns={"Close": "symbol Start Date Close"}, inplace=True
