@@ -155,4 +155,5 @@ class Portfolio:
                 "that were EXCLUDED in std_df."
                 )
         if not self.coinbase.history.executed_without_errors():
+            print("Coinbase errors:")
             print(self.coinbase.history)
