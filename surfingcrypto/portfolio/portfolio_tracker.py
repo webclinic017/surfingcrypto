@@ -1,3 +1,6 @@
+"""
+portfolio value traker.
+"""
 import datetime
 import pandas as pd
 import numpy as np
@@ -10,10 +13,10 @@ from surfingcrypto.ts import TS
 
 
 class Tracker:
-    def __init__(self, portfolio_df, configuration):
+    def __init__(self, df, configuration):
         self.configuration = configuration
 
-        self.portfolio_df = portfolio_df
+        self.portfolio_df = self._format_df(df)
 
         self.stocks_start = pd.Timestamp(
             self.portfolio_df["Open date"].min().date(), tz="utc"
@@ -24,7 +27,31 @@ class Tracker:
             tz="utc",
         )
 
-        pass
+    def _format_df(self, df):
+        """
+        sets dataframe to required format by traker module.
+
+        Arrguments:
+            df (:obj:`pandas.DataFrame`):
+
+        Returns:
+            portfolio_df (:obj:`pandas.DataFrame`): dataframe in required format
+        """
+        portfolio_df = df.copy().rename(
+            {
+                "datetime": "Open date",
+                "type": "Type",
+                "symbol": "Symbol",
+                "amount": "Qty",
+                "spot_price": "Adj cost per share",
+                "native_amount": "Adj cost",
+            },
+            axis=1,
+        )
+        portfolio_df.drop("trade_id", axis=1, inplace=True)
+
+        portfolio_df["Open date"] = pd.to_datetime(portfolio_df["Open date"])
+        return portfolio_df
 
     def load_data(self):
         """
