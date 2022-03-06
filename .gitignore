@@ -34,7 +34,9 @@ docsrc/build
 # pytest
 *.pytest_cache
 # test coverage
+htmlcov
 .coverage
+coverage.xml
 ######
 # git files
 *.rej
