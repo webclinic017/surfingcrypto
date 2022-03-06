@@ -41,7 +41,7 @@ class Scraper:
         """runs the scraping process."""
         self.runs = []
         for key in self.config.scraping_req:
-            c = CoinScraper(key, self.fiat,self.config)
+            c = CoinScraper(key, self.fiat, self.config)
             self.runs.append(c)
 
         self._log()
@@ -102,12 +102,18 @@ class CoinScraper:
     """
 
     def __init__(self, key, fiat, configuration):
-        self.key = key
-        self.fiat = fiat
         self.config = configuration
+        self.fiat = fiat
+
         self.start = self.config.scraping_req[key]["start"]
         self.end_day = self.config.scraping_req[key]["end_day"]
+
+        if key in self.config.rebrandings:
+            key = self.config.rebrandings[key]
+        self.key = key
+
         self.path = self.config.data_folder + "/ts/" + key + ".csv"
+
         self._run()
 
     def _run(self):
