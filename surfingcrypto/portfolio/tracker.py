@@ -5,7 +5,6 @@ import datetime
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import datetime
 from surfingcrypto.ts import TS
 
 # from plotly.offline import init_notebook_mode, iplot
@@ -26,7 +25,7 @@ class Tracker:
             )
         else:
             self.stocks_start = pd.Timestamp(
-                datetime.datetime.strptime(stocks_start,"%d-%m-%Y"), tz="utc"
+                datetime.datetime.strptime(stocks_start, "%d-%m-%Y"), tz="utc"
             )
 
         if stocks_end is None:
@@ -37,7 +36,7 @@ class Tracker:
             )
         else:
             self.stocks_end = pd.Timestamp(
-                datetime.datetime.strptime(stocks_end,"%d-%m-%Y"), tz="utc"
+                datetime.datetime.strptime(stocks_end, "%d-%m-%Y"), tz="utc"
             )
 
     def _format_df(self, df):
@@ -48,7 +47,8 @@ class Tracker:
             df (:obj:`pandas.DataFrame`):
 
         Returns:
-            portfolio_df (:obj:`pandas.DataFrame`): dataframe in required format
+            portfolio_df (:obj:`pandas.DataFrame`): dataframe
+                in required format
         """
         portfolio_df = (
             df.reset_index()
@@ -108,7 +108,7 @@ class Tracker:
             df.index.min() <= self.stocks_start
             and df.index.max() >= self.stocks_end
         ):
-            df = df.loc[self.stocks_start : self.stocks_end, ["Close"]]
+            df = df.loc[self.stocks_start: self.stocks_end, ["Close"]]
             df.reset_index(inplace=True)
             return df
         else:
@@ -143,7 +143,8 @@ class Tracker:
         """_summary_
 
         Returns:
-            per_day_balance (:obj:`list` of :obj:`pandas.DataFrame`): list of dfs
+            per_day_balance (:obj:`list` of :obj:`pandas.DataFrame`):
+                list of dfs
         """
         calendar = pd.date_range(
             start=self.stocks_start, end=self.stocks_end, freq="1d"
