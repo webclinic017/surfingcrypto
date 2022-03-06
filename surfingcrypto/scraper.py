@@ -23,8 +23,8 @@ class Scraper:
             configuration object
         fiat (str): fiat symbol
         verbose (bool): wether to print log
-        runs (:obj:`list` of :obj:`surfincrypto.scraper.CoinScraper) : 
-            list of `CoinScraper` objects
+        runs (:obj:`list` of :obj:`surfincrypto.scraper.CoinScraper`): list
+            of `CoinScraper` objects
         output (bool): Overall boolean output of process. If
             everything went well.
         output_descrition (str): Overall log string of ouput.
