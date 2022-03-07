@@ -45,5 +45,5 @@ coverage.xml
 ./*.html
 ####
 # others
-tools
+tools/vm.sh
 *.session
