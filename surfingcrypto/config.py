@@ -23,16 +23,18 @@ class Config:
         data_folder (str,optional) : ABSOLUTE path to data folder
 
     Attributes:
-        config_folder (str): ABSOLUTE path to config folder.
-        rebrandings (dict): dictionary of known rebrandings
-        data_folder (str,optional) : ABSOLUTE path to data folder
-        coins (dict): coins user configuration
-        telegram (dict): telegram user configuration
         coinbase (dict): coinbase user configuration
-        scraping_req (:obj:`dict` of :obj:`dict`)
-            dictionary containing scraping params
         coinbase_req (:obj:`dict` of :obj:`dict`) dictionary
             containing coinbase requirements
+        coins (dict): coins user configuration
+        config_folder (str): ABSOLUTE path to config folder.
+        data_folder (str) : ABSOLUTE path to data folder
+        error_log (:obj:`list`): list of errors
+        rebrandings (dict): dictionary of known rebrandings
+        scraping_req (:obj:`dict` of :obj:`dict`)
+            dictionary containing scraping params
+        telegram (dict): telegram user configuration
+        temp_folder (str,optional) : ABSOLUTE path to data folder
     """
 
     def __init__(self, config_folder, data_folder=None):
@@ -41,9 +43,7 @@ class Config:
         self._set_data_folder(data_folder)
         self._temp_dir()
 
-        self.rebrandings={
-            "CGLD":"CELO"
-        }
+        self.rebrandings = {"CGLD": "CELO"}
 
         # ERROR LOG
         self.error_log = []
