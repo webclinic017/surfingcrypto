@@ -34,6 +34,9 @@ class TS:
         if coin is None:
             raise ValueError("Must specify coin.")
         else:
+            # rebrandings
+            if coin in self.config.rebrandings:
+                coin = self.config.rebrandings[coin]
             self.coin = coin
             self.build_ts()
 

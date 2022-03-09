@@ -73,6 +73,9 @@ class Tracker:
             inplace=True,
         )
 
+        # exclude double transactions coin-fiat for the tracking purpose.
+        portfolio_df = portfolio_df[~(portfolio_df["Symbol"] == "EUR")]
+
         portfolio_df["Open date"] = pd.to_datetime(portfolio_df["Open date"])
         return portfolio_df
 
@@ -108,7 +111,7 @@ class Tracker:
             df.index.min() <= self.stocks_start
             and df.index.max() >= self.stocks_end
         ):
-            df = df.loc[self.stocks_start: self.stocks_end, ["Close"]]
+            df = df.loc[self.stocks_start : self.stocks_end, ["Close"]]
             df.reset_index(inplace=True)
             return df
         else:
