@@ -143,7 +143,7 @@ class Config:
         # first get - if possible - coinbase requirements
         if self.coinbase_req is not None:
             for account in self.coinbase_req["accounts"]:
-                if account["currency"] not in ["EUR", "USDC"]:
+                if account["currency"] not in ["EUR"]:
                     # active account
                     if float(account["balance"]) > 0.0:
                         req[account["currency"]] = {
