@@ -91,9 +91,7 @@ class Tracker:
         for symbol in symbols:
             try:
                 ts = TS(configuration=self.configuration, coin=symbol)
-                start = self.configuration.coinbase_req[symbol]["start"]
-                end_day = self.configuration.coinbase_req[symbol]["end_day"]
-                df = ts.df.loc[start:end_day, ["Close"]]
+                df = ts.df.loc[self.stocks_start:, ["Close"]]
                 df["symbol"] = symbol
                 dfs.append(df)
 
@@ -315,6 +313,7 @@ def portfolio_start_of_year_stats(portfolio, adj_close_start):
     adj_close_start = adj_close_start[
         adj_close_start["Date"] == adj_close_start["Date"].min()
     ]
+
     portfolio.Symbol = portfolio.Symbol.astype("string")
     adj_close_start.symbol = adj_close_start.symbol.astype("string")
 
