@@ -5,15 +5,36 @@ import datetime
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import surfingcrypto
 from surfingcrypto.ts import TS
 
 from plotly.offline import iplot
+
 # init_notebook_mode(connected=True)
 
 
 class Tracker:
+    """Tracker module
+
+    This module tracks the daily portfolio value, 
+    plus it features a series of portfolio statistics.
+
+    Args:
+        df (pd.DataFrame): _description_
+        stocks_start (str, optional): time from which start tracking.
+            Defaults to None.
+        stocks_end (str, optional): time from which stop tracking.
+            Defaults to None.
+        configuration (Config, optional): surfingcrypto configuration object.
+            Defaults to None.
+    """
+
     def __init__(
-        self, df, stocks_start=None, stocks_end=None, configuration=None
+        self,
+        df: pd.DataFrame,
+        stocks_start: str = None,
+        stocks_end: str = None,
+        configuration: surfingcrypto.Config = None,
     ):
         self.configuration = configuration
 
@@ -40,15 +61,15 @@ class Tracker:
 
         self.portfolio_df = self._format_df(df)
 
-    def _format_df(self, df):
+    def _format_df(self, df: pd.DataFrame,):
         """
         sets dataframe to required format by traker module.
 
         Arrguments:
-            df (:obj:`pandas.DataFrame`):
+            df (:obj:`pd.DataFrame`):
 
         Returns:
-            portfolio_df (:obj:`pandas.DataFrame`): dataframe
+            portfolio_df (:obj:`pd.DataFrame`): dataframe
                 in required format
         """
         portfolio_df = (
@@ -68,7 +89,6 @@ class Tracker:
         )
         portfolio_df["Open date"] = pd.to_datetime(portfolio_df["Open date"])
 
-
         # drop unused columns
         portfolio_df.drop(
             ["trade_id", "nat_symbol", "total", "subtotal", "total_fee"],
@@ -80,7 +100,11 @@ class Tracker:
         portfolio_df = portfolio_df[~(portfolio_df["Symbol"] == "EUR")]
 
         # subset dataframe
-        portfolio_df=portfolio_df.set_index("Open date").loc[self.stocks_start:self.stocks_end,:].reset_index()
+        portfolio_df = (
+            portfolio_df.set_index("Open date")
+            .loc[self.stocks_start : self.stocks_end, :]
+            .reset_index()
+        )
 
         return portfolio_df
 
@@ -96,7 +120,7 @@ class Tracker:
         for symbol in symbols:
             try:
                 ts = TS(configuration=self.configuration, coin=symbol)
-                df = ts.df.loc[self.stocks_start:, ["Close"]]
+                df = ts.df.loc[self.stocks_start :, ["Close"]]
                 df["symbol"] = symbol
                 dfs.append(df)
 
@@ -107,7 +131,18 @@ class Tracker:
         closedata.reset_index(inplace=True)
         return closedata
 
-    def set_benchmark(self, benchmark):
+    def set_benchmark(self, benchmark:str) -> pd.DataFrame:
+        """_summary_
+
+        Args:
+            benchmark (str): string code of benchmark
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            pd.DataFrame: dataframe of benchmark
+        """
         ts = TS(configuration=self.configuration, coin=benchmark)
         df = ts.df.copy()
         if (
@@ -120,7 +155,7 @@ class Tracker:
         else:
             raise ValueError("Local data is not sufficient for purpose.")
 
-    def portfolio_start_balance(self):
+    def portfolio_start_balance(self)-> pd.DataFrame:
         positions_before_start = self.portfolio_df[
             self.portfolio_df["Open date"] <= self.stocks_start
         ]
@@ -145,7 +180,7 @@ class Tracker:
         adj_positions_df = adj_positions_df[adj_positions_df["Qty"] > 0]
         return adj_positions_df
 
-    def time_fill(self):
+    def time_fill(self)-> list:
         """_summary_
 
         Returns:
@@ -210,11 +245,11 @@ class Tracker:
         )
         iplot(fig)
 
-    def line(self, df, vals: list):
+    def line(self, df:pd.DataFrame, vals: list):
         """plotly lines
 
         Args:
-            df (_type_): _description_
+            df (pd.DataFrame): dataframe to plot
             vals (list): list of columns to plot
         """
         # group by day
@@ -222,9 +257,7 @@ class Tracker:
             df.groupby([df["Date Snapshot"].dt.date])[vals].sum().reset_index()
         )
         grouped_metrics = pd.melt(
-            grouped_metrics,
-            id_vars=["Date Snapshot"],
-            value_vars=vals,
+            grouped_metrics, id_vars=["Date Snapshot"], value_vars=vals,
         )
         fig = px.line(
             grouped_metrics, x="Date Snapshot", y="value", color="variable"
@@ -303,7 +336,6 @@ def benchmark_portfolio_calcs(portfolio, benchmark):
     return portfolio
 
 
-# ERROR RETURNS LESS SYMBOLS
 def portfolio_end_of_year_stats(portfolio, adj_close_end):
     adj_close_end = adj_close_end[
         adj_close_end["Date"] == adj_close_end["Date"].max()
@@ -318,9 +350,6 @@ def portfolio_end_of_year_stats(portfolio, adj_close_end):
     return portfolio_end_data
 
 
-# ERROR RETURNS EMPTY
-# Merge the overall dataframe with the adj close start of year dataframe for
-# YTD tracking of tickers.
 def portfolio_start_of_year_stats(portfolio, adj_close_start):
     adj_close_start = adj_close_start[
         adj_close_start["Date"] == adj_close_start["Date"].min()
