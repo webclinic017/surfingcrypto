@@ -210,14 +210,21 @@ class Tracker:
         )
         iplot(fig)
 
-    def line(self, df, val_1, val_2):
+    def line(self, df, vals: list):
+        """plotly lines
+
+        Args:
+            df (_type_): _description_
+            vals (list): list of columns to plot
+        """
+        # group by day
         grouped_metrics = (
-            df.groupby(["Date Snapshot"])[[val_1, val_2]].sum().reset_index()
+            df.groupby([df["Date Snapshot"].dt.date])[vals].sum().reset_index()
         )
         grouped_metrics = pd.melt(
             grouped_metrics,
             id_vars=["Date Snapshot"],
-            value_vars=[val_1, val_2],
+            value_vars=vals,
         )
         fig = px.line(
             grouped_metrics, x="Date Snapshot", y="value", color="variable"
