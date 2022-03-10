@@ -17,7 +17,6 @@ class Tracker:
     ):
         self.configuration = configuration
 
-        self.portfolio_df = self._format_df(df)
         # for now, sets time limits to all transactions
         if stocks_start is None:
             self.stocks_start = pd.Timestamp(
@@ -38,6 +37,8 @@ class Tracker:
             self.stocks_end = pd.Timestamp(
                 datetime.datetime.strptime(stocks_end, "%d-%m-%Y"), tz="utc"
             )
+
+        self.portfolio_df = self._format_df(df)
 
     def _format_df(self, df):
         """
@@ -65,6 +66,8 @@ class Tracker:
                 axis=1,
             )
         )
+        portfolio_df["Open date"] = pd.to_datetime(portfolio_df["Open date"])
+
 
         # drop unused columns
         portfolio_df.drop(
@@ -76,7 +79,9 @@ class Tracker:
         # exclude double transactions coin-fiat for the tracking purpose.
         portfolio_df = portfolio_df[~(portfolio_df["Symbol"] == "EUR")]
 
-        portfolio_df["Open date"] = pd.to_datetime(portfolio_df["Open date"])
+        # subset dataframe
+        portfolio_df=portfolio_df.set_index("Open date").loc[self.stocks_start:self.stocks_end,:].reset_index()
+
         return portfolio_df
 
     def load_data(self):

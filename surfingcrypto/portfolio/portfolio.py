@@ -41,66 +41,66 @@ class Portfolio:
         else:
             raise NotImplementedError
 
-    def total_fees(self):
-        """
-        total fees paid by user for th
-        """
-        return self.coinbase.history.df["total_fee"].sum()
+    # def total_fees(self):
+    #     """
+    #     total fees paid by user for th
+    #     """
+    #     return self.coinbase.history.df["total_fee"].sum()
 
-    def total_by_type(self):
-        """
-        total EUR by transaction type.
+    # def total_by_type(self):
+    #     """
+    #     total EUR by transaction type.
 
-        Return:
-            :obj:`pandas.DataFrame`
-        """
-        return self.coinbase.history.df.groupby("type")[
-            ["native_amount"]
-        ].sum()
+    #     Return:
+    #         :obj:`pandas.DataFrame`
+    #     """
+    #     return self.coinbase.history.df.groupby("type")[
+    #         ["native_amount"]
+    #     ].sum()
 
-    def live_value(self, client, amount, currency):
-        """
-        gets live value of given currency and amount.
+    # def live_value(self, client, amount, currency):
+    #     """
+    #     gets live value of given currency and amount.
 
-        Arguments:
-            client (:obj:`surfingcrypto.coinbase.CB.client`) : client
-                to coinbase account.
-            amount (float): amount of currency
-            currency (str): symbol of currency
-        """
-        change = client.get_spot_price(currency_pair=currency + "-EUR")
-        change = float(change["amount"])
-        return amount * change
+    #     Arguments:
+    #         client (:obj:`surfingcrypto.coinbase.CB.client`) : client
+    #             to coinbase account.
+    #         amount (float): amount of currency
+    #         currency (str): symbol of currency
+    #     """
+    #     change = client.get_spot_price(currency_pair=currency + "-EUR")
+    #     change = float(change["amount"])
+    #     return amount * change
 
-    def portfolio_value(self, client):
-        """
-        gets live value of portfolio.
+    # def portfolio_value(self, client):
+    #     """
+    #     gets live value of portfolio.
 
-        Arguments:
-            client (:obj:`surfingcrypto.coinbase.CB.client`) : client to
-                coinbase account.
-        """
-        balance = (
-            self.coinbase.history.df[
-                self.coinbase.history.df["type"].isin(
-                    ["buy", "sell", "trade", "send"]
-                )
-            ]
-            .groupby("symbol")[["amount"]]
-            .sum()
-        )
-        balance = balance.loc[
-            ~(balance.round(10) == 0.0).all(axis=1)
-        ].reset_index()
-        balance["live_value"] = balance.apply(
-            lambda x: self.live_value(client, x["amount"], x["symbol"]), axis=1
-        )
-        print(balance)
-        print(
-            "Total portfolio balance: "
-            + "{:.2f}".format(balance["live_value"].sum())
-            + " EUR"
-        )
+    #     Arguments:
+    #         client (:obj:`surfingcrypto.coinbase.CB.client`) : client to
+    #             coinbase account.
+    #     """
+    #     balance = (
+    #         self.coinbase.history.df[
+    #             self.coinbase.history.df["type"].isin(
+    #                 ["buy", "sell", "trade", "send"]
+    #             )
+    #         ]
+    #         .groupby("symbol")[["amount"]]
+    #         .sum()
+    #     )
+    #     balance = balance.loc[
+    #         ~(balance.round(10) == 0.0).all(axis=1)
+    #     ].reset_index()
+    #     balance["live_value"] = balance.apply(
+    #         lambda x: self.live_value(client, x["amount"], x["symbol"]), axis=1
+    #     )
+    #     print(balance)
+    #     print(
+    #         "Total portfolio balance: "
+    #         + "{:.2f}".format(balance["live_value"].sum())
+    #         + " EUR"
+    #     )
 
     def _standardize(self):
         """
@@ -115,6 +115,7 @@ class Portfolio:
 
         """
         self.std_df = self.coinbase.history.df.copy()
+
         # exclude fiat deposit and withdrawals AND SEND
         self.std_df = self.std_df[
             self.std_df["type"].isin(["buy", "sell", "trade"])
@@ -124,6 +125,7 @@ class Portfolio:
         self.std_df.loc[m, "type"] = "sell"
         m = (self.std_df["type"] == "trade") & (self.std_df["amount"] > 0)
         self.std_df.loc[m, "type"] = "buy"
+
         # make all floats positive
         self.std_df["amount"] = self.std_df["amount"].abs()
         self.std_df["native_amount"] = self.std_df["native_amount"].abs()
