@@ -7,7 +7,7 @@ import numpy as np
 import plotly.express as px
 from surfingcrypto.ts import TS
 
-# from plotly.offline import init_notebook_mode, iplot
+from plotly.offline import iplot
 # init_notebook_mode(connected=True)
 
 
@@ -375,25 +375,3 @@ def calc_returns(portfolio):
     )
     return portfolio
 
-
-# portfolio_df = pd.read_csv('temp/test_stock_transactions.csv')
-# portfolio_df['Open date'] = pd.to_datetime(portfolio_df['Open date'])
-
-# symbols = portfolio_df.Symbol.unique()
-# stocks_start = datetime.datetime(2018, 6, 22)
-# stocks_end = datetime.datetime(2019, 12, 15)
-
-# daily_adj_close = get_data(symbols, stocks_start, stocks_end)
-# daily_adj_close = daily_adj_close[['Close']].reset_index()
-# daily_benchmark = get_benchmark(['SPY'], stocks_start, stocks_end)
-# daily_benchmark = daily_benchmark[['Date', 'Close']]
-# market_cal = create_market_cal(stocks_start, stocks_end)
-
-# active_portfolio = portfolio_start_balance(portfolio_df, stocks_start)
-
-# positions_per_day = time_fill(active_portfolio, market_cal)
-# combined_df = per_day_portfolio_calcs(positions_per_day, daily_benchmark,
-#                                       daily_adj_close, stocks_start)
-
-# line_facets(combined_df, 'symbol Return', 'Benchmark Return')
-# line(combined_df, 'Stock Gain / (Loss)', 'Benchmark Gain / (Loss)')
