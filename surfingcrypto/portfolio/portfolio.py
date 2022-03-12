@@ -118,12 +118,19 @@ class Portfolio:
 
         # exclude fiat deposit and withdrawals AND SEND
         self.std_df = self.std_df[
-            self.std_df["type"].isin(["buy", "sell", "trade"])
+            self.std_df["type"].isin(["buy", "sell", "trade","send"])
         ]
+
         # set trades as buy or sell transactions
         m = (self.std_df["type"] == "trade") & (self.std_df["amount"] < 0)
         self.std_df.loc[m, "type"] = "sell"
         m = (self.std_df["type"] == "trade") & (self.std_df["amount"] > 0)
+        self.std_df.loc[m, "type"] = "buy"
+
+        #set sends as buy and sells
+        m = (self.std_df["type"] == "send") & (self.std_df["amount"] < 0)
+        self.std_df.loc[m, "type"] = "sell"
+        m = (self.std_df["type"] == "send") & (self.std_df["amount"] > 0)
         self.std_df.loc[m, "type"] = "buy"
 
         # make all floats positive

@@ -30,6 +30,7 @@ docsrc/build
 ######
 # package files
 *.egg-info/
+build
 ######
 # pytest
 *.pytest_cache

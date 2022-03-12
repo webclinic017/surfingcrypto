@@ -12,6 +12,8 @@ from plotly.offline import iplot
 
 # init_notebook_mode(connected=True)
 
+# https://towardsdatascience.com/modeling-your-stock-portfolio-performance-with-python-fbba4ef2ef11
+
 
 class Tracker:
     """Tracker module
@@ -61,7 +63,9 @@ class Tracker:
 
         self.portfolio_df = self._format_df(df)
 
-    def _format_df(self, df: pd.DataFrame,):
+    def _format_df(
+        self, df: pd.DataFrame,
+    ):
         """
         sets dataframe to required format by traker module.
 
@@ -131,8 +135,8 @@ class Tracker:
         closedata.reset_index(inplace=True)
         return closedata
 
-    def set_benchmark(self, benchmark:str) -> pd.DataFrame:
-        """_summary_
+    def set_benchmark(self, benchmark: str) -> pd.DataFrame:
+        """sets benchmark
 
         Args:
             benchmark (str): string code of benchmark
@@ -155,52 +159,155 @@ class Tracker:
         else:
             raise ValueError("Local data is not sufficient for purpose.")
 
-    def portfolio_start_balance(self)-> pd.DataFrame:
+    def position_adjust(
+        self, daily_positions: pd.DataFrame, sale: pd.Series
+    ) -> list:
+        """adjust daily positions based for given sale
+
+        Given a sale, it adjusts the daily_poisitions dataframe accordingly
+
+        For every buy in buys:
+        - If quantity of the oldest buy amount is ≤ the sold quantity
+            subtract the amount of the buy position from the sell,
+            then set the buy quantity to 0.
+        - Else, subtract the sales quantity from the buy position
+            subtract that same amount from the sales position
+
+        Args:
+            daily_positions (pd.DataFrame): dataframe of positions
+            sale (pd.Series): pandas series of sale
+
+        Returns:
+            list: _descr_
+        """
+        # sorting by ‘Open Date’ to subtract positions using the FIFO method
+        stocks_with_sales = pd.DataFrame()
+        buys = daily_positions[daily_positions["Type"] == "buy"].sort_values(
+            by="Open date"
+        )
+
+        # apply correction
+        for position in buys[buys["Symbol"] == sale[1]["Symbol"]].iterrows():
+            if position[1]["Qty"] <= sale[1]["Qty"]:
+                sale[1]["Qty"] -= position[1]["Qty"]
+                position[1]["Qty"] = 0
+            else:
+                position[1]["Qty"] -= sale[1]["Qty"]
+                sale[1]["Qty"] -= sale[1]["Qty"]
+            stocks_with_sales = stocks_with_sales.append(position[1])
+        return stocks_with_sales
+
+    def portfolio_start_balance(self) -> pd.DataFrame:
+        """gets the portfolio start balance
+
+        Gets the portfolio at the given start date,
+        updated to its current value by applying
+        the `poisition_adjust` method on the positions before
+        the start date.
+
+        Returns:
+            pd.DataFrame: transactions adjusted to start date
+        """
+        # create a dataframe of all trades that happened before our start date.
         positions_before_start = self.portfolio_df[
-            self.portfolio_df["Open date"] <= self.stocks_start
+            self.portfolio_df["Open date"] < self.stocks_start
         ]
+
+        # future sales after the start_date since
         future_positions = self.portfolio_df[
-            self.portfolio_df["Open date"] >= self.stocks_start
+            (self.portfolio_df["Open date"] >= self.stocks_start)
         ]
+
+        # get sales of positions before start
         sales = (
             positions_before_start[positions_before_start["Type"] == "sell"]
             .groupby(["Symbol"])["Qty"]
             .sum()
         )
         sales = sales.reset_index()
+
+        # poisitions that didnt change
         positions_no_change = positions_before_start[
             ~positions_before_start["Symbol"].isin(sales["Symbol"].unique())
         ]
+
+        # loop thru the sales adjusting poisitions accordingly
         adj_positions_df = pd.DataFrame()
         for sale in sales.iterrows():
-            adj_positions = position_adjust(positions_before_start, sale)
-            adj_positions_df = adj_positions_df.append(adj_positions)
+            adj_positions_df = adj_positions_df.append(
+                self.position_adjust(positions_before_start, sale)
+            )
+
+        # append poisitions and future
         adj_positions_df = adj_positions_df.append(positions_no_change)
         adj_positions_df = adj_positions_df.append(future_positions)
+
+        # filtering out any rows that position_adjust zeroed out
         adj_positions_df = adj_positions_df[adj_positions_df["Qty"] > 0]
+
         return adj_positions_df
 
-    def time_fill(self)-> list:
-        """_summary_
+    def fifo(self,daily_positions, sales, date):
+
+        # Our fifo function takes your active portfolio positions, the sales
+        # dataframe created in time_fill, and the current date in the market_cal list.
+        # It then filters sales to find any that have occurred on the current date, and
+        # create a dataframe of positions not affected by sales:
+
+        sales = sales[sales["Open date"] == date]
+        daily_positions = daily_positions[daily_positions["Open date"] <= date]
+        positions_no_change = daily_positions[
+            ~daily_positions["Symbol"].isin(sales["Symbol"].unique())
+        ]
+
+        # We’ll then use our trusty position_adjust function to zero-out any
+        #  positions with active sales. If there were no sales for the specific date,
+        #   our function will simply append the positions_no_change onto the empty
+        #    adj_positions dataframe, leaving you with an accurate daily snapshot of positions:
+
+        adj_positions = pd.DataFrame()
+        for sale in sales.iterrows():
+            adj_positions = adj_positions.append(
+                self.position_adjust(daily_positions, sale)
+            )
+        adj_positions = adj_positions.append(positions_no_change)
+        adj_positions = adj_positions[adj_positions["Qty"] > 0]
+        return adj_positions
+
+    def time_fill(self) -> list:
+        """adjust active positions of selected time interval
+
+        Providing the dataframe of active positions,
+        find the sales, and zero-out sales against buy positions.
+
+        To obtain the positions for each day, this will loop for every day in
+        the selected time interval.
 
         Returns:
             per_day_balance (:obj:`list` of :obj:`pandas.DataFrame`):
                 list of dfs
         """
+
+        portfolio = self.portfolio_df
+
+        # calendar
         calendar = pd.date_range(
             start=self.stocks_start, end=self.stocks_end, freq="1d"
         )
-        portfolio = self.portfolio_df
+
+        # get sales
         sales = (
             portfolio[portfolio["Type"] == "sell"]
             .groupby(["Symbol", "Open date"])["Qty"]
             .sum()
         )
         sales = sales.reset_index()
+
+        # sets
         per_day_balance = []
         for date in calendar:
-            if (sales["Open date"] == date).any():
-                portfolio = fifo(portfolio, sales, date)
+            if (sales["Open date"].dt.date == date).any():
+                portfolio = self.fifo(portfolio, sales, date)
             daily_positions = portfolio[portfolio["Open date"] <= date]
             daily_positions = daily_positions[daily_positions["Type"] == "buy"]
             daily_positions["Date Snapshot"] = date
@@ -245,7 +352,7 @@ class Tracker:
         )
         iplot(fig)
 
-    def line(self, df:pd.DataFrame, vals: list):
+    def line(self, df: pd.DataFrame, vals: list):
         """plotly lines
 
         Args:
@@ -265,38 +372,7 @@ class Tracker:
         iplot(fig)
 
 
-def position_adjust(daily_positions, sale):
-    stocks_with_sales = pd.DataFrame()
-    buys_before_start = daily_positions[
-        daily_positions["Type"] == "buy"
-    ].sort_values(by="Open date")
-    for position in buys_before_start[
-        buys_before_start["Symbol"] == sale[1]["Symbol"]
-    ].iterrows():
-        if position[1]["Qty"] <= sale[1]["Qty"]:
-            sale[1]["Qty"] -= position[1]["Qty"]
-            position[1]["Qty"] = 0
-        else:
-            position[1]["Qty"] -= sale[1]["Qty"]
-            sale[1]["Qty"] -= sale[1]["Qty"]
-        stocks_with_sales = stocks_with_sales.append(position[1])
-    return stocks_with_sales
 
-
-def fifo(daily_positions, sales, date):
-    sales = sales[sales["Open date"] == date]
-    daily_positions = daily_positions[daily_positions["Open date"] <= date]
-    positions_no_change = daily_positions[
-        ~daily_positions["Symbol"].isin(sales["Symbol"].unique())
-    ]
-    adj_positions = pd.DataFrame()
-    for sale in sales.iterrows():
-        adj_positions = adj_positions.append(
-            position_adjust(daily_positions, sale)
-        )
-    adj_positions = adj_positions.append(positions_no_change)
-    adj_positions = adj_positions[adj_positions["Qty"] > 0]
-    return adj_positions
 
 
 # matches prices of each asset to open date, then adjusts for  cps of dates
