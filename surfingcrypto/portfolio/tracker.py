@@ -247,15 +247,19 @@ class Tracker:
 
         return adj_positions_df
 
-    def fifo(self,daily_positions, sales, date):
+    def fifo(self, daily_positions, sales, date):
 
         # Our fifo function takes your active portfolio positions, the sales
-        # dataframe created in time_fill, and the current date in the market_cal list.
-        # It then filters sales to find any that have occurred on the current date, and
+        # dataframe created in time_fill, and the current date in the
+        #  market_cal list.
+        # It then filters sales to find any that have occurred on the current date,
+        #  and
         # create a dataframe of positions not affected by sales:
 
-        sales = sales[sales["Open date"] == date]
-        daily_positions = daily_positions[daily_positions["Open date"] <= date]
+        sales = sales[sales["Open date"].dt.date == date]
+        daily_positions = daily_positions[
+            daily_positions["Open date"].dt.date <= date
+        ]
         positions_no_change = daily_positions[
             ~daily_positions["Symbol"].isin(sales["Symbol"].unique())
         ]
@@ -274,7 +278,7 @@ class Tracker:
         adj_positions = adj_positions[adj_positions["Qty"] > 0]
         return adj_positions
 
-    def time_fill(self) -> list:
+    def time_fill(self, active_df: pd.DataFrame) -> list:
         """adjust active positions of selected time interval
 
         Providing the dataframe of active positions,
@@ -283,12 +287,15 @@ class Tracker:
         To obtain the positions for each day, this will loop for every day in
         the selected time interval.
 
+        Args:
+            active_df (pd.DataFrame) : _descr_
+
         Returns:
             per_day_balance (:obj:`list` of :obj:`pandas.DataFrame`):
                 list of dfs
         """
 
-        portfolio = self.portfolio_df
+        portfolio = active_df
 
         # calendar
         calendar = pd.date_range(
@@ -308,7 +315,7 @@ class Tracker:
         for date in calendar:
             if (sales["Open date"].dt.date == date).any():
                 portfolio = self.fifo(portfolio, sales, date)
-            daily_positions = portfolio[portfolio["Open date"] <= date]
+            daily_positions = portfolio[portfolio["Open date"].dt.date <= date]
             daily_positions = daily_positions[daily_positions["Type"] == "buy"]
             daily_positions["Date Snapshot"] = date
             per_day_balance.append(daily_positions)
@@ -370,9 +377,6 @@ class Tracker:
             grouped_metrics, x="Date Snapshot", y="value", color="variable"
         )
         iplot(fig)
-
-
-
 
 
 # matches prices of each asset to open date, then adjusts for  cps of dates
