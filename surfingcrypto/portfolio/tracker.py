@@ -62,6 +62,9 @@ class Tracker:
             )
 
         self.portfolio_df = self._format_df(df)
+        self.closedata = self._load_data()
+        self.active_positions = self._portfolio_start_balance()
+        self.daily_snapshots = self.time_fill(self.active_positions)
 
     def _format_df(
         self, df: pd.DataFrame,
@@ -105,9 +108,13 @@ class Tracker:
 
         return portfolio_df
 
-    def load_data(self):
-        """
-        loads required data from configuration object
+    def _load_data(self) -> pd.DataFrame:
+        """loads required data from configuration object
+
+        Returns:
+            pd.DataFrame: dataframe of close prices
+                requested by transactions
+
         """
         self.error_log = []
         dfs = []
@@ -117,7 +124,11 @@ class Tracker:
         for symbol in symbols:
             try:
                 ts = TS(configuration=self.configuration, coin=symbol)
-                df = ts.df.loc[self.stocks_start :, ["Close"]]
+                df = self.check_and_subset_data(
+                    ts.df.copy(),
+                    pd.Timestamp(self.configuration.coinbase_req[ts.coin]["start"]),
+                    pd.Timestamp(self.configuration.coinbase_req[ts.coin]["end_day"]),
+                    )
                 df["symbol"] = symbol
                 dfs.append(df)
 
@@ -141,20 +152,24 @@ class Tracker:
             pd.DataFrame: dataframe of benchmark
         """
         ts = TS(configuration=self.configuration, coin=benchmark)
-        df = ts.df.copy()
-        if (
-            df.index.min() <= self.stocks_start
-            and df.index.max() >= self.stocks_end
-        ):
+        df = self.check_and_subset_data(
+            ts.df.copy(), self.stocks_start, self.stocks_end
+        )
+        return df
+
+    def check_and_subset_data(
+        self, df, i: pd.Timestamp, o: pd.Timestamp,
+    ) -> pd.DataFrame:
+        if df.index.min() <= i and df.index.max()  >= o:
             df = df.loc[self.stocks_start : self.stocks_end, ["Close"]]
             df.reset_index(inplace=True)
             return df
         else:
             raise ValueError("Local data is not sufficient for purpose.")
 
-    def position_adjust(
+    def _position_adjust(
         self, daily_positions: pd.DataFrame, sale: pd.Series
-    ) -> list:
+    ) -> pd.DataFrame:
         """adjust daily positions based for given sale
 
         Given a sale, it adjusts the daily_poisitions dataframe accordingly
@@ -171,9 +186,9 @@ class Tracker:
             sale (pd.Series): pandas series of sale
 
         Returns:
-            list: _descr_
+            pd.DataFrame: _descr_
         """
-        # sorting by ‘Open Date’ to subtract positions using the FIFO method
+        # sorting by ‘Open Date’ to subtract positions using the _fifo method
         stocks_with_sales = pd.DataFrame()
         buys = daily_positions[daily_positions["Type"] == "buy"].sort_values(
             by="Open date"
@@ -190,7 +205,7 @@ class Tracker:
             stocks_with_sales = stocks_with_sales.append(position[1])
         return stocks_with_sales
 
-    def portfolio_start_balance(self) -> pd.DataFrame:
+    def _portfolio_start_balance(self) -> pd.DataFrame:
         """gets the portfolio start balance
 
         Gets the portfolio at the given start date,
@@ -228,21 +243,21 @@ class Tracker:
         adj_positions_df = pd.DataFrame()
         for sale in sales.iterrows():
             adj_positions_df = adj_positions_df.append(
-                self.position_adjust(positions_before_start, sale)
+                self._position_adjust(positions_before_start, sale)
             )
 
         # append poisitions and future
         adj_positions_df = adj_positions_df.append(positions_no_change)
         adj_positions_df = adj_positions_df.append(future_positions)
 
-        # filtering out any rows that position_adjust zeroed out
+        # filtering out any rows that _position_adjust zeroed out
         adj_positions_df = adj_positions_df[adj_positions_df["Qty"] > 0]
 
         return adj_positions_df
 
-    def fifo(self, portfolio, sales, date):
+    def _fifo(self, portfolio, sales, date):
 
-        # Our fifo function takes your active portfolio positions, the sales
+        # Our _fifo function takes your active portfolio positions, the sales
         # dataframe created in time_fill, and the current date in the
         #  market_cal list.
         # It then filters sales to find any that have occurred on the current date,
@@ -250,19 +265,15 @@ class Tracker:
         # create a dataframe of positions not affected by sales:
 
         sales = sales[sales["Open date"].dt.date == date]
-        daily_positions = portfolio[
-            portfolio["Open date"].dt.date <= date
-        ]
+        daily_positions = portfolio[portfolio["Open date"].dt.date <= date]
         positions_no_change = daily_positions[
             ~daily_positions["Symbol"].isin(sales["Symbol"].unique())
         ]
 
-        #bringing along all future positions
-        future_positions = portfolio[
-            portfolio["Open date"].dt.date > date
-        ]
+        # bringing along all future positions
+        future_positions = portfolio[portfolio["Open date"].dt.date > date]
 
-        # We’ll then use our trusty position_adjust function to zero-out any
+        # We’ll then use our trusty _position_adjust function to zero-out any
         #  positions with active sales. If there were no sales for the specific date,
         #   our function will simply append the positions_no_change onto the empty
         #    adj_positions dataframe, leaving you with an accurate daily snapshot of positions:
@@ -270,7 +281,7 @@ class Tracker:
         adj_positions = pd.DataFrame()
         for sale in sales.iterrows():
             adj_positions = adj_positions.append(
-                self.position_adjust(daily_positions, sale)
+                self._position_adjust(daily_positions, sale)
             )
         adj_positions = adj_positions.append(positions_no_change)
         adj_positions = adj_positions.append(future_positions)
@@ -304,7 +315,7 @@ class Tracker:
         # get sales
         sales = (
             portfolio[portfolio["Type"] == "sell"]
-            .groupby(["Symbol", pd.Grouper(key='Open date', freq='D')])["Qty"]
+            .groupby(["Symbol", pd.Grouper(key="Open date", freq="D")])["Qty"]
             .sum()
         )
         sales = sales.reset_index()
@@ -313,16 +324,17 @@ class Tracker:
         per_day_balance = []
         for date in calendar:
             if (sales["Open date"].dt.date == date).any():
-                portfolio = self.fifo(portfolio, sales, date)
+                portfolio = self._fifo(portfolio, sales, date)
             daily_positions = portfolio[portfolio["Open date"].dt.date <= date]
             daily_positions = daily_positions[daily_positions["Type"] == "buy"]
             daily_positions["Date Snapshot"] = date
             per_day_balance.append(daily_positions)
         return per_day_balance
 
-    def per_day_portfolio_calcs(
-        self, per_day_holdings, daily_benchmark, daily_adj_close, stocks_start
-    ):
+    def per_day_portfolio_calcs(self, daily_benchmark):
+        daily_adj_close = self.closedata
+        per_day_holdings = self.daily_snapshots
+        stocks_start = self.stocks_start
         df = pd.concat(per_day_holdings, sort=True)
         mcps = modified_cost_per_share(df, daily_adj_close, stocks_start)
         bpc = benchmark_portfolio_calcs(mcps, daily_benchmark)
@@ -337,6 +349,7 @@ class Tracker:
             combined_df, "Stock Gain / (Loss)", "Benchmark Gain / (Loss)"
         )
 
+    # plot method1
     def line_facets(self, df, val_1, val_2):
         grouped_metrics = (
             df.groupby(["Symbol", "Date Snapshot"])[[val_1, val_2]]
@@ -358,6 +371,7 @@ class Tracker:
         )
         iplot(fig)
 
+    # plot method 2
     def line(self, df: pd.DataFrame, vals: list):
         """plotly lines
 

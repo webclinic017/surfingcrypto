@@ -4,7 +4,7 @@ package configuration
 import json
 import os
 import pathlib
-import datetime
+import datetime, pytz
 import dateutil
 
 
@@ -146,24 +146,24 @@ class Config:
                 if account["currency"] not in ["EUR"]:
                     # active account
                     if float(account["balance"]) > 0.0:
+                        start = dateutil.parser.parse(
+                            account["timerange"]["1"],
+                        ).replace(hour=0, minute=0, second=0, microsecond=0)
                         req[account["currency"]] = {
-                            "start": dateutil.parser.parse(
-                                account["timerange"]["1"]
-                            ).date(),
+                            "start": start,
                             # timedelta is because today's close
                             # isnt yet realized
-                            "end_day": datetime.datetime.utcnow().date()
-                            + datetime.timedelta(-1),
+                            "end_day": (datetime.datetime.now(datetime.timezone.utc)+ datetime.timedelta(-1)).replace(hour=0, minute=0, second=0, microsecond=0),
                         }
                     # historic account
                     else:
                         req[account["currency"]] = {
                             "start": dateutil.parser.parse(
                                 account["timerange"]["1"]
-                            ).date(),
+                            ).replace(hour=0, minute=0, second=0, microsecond=0),
                             "end_day": dateutil.parser.parse(
                                 account["timerange"]["0"]
-                            ).date(),
+                            ).replace(hour=0, minute=0, second=0, microsecond=0),
                         }
             # store coinbase requirements paresed correctly
             # for portfolio tracker features
@@ -180,9 +180,9 @@ class Config:
         # then, overrun with the reporting requirements
         for coin in self.coins:
             params[coin] = {
-                "start": datetime.date(2017, 10, 1),
+                "start": datetime.datetime(2017, 10, 1,tzinfo=datetime.timezone.utc),
                 # timedelta is because today's close isnt yet realized
-                "end_day": datetime.datetime.utcnow().date()
+                "end_day": datetime.datetime.now(datetime.timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
                 + datetime.timedelta(-1),
             }
 

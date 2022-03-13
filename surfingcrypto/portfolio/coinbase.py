@@ -229,7 +229,7 @@ class MyCoinbase(CB):
                     self.timeranges,
                 ) = self.get_all_accounts_with_transactions()
                 self._dump_accounts()
-                self.last_updated = dt.datetime.utcnow()
+                self.last_updated = dt.datetime.now(dt.timezone.utc)
         else:
             raise ValueError("Either true or false.")
 
