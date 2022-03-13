@@ -103,13 +103,6 @@ class Tracker:
         # exclude double transactions coin-fiat for the tracking purpose.
         portfolio_df = portfolio_df[~(portfolio_df["Symbol"] == "EUR")]
 
-        # subset dataframe
-        portfolio_df = (
-            portfolio_df.set_index("Open date")
-            .loc[self.stocks_start : self.stocks_end, :]
-            .reset_index()
-        )
-
         return portfolio_df
 
     def load_data(self):
@@ -319,7 +312,6 @@ class Tracker:
         # sets
         per_day_balance = []
         for date in calendar:
-            print(str(date))
             if (sales["Open date"].dt.date == date).any():
                 portfolio = self.fifo(portfolio, sales, date)
             daily_positions = portfolio[portfolio["Open date"].dt.date <= date]
