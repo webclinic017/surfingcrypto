@@ -247,7 +247,7 @@ class Tracker:
 
         return adj_positions_df
 
-    def fifo(self, daily_positions, sales, date):
+    def fifo(self, portfolio, sales, date):
 
         # Our fifo function takes your active portfolio positions, the sales
         # dataframe created in time_fill, and the current date in the
@@ -257,11 +257,16 @@ class Tracker:
         # create a dataframe of positions not affected by sales:
 
         sales = sales[sales["Open date"].dt.date == date]
-        daily_positions = daily_positions[
-            daily_positions["Open date"].dt.date <= date
+        daily_positions = portfolio[
+            portfolio["Open date"].dt.date <= date
         ]
         positions_no_change = daily_positions[
             ~daily_positions["Symbol"].isin(sales["Symbol"].unique())
+        ]
+
+        #bringing along all future positions
+        future_positions = portfolio[
+            portfolio["Open date"].dt.date > date
         ]
 
         # We’ll then use our trusty position_adjust function to zero-out any
@@ -275,6 +280,7 @@ class Tracker:
                 self.position_adjust(daily_positions, sale)
             )
         adj_positions = adj_positions.append(positions_no_change)
+        adj_positions = adj_positions.append(future_positions)
         adj_positions = adj_positions[adj_positions["Qty"] > 0]
         return adj_positions
 
@@ -305,7 +311,7 @@ class Tracker:
         # get sales
         sales = (
             portfolio[portfolio["Type"] == "sell"]
-            .groupby(["Symbol", "Open date"])["Qty"]
+            .groupby(["Symbol", pd.Grouper(key='Open date', freq='D')])["Qty"]
             .sum()
         )
         sales = sales.reset_index()
@@ -313,6 +319,7 @@ class Tracker:
         # sets
         per_day_balance = []
         for date in calendar:
+            print(str(date))
             if (sales["Open date"].dt.date == date).any():
                 portfolio = self.fifo(portfolio, sales, date)
             daily_positions = portfolio[portfolio["Open date"].dt.date <= date]
