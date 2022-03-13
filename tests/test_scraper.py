@@ -5,6 +5,7 @@ import datetime
 import pytest
 import pandas as pd
 import os
+import pytz
 
 from surfingcrypto.scraper import Scraper
 from surfingcrypto import Config
@@ -93,7 +94,7 @@ def test_scraping_with_coinbase(temp_test_env, check_files):
     for file in check_files:
         assert os.path.isfile(root / "data" / "ts" / file)
         df = pd.read_csv(root / "data" / "ts" / file)
-        df["Date"] = pd.to_datetime(df["Date"])
+        df["Date"] = pd.to_datetime(df["Date"]).dt.tz_localize(pytz.utc)
         # sorted
         assert df["Date"].is_monotonic_increasing is True
         # test no duplicates
@@ -103,6 +104,6 @@ def test_scraping_with_coinbase(temp_test_env, check_files):
             pd.date_range(df["Date"].iat[0], df["Date"].iat[-1], freq="D")
         ) == len(df)
         assert (
-            df["Date"].iat[-1].date() == c.scraping_req[file[:-4]]["end_day"]
+            df["Date"].iat[-1] == pd.Timestamp(c.scraping_req[file[:-4]]["end_day"])
         )
 

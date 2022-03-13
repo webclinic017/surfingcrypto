@@ -37,6 +37,7 @@ build
 # test coverage
 htmlcov
 .coverage
+.coverage*
 coverage.xml
 ######
 # git files
