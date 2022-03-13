@@ -285,7 +285,8 @@ class Tracker:
             )
         adj_positions = adj_positions.append(positions_no_change)
         adj_positions = adj_positions.append(future_positions)
-        adj_positions = adj_positions[adj_positions["Qty"] > 0]
+        adj_positions = adj_positions[~np.isclose(adj_positions["Qty"],0)]
+        # adj_positions = adj_positions[adj_positions["Qty"] > 0]
         return adj_positions
 
     def time_fill(self, active_df: pd.DataFrame) -> list:
@@ -342,12 +343,6 @@ class Tracker:
         pss = portfolio_start_of_year_stats(pes, daily_adj_close)
         returns = calc_returns(pss)
         return returns
-
-    def plot(self, combined_df):
-        self.line_facets(combined_df, "symbol Return", "Benchmark Return")
-        self.line(
-            combined_df, "Stock Gain / (Loss)", "Benchmark Gain / (Loss)"
-        )
 
     # plot method1
     def line_facets(self, df, val_1, val_2):
