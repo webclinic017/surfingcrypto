@@ -186,7 +186,7 @@ class MyCoinbase(CB):
     """
 
     def __init__(self, active_accounts=True, force=False, *args, **kwargs):
-        super(MyCoinbase, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.start(active_accounts, force)
         return
 

@@ -124,6 +124,12 @@ class Tracker:
         for symbol in symbols:
             try:
                 ts = TS(configuration=self.configuration, coin=symbol)
+                
+                #considering rebrandings
+                rebrandings=[k for k,v in self.configuration.rebrandings.items() if v == ts.coin]
+                if rebrandings:
+                    ts.coin=rebrandings[0]
+                
                 df = self.check_and_subset_data(
                     ts.df.copy(),
                     pd.Timestamp(
