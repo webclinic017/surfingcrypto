@@ -126,9 +126,13 @@ class Tracker:
                 ts = TS(configuration=self.configuration, coin=symbol)
                 df = self.check_and_subset_data(
                     ts.df.copy(),
-                    pd.Timestamp(self.configuration.coinbase_req[ts.coin]["start"]),
-                    pd.Timestamp(self.configuration.coinbase_req[ts.coin]["end_day"]),
-                    )
+                    pd.Timestamp(
+                        self.configuration.coinbase_req[ts.coin]["start"]
+                    ),
+                    pd.Timestamp(
+                        self.configuration.coinbase_req[ts.coin]["end_day"]
+                    ),
+                )
                 df["symbol"] = symbol
                 dfs.append(df)
 
@@ -160,7 +164,7 @@ class Tracker:
     def check_and_subset_data(
         self, df, i: pd.Timestamp, o: pd.Timestamp,
     ) -> pd.DataFrame:
-        if df.index.min() <= i and df.index.max()  >= o:
+        if df.index.min() <= i and df.index.max() >= o:
             df = df.loc[self.stocks_start : self.stocks_end, ["Close"]]
             df.reset_index(inplace=True)
             return df
@@ -285,7 +289,7 @@ class Tracker:
             )
         adj_positions = adj_positions.append(positions_no_change)
         adj_positions = adj_positions.append(future_positions)
-        adj_positions = adj_positions[~np.isclose(adj_positions["Qty"],0)]
+        adj_positions = adj_positions[~np.isclose(adj_positions["Qty"], 0)]
         # adj_positions = adj_positions[adj_positions["Qty"] > 0]
         return adj_positions
 
@@ -331,6 +335,30 @@ class Tracker:
             daily_positions["Date Snapshot"] = date
             per_day_balance.append(daily_positions)
         return per_day_balance
+
+    def track_value(self) -> pd.DataFrame:
+        daily_portfolio_value = []
+        for snapshot in self.daily_snapshots:
+            idf = snapshot.set_index(["Date Snapshot", "Symbol"]).join(
+                self.closedata.rename(
+                    {"Date": "Date Snapshot", "symbol": "Symbol"}, axis=1
+                ).set_index(["Date Snapshot", "Symbol"])[["Close"]]
+            )
+            idf["Date Snapshot Value"] = idf["Qty"] * idf["Close"]
+            daily_portfolio_value.append(
+                {
+                    "Date Snapshot": idf.reset_index()[
+                        "Date Snapshot"
+                    ].unique()[0],
+                    "Value": idf.reset_index()
+                    .groupby(["Date Snapshot"])[["Date Snapshot Value"]]
+                    .sum()
+                    .iloc[0, 0],
+                }
+            )
+        daily_portfolio_value = pd.DataFrame(daily_portfolio_value)
+        daily_portfolio_value.set_index("Date Snapshot",inplace=True)
+        return daily_portfolio_value
 
     def per_day_portfolio_calcs(self, daily_benchmark):
         daily_adj_close = self.closedata
