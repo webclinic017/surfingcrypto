@@ -104,9 +104,10 @@ class CoinScraper:
     def __init__(self, key, fiat, configuration):
         self.config = configuration
         self.fiat = fiat
-
-        self.start = self.config.scraping_req[key]["start"]
-        self.end_day = self.config.scraping_req[key]["end_day"]
+        
+        #dates are utc unaware
+        self.start = self.config.scraping_req[key]["start"].date()
+        self.end_day = self.config.scraping_req[key]["end_day"].date()
 
         if key in self.config.rebrandings:
             key = self.config.rebrandings[key]
