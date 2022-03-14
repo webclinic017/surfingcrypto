@@ -11,8 +11,6 @@ dependencies:
   - mplfinance
   - numpy
   - pandas
-  - plotly
-  - plotly_express
   - python-dateutil
   - python-telegram-bot
   - pytrends

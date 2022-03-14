@@ -25,7 +25,6 @@ setup(
         "pandas",
         "coinbase",
         "pandas_ta",
-        "plotly",
         "python_dateutil",
         "python_telegram_bot",
         "pytrends",

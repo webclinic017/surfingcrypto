@@ -4,13 +4,10 @@ portfolio value traker.
 import datetime
 import pandas as pd
 import numpy as np
-import plotly.express as px
 import surfingcrypto
 from surfingcrypto.ts import TS
 
-from plotly.offline import iplot
 
-# init_notebook_mode(connected=True)
 
 # https://towardsdatascience.com/modeling-your-stock-portfolio-performance-with-python-fbba4ef2ef11
 
@@ -64,7 +61,7 @@ class Tracker:
         self.portfolio_df = self._format_df(df)
         self.closedata = self._load_data()
         self.active_positions = self._portfolio_start_balance()
-        self.daily_snapshots = self.time_fill(self.active_positions)
+        self.daily_snapshots = self._time_fill(self.active_positions)
 
     def _format_df(
         self, df: pd.DataFrame,
@@ -130,7 +127,7 @@ class Tracker:
                 if rebrandings:
                     ts.coin=rebrandings[0]
                 
-                df = self.check_and_subset_data(
+                df = self._check_and_subset_data(
                     ts.df.copy(),
                     pd.Timestamp(
                         self.configuration.coinbase_req[ts.coin]["start"]
@@ -162,12 +159,12 @@ class Tracker:
             pd.DataFrame: dataframe of benchmark
         """
         ts = TS(configuration=self.configuration, coin=benchmark)
-        df = self.check_and_subset_data(
+        df = self._check_and_subset_data(
             ts.df.copy(), self.stocks_start, self.stocks_end
         )
         return df
 
-    def check_and_subset_data(
+    def _check_and_subset_data(
         self, df, i: pd.Timestamp, o: pd.Timestamp,
     ) -> pd.DataFrame:
         if df.index.min() <= i and df.index.max() >= o:
@@ -268,7 +265,7 @@ class Tracker:
     def _fifo(self, portfolio, sales, date):
 
         # Our _fifo function takes your active portfolio positions, the sales
-        # dataframe created in time_fill, and the current date in the
+        # dataframe created in _time_fill, and the current date in the
         #  market_cal list.
         # It then filters sales to find any that have occurred on the current date,
         #  and
@@ -299,7 +296,7 @@ class Tracker:
         # adj_positions = adj_positions[adj_positions["Qty"] > 0]
         return adj_positions
 
-    def time_fill(self, active_df: pd.DataFrame) -> list:
+    def _time_fill(self, active_df: pd.DataFrame) -> list:
         """adjust active positions of selected time interval
 
         Providing the dataframe of active positions,
@@ -342,30 +339,6 @@ class Tracker:
             per_day_balance.append(daily_positions)
         return per_day_balance
 
-    def track_value(self) -> pd.DataFrame:
-        daily_portfolio_value = []
-        for snapshot in self.daily_snapshots:
-            idf = snapshot.set_index(["Date Snapshot", "Symbol"]).join(
-                self.closedata.rename(
-                    {"Date": "Date Snapshot", "symbol": "Symbol"}, axis=1
-                ).set_index(["Date Snapshot", "Symbol"])[["Close"]]
-            )
-            idf["Date Snapshot Value"] = idf["Qty"] * idf["Close"]
-            daily_portfolio_value.append(
-                {
-                    "Date Snapshot": idf.reset_index()[
-                        "Date Snapshot"
-                    ].unique()[0],
-                    "Value": idf.reset_index()
-                    .groupby(["Date Snapshot"])[["Date Snapshot Value"]]
-                    .sum()
-                    .iloc[0, 0],
-                }
-            )
-        daily_portfolio_value = pd.DataFrame(daily_portfolio_value)
-        daily_portfolio_value.set_index("Date Snapshot",inplace=True)
-        return daily_portfolio_value
-
     def per_day_portfolio_calcs(self, daily_benchmark):
         daily_adj_close = self.closedata
         per_day_holdings = self.daily_snapshots
@@ -378,47 +351,34 @@ class Tracker:
         returns = calc_returns(pss)
         return returns
 
-    # plot method1
-    def line_facets(self, df, val_1, val_2):
+    def daily_grouped_metrics(self,df: pd.DataFrame, cols: list, by=None,)->pd.DataFrame:
+        idf=df.copy()
+        idf["Date Snapshot"]=idf["Date Snapshot"].dt.date
+
+        if by is None:
+            by=["Date Snapshot"]
+        elif isinstance(by,list):
+            by=["Date Snapshot"]+by
+        elif isinstance(by,str):
+            by=["Date Snapshot",by]
+        else:
+            raise TypeError
+        
+        # group by day
         grouped_metrics = (
-            df.groupby(["Symbol", "Date Snapshot"])[[val_1, val_2]]
+            idf.groupby(
+                by
+                )[cols]
             .sum()
             .reset_index()
         )
         grouped_metrics = pd.melt(
-            grouped_metrics,
-            id_vars=["Symbol", "Date Snapshot"],
-            value_vars=[val_1, val_2],
+            grouped_metrics, 
+            id_vars=by,
+            value_vars=cols,
         )
-        fig = px.line(
-            grouped_metrics,
-            x="Date Snapshot",
-            y="value",
-            color="variable",
-            facet_col="Symbol",
-            facet_col_wrap=5,
-        )
-        iplot(fig)
 
-    # plot method 2
-    def line(self, df: pd.DataFrame, vals: list):
-        """plotly lines
-
-        Args:
-            df (pd.DataFrame): dataframe to plot
-            vals (list): list of columns to plot
-        """
-        # group by day
-        grouped_metrics = (
-            df.groupby([df["Date Snapshot"].dt.date])[vals].sum().reset_index()
-        )
-        grouped_metrics = pd.melt(
-            grouped_metrics, id_vars=["Date Snapshot"], value_vars=vals,
-        )
-        fig = px.line(
-            grouped_metrics, x="Date Snapshot", y="value", color="variable"
-        )
-        iplot(fig)
+        return grouped_metrics
 
 
 # matches prices of each asset to open date, then adjusts for  cps of dates
