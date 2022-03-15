@@ -53,6 +53,8 @@ class TS:
             )
             self.df["Date"] = pd.to_datetime(self.df["Date"], utc=True)
             self.df.set_index("Date", inplace=True)
+            if any(self.df.index.duplicated()):
+                raise ValueError("Data has duplicates.")
         else:
             raise FileNotFoundError(f"{self.coin}.csv not found.")
 
