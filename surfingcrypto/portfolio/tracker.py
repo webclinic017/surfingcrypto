@@ -389,8 +389,8 @@ class Tracker:
         df["Adj cost daily"] = df["Symbol Adj Close"] * df["Qty"]
         df = df.drop(["symbol", "Date"], axis=1)
         return df
-    
-    def calc_returns(self,portfolio:pd.DataFrame)-> pd.DataFrame:
+
+    def calc_returns(self, portfolio: pd.DataFrame) -> pd.DataFrame:
         """calculate daily returns
 
         Args:
@@ -399,7 +399,7 @@ class Tracker:
         Returns:
             pd.DataFrame: _description_
         """
-        #symbol
+        # symbol
         portfolio["symbol Return"] = (
             portfolio["Symbol Adj Close"] / portfolio["Adj cost per share"] - 1
         )
@@ -431,7 +431,7 @@ class Tracker:
         return portfolio
 
     # merge portfolio data with latest benchmark data and create several calcs
-    def benchmark_portfolio_calcs(self,portfolio, benchmark):
+    def benchmark_portfolio_calcs(self, portfolio, benchmark):
         portfolio = pd.merge(
             portfolio,
             benchmark,
@@ -441,16 +441,6 @@ class Tracker:
         )
         portfolio.rename(columns={"Close": "Benchmark Close"}, inplace=True)
 
-        # benchmark max
-        benchmark_max = benchmark[benchmark.index == self.stocks_end]
-        portfolio["Benchmark End Date Close"] = portfolio.apply(
-            lambda x: benchmark_max["Close"], axis=1
-        )
-        # benchmarkmin
-        benchmark_min = benchmark[benchmark.index == self.stocks_start]
-        portfolio["Benchmark Start Date Close"] = portfolio.apply(
-            lambda x: benchmark_min["Close"], axis=1)
-        
         return portfolio
 
     def daily_grouped_metrics(
@@ -459,35 +449,37 @@ class Tracker:
         idf = df.copy()
         idf["Date Snapshot"] = idf["Date Snapshot"].dt.date
 
-        if not by_symbol :
+        if not by_symbol:
             by = ["Date Snapshot"]
         else:
-            by = ["Date Snapshot","Symbol"]
+            by = ["Date Snapshot", "Symbol"]
 
         # group by day
         grouped_metrics = idf.groupby(by)[cols].sum().reset_index()
         grouped_metrics = pd.melt(
             grouped_metrics, id_vars=by, value_vars=cols,
         )
-        grouped_metrics=grouped_metrics.set_index(
-                by+["variable"]
-            ).unstack([x for x in by if x !="Date Snapshot"]+["variable"])
+        grouped_metrics = (
+            grouped_metrics.set_index(by + ["variable"])
+            .unstack([x for x in by if x != "Date Snapshot"] + ["variable"])
+            .sort_index(axis=1, level=1)
+        )
 
         return grouped_metrics
 
 
-def portfolio_end_of_year_stats(portfolio, adj_close_end):
-    adj_close_end = adj_close_end[
-        adj_close_end["Date"] == adj_close_end["Date"].max()
-    ]
-    portfolio_end_data = pd.merge(
-        portfolio, adj_close_end, left_on="Symbol", right_on="symbol"
-    )
-    portfolio_end_data.rename(
-        columns={"Close": "symbol End Date Close"}, inplace=True
-    )
-    portfolio_end_data = portfolio_end_data.drop(["symbol", "Date"], axis=1)
-    return portfolio_end_data
+# def portfolio_end_of_year_stats(portfolio, adj_close_end):
+#     adj_close_end = adj_close_end[
+#         adj_close_end["Date"] == adj_close_end["Date"].max()
+#     ]
+#     portfolio_end_data = pd.merge(
+#         portfolio, adj_close_end, left_on="Symbol", right_on="symbol"
+#     )
+#     portfolio_end_data.rename(
+#         columns={"Close": "symbol End Date Close"}, inplace=True
+#     )
+#     portfolio_end_data = portfolio_end_data.drop(["symbol", "Date"], axis=1)
+#     return portfolio_end_data
 
 
 def portfolio_start_of_year_stats(portfolio, adj_close_start):
@@ -522,5 +514,4 @@ def portfolio_start_of_year_stats(portfolio, adj_close_start):
         * portfolio_start["Benchmark Start Date Close"]
     )
     return portfolio_start
-
 
