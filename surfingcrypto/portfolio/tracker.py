@@ -8,7 +8,6 @@ import surfingcrypto
 from surfingcrypto.ts import TS
 
 
-
 # https://towardsdatascience.com/modeling-your-stock-portfolio-performance-with-python-fbba4ef2ef11
 
 
@@ -121,14 +120,18 @@ class Tracker:
         for symbol in symbols:
             try:
                 ts = TS(configuration=self.configuration, coin=symbol)
-                
-                #considering rebrandings
-                rebrandings=[k for k,v in self.configuration.rebrandings.items() if v == ts.coin]
+
+                # considering rebrandings
+                rebrandings = [
+                    k
+                    for k, v in self.configuration.rebrandings.items()
+                    if v == ts.coin
+                ]
                 if rebrandings:
-                    ts.coin=rebrandings[0]
-                
-                df = self._check_and_subset_data(
-                    ts.df.copy(),
+                    ts.coin = rebrandings[0]
+
+                df = self._check_data(
+                    ts.df[["Close"]].copy(),
                     pd.Timestamp(
                         self.configuration.coinbase_req[ts.coin]["start"]
                     ),
@@ -159,17 +162,15 @@ class Tracker:
             pd.DataFrame: dataframe of benchmark
         """
         ts = TS(configuration=self.configuration, coin=benchmark)
-        df = self._check_and_subset_data(
-            ts.df.copy(), self.stocks_start, self.stocks_end
+        df = self._check_data(
+            ts.df[["Close"]].copy(), self.stocks_start, self.stocks_end
         )
         return df
 
-    def _check_and_subset_data(
+    def _check_data(
         self, df, i: pd.Timestamp, o: pd.Timestamp,
     ) -> pd.DataFrame:
         if df.index.min() <= i and df.index.max() >= o:
-            df = df.loc[self.stocks_start : self.stocks_end, ["Close"]]
-            df.reset_index(inplace=True)
             return df
         else:
             raise ValueError("Local data is not sufficient for purpose.")
@@ -339,83 +340,140 @@ class Tracker:
             per_day_balance.append(daily_positions)
         return per_day_balance
 
-    def per_day_portfolio_calcs(self, daily_benchmark):
-        daily_adj_close = self.closedata
-        per_day_holdings = self.daily_snapshots
-        stocks_start = self.stocks_start
-        df = pd.concat(per_day_holdings, sort=True)
-        mcps = modified_cost_per_share(df, daily_adj_close, stocks_start)
-        bpc = benchmark_portfolio_calcs(mcps, daily_benchmark)
-        pes = portfolio_end_of_year_stats(bpc, daily_adj_close)
-        pss = portfolio_start_of_year_stats(pes, daily_adj_close)
-        returns = calc_returns(pss)
-        return returns
+    def per_day_portfolio_calcs(self, daily_benchmark=None) -> pd.DataFrame:
+        """calculates daily portfolio stats.
 
-    def daily_grouped_metrics(self,df: pd.DataFrame, cols: list, by=None,)->pd.DataFrame:
-        idf=df.copy()
-        idf["Date Snapshot"]=idf["Date Snapshot"].dt.date
+        Calculates
+            - Modified cost per share
+            - Benchmark calculations
 
-        if by is None:
-            by=["Date Snapshot"]
-        elif isinstance(by,list):
-            by=["Date Snapshot"]+by
-        elif isinstance(by,str):
-            by=["Date Snapshot",by]
-        else:
-            raise TypeError
+
+        Args:
+            daily_benchmark (pd.DataFrame, optional): if provided, uses this dataframe as benchmark.
+                Defaults to None.
+
+        Returns:
+            pd.DataFrame: _description_
+        """
+        df = pd.concat(self.daily_snapshots)
+
+        # modified cost per share
+        df = self.modified_cost_per_share(df)
+
+        # benchmark stats
+        if daily_benchmark is not None:
+            df = self.benchmark_portfolio_calcs(df, daily_benchmark)
+        # df = portfolio_end_of_year_stats(df, self.closedata)
+        # df = portfolio_start_of_year_stats(df, self.closedata)
+        df = self.calc_returns(df)
+        return df
+
+    def modified_cost_per_share(self, portfolio: pd.DataFrame) -> pd.DataFrame:
+        """
+        matches prices of each asset to open date
+
+        Args:
+            portfolio (pd.DataFrame): _description_
+
+        Returns:
+            pd.DataFrame: _description_
+        """
+        df = pd.merge(
+            portfolio,
+            self.closedata,
+            left_on=["Date Snapshot", "Symbol"],
+            right_on=["Date", "symbol"],
+            how="left",
+        )
+        df.rename(columns={"Close": "Symbol Adj Close"}, inplace=True)
+        df["Adj cost daily"] = df["Symbol Adj Close"] * df["Qty"]
+        df = df.drop(["symbol", "Date"], axis=1)
+        return df
+    
+    def calc_returns(self,portfolio:pd.DataFrame)-> pd.DataFrame:
+        """calculate daily returns
+
+        Args:
+            portfolio (pd.DataFrame): _description_
+
+        Returns:
+            pd.DataFrame: _description_
+        """
+        #symbol
+        portfolio["symbol Return"] = (
+            portfolio["Symbol Adj Close"] / portfolio["Adj cost per share"] - 1
+        )
+        portfolio["Stock Gain / (Loss)"] = (
+            portfolio["Adj cost daily"] - portfolio["Adj cost"]
+        )
+        # #benchmark
+        # portfolio["Benchmark Return"] = (
+        #     portfolio["Benchmark Close"] / portfolio["Benchmark Start Date Close"]
+        #     - 1
+        # )
+        # portfolio["Benchmark Share Value"] = (
+        #     portfolio["Equiv Benchmark Shares"] * portfolio["Benchmark Close"]
+        # )
+        # portfolio["Benchmark Gain / (Loss)"] = (
+        #     portfolio["Benchmark Share Value"] - portfolio["Adj cost"]
+        # )
+        # #others
+        # portfolio["Abs Value Compare"] = (
+        #     portfolio["Adj cost daily"]
+        #     - portfolio["Benchmark Start Date Cost"]
+        # )
+        # portfolio["Abs Value Return"] = (
+        #     portfolio["Abs Value Compare"] / portfolio["Benchmark Start Date Cost"]
+        # )
+        # portfolio["Abs. Return Compare"] = (
+        #     portfolio["symbol Return"] - portfolio["Benchmark Return"]
+        # )
+        return portfolio
+
+    # merge portfolio data with latest benchmark data and create several calcs
+    def benchmark_portfolio_calcs(self,portfolio, benchmark):
+        portfolio = pd.merge(
+            portfolio,
+            benchmark,
+            left_on=["Date Snapshot"],
+            right_on=["Date"],
+            how="left",
+        )
+        portfolio.rename(columns={"Close": "Benchmark Close"}, inplace=True)
+
+        # benchmark max
+        benchmark_max = benchmark[benchmark.index == self.stocks_end]
+        portfolio["Benchmark End Date Close"] = portfolio.apply(
+            lambda x: benchmark_max["Close"], axis=1
+        )
+        # benchmarkmin
+        benchmark_min = benchmark[benchmark.index == self.stocks_start]
+        portfolio["Benchmark Start Date Close"] = portfolio.apply(
+            lambda x: benchmark_min["Close"], axis=1)
         
+        return portfolio
+
+    def daily_grouped_metrics(
+        self, df: pd.DataFrame, cols: list, by_symbol=False,
+    ) -> pd.DataFrame:
+        idf = df.copy()
+        idf["Date Snapshot"] = idf["Date Snapshot"].dt.date
+
+        if not by_symbol :
+            by = ["Date Snapshot"]
+        else:
+            by = ["Date Snapshot","Symbol"]
+
         # group by day
-        grouped_metrics = (
-            idf.groupby(
-                by
-                )[cols]
-            .sum()
-            .reset_index()
-        )
+        grouped_metrics = idf.groupby(by)[cols].sum().reset_index()
         grouped_metrics = pd.melt(
-            grouped_metrics, 
-            id_vars=by,
-            value_vars=cols,
+            grouped_metrics, id_vars=by, value_vars=cols,
         )
+        grouped_metrics=grouped_metrics.set_index(
+                by+["variable"]
+            ).unstack([x for x in by if x !="Date Snapshot"]+["variable"])
 
         return grouped_metrics
-
-
-# matches prices of each asset to open date, then adjusts for  cps of dates
-def modified_cost_per_share(portfolio, adj_close, start_date):
-    df = pd.merge(
-        portfolio,
-        adj_close,
-        left_on=["Date Snapshot", "Symbol"],
-        right_on=["Date", "symbol"],
-        how="left",
-    )
-    df.rename(columns={"Close": "Symbol Adj Close"}, inplace=True)
-    df["Adj cost daily"] = df["Symbol Adj Close"] * df["Qty"]
-    df = df.drop(["symbol", "Date"], axis=1)
-    return df
-
-
-# merge portfolio data with latest benchmark data and create several calcs
-def benchmark_portfolio_calcs(portfolio, benchmark):
-    portfolio = pd.merge(
-        portfolio,
-        benchmark,
-        left_on=["Date Snapshot"],
-        right_on=["Date"],
-        how="left",
-    )
-    portfolio = portfolio.drop(["Date"], axis=1)
-    portfolio.rename(columns={"Close": "Benchmark Close"}, inplace=True)
-    benchmark_max = benchmark[benchmark["Date"] == benchmark["Date"].max()]
-    portfolio["Benchmark End Date Close"] = portfolio.apply(
-        lambda x: benchmark_max["Close"], axis=1
-    )
-    benchmark_min = benchmark[benchmark["Date"] == benchmark["Date"].min()]
-    portfolio["Benchmark Start Date Close"] = portfolio.apply(
-        lambda x: benchmark_min["Close"], axis=1
-    )
-    return portfolio
 
 
 def portfolio_end_of_year_stats(portfolio, adj_close_end):
@@ -465,36 +523,4 @@ def portfolio_start_of_year_stats(portfolio, adj_close_start):
     )
     return portfolio_start
 
-
-def calc_returns(portfolio):
-    portfolio["Benchmark Return"] = (
-        portfolio["Benchmark Close"] / portfolio["Benchmark Start Date Close"]
-        - 1
-    )
-    portfolio["symbol Return"] = (
-        portfolio["Symbol Adj Close"] / portfolio["Adj cost per share"] - 1
-    )
-    portfolio["symbol Share Value"] = (
-        portfolio["Qty"] * portfolio["Symbol Adj Close"]
-    )
-    portfolio["Benchmark Share Value"] = (
-        portfolio["Equiv Benchmark Shares"] * portfolio["Benchmark Close"]
-    )
-    portfolio["Stock Gain / (Loss)"] = (
-        portfolio["symbol Share Value"] - portfolio["Adj cost"]
-    )
-    portfolio["Benchmark Gain / (Loss)"] = (
-        portfolio["Benchmark Share Value"] - portfolio["Adj cost"]
-    )
-    portfolio["Abs Value Compare"] = (
-        portfolio["symbol Share Value"]
-        - portfolio["Benchmark Start Date Cost"]
-    )
-    portfolio["Abs Value Return"] = (
-        portfolio["Abs Value Compare"] / portfolio["Benchmark Start Date Cost"]
-    )
-    portfolio["Abs. Return Compare"] = (
-        portfolio["symbol Return"] - portfolio["Benchmark Return"]
-    )
-    return portfolio
 
