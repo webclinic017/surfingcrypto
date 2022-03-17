@@ -362,10 +362,10 @@ class Tracker:
 
         # benchmark stats
         if daily_benchmark is not None:
-            df = self.benchmark_portfolio_calcs(df, daily_benchmark)
-        # df = portfolio_end_of_year_stats(df, self.closedata)
-        # df = portfolio_start_of_year_stats(df, self.closedata)
-        df = self.calc_returns(df)
+            df = self._benchmark_portfolio_calcs(df, daily_benchmark)
+
+        #calc return
+        df = self._calc_returns(df)
         return df
 
     def modified_cost_per_share(self, portfolio: pd.DataFrame) -> pd.DataFrame:
@@ -390,7 +390,42 @@ class Tracker:
         df = df.drop(["symbol", "Date"], axis=1)
         return df
 
-    def calc_returns(self, portfolio: pd.DataFrame) -> pd.DataFrame:
+    # merge portfolio data with latest benchmark data and create several calcs
+    def _benchmark_portfolio_calcs(self, portfolio, benchmark):
+        portfolio = pd.merge(
+            portfolio,
+            benchmark,
+            left_on=["Date Snapshot"],
+            right_on=["Date"],
+            how="left",
+        )
+        portfolio.rename(columns={"Close": "Benchmark Close"}, inplace=True)
+
+        portfolio["Open date_temp"] = portfolio["Open date"].dt.floor('d')
+
+
+        portfolio = pd.merge(
+            portfolio,
+            benchmark,
+            left_on=["Open date_temp"],
+            right_on=["Date"],
+            how="left",
+        )
+        portfolio.drop("Open date_temp", axis=1, inplace=True)
+        portfolio.rename(
+            columns={"Close": "Benchmark DayOfBuy Close"}, inplace=True
+        )
+        portfolio["Benchmark Equiv Shares"] = (
+            portfolio["Adj cost"]
+            / portfolio["Benchmark DayOfBuy Close"]
+        )
+        portfolio["Benchmark Adj Cost Daily"] = (
+            portfolio["Benchmark Equiv Shares"]
+            * portfolio["Benchmark Close"]
+        )
+        return portfolio
+
+    def _calc_returns(self, portfolio: pd.DataFrame) -> pd.DataFrame:
         """calculate daily returns
 
         Args:
@@ -407,16 +442,15 @@ class Tracker:
             portfolio["Adj cost daily"] - portfolio["Adj cost"]
         )
         # #benchmark
-        # portfolio["Benchmark Return"] = (
-        #     portfolio["Benchmark Close"] / portfolio["Benchmark Start Date Close"]
-        #     - 1
-        # )
-        # portfolio["Benchmark Share Value"] = (
-        #     portfolio["Equiv Benchmark Shares"] * portfolio["Benchmark Close"]
-        # )
-        # portfolio["Benchmark Gain / (Loss)"] = (
-        #     portfolio["Benchmark Share Value"] - portfolio["Adj cost"]
-        # )
+        portfolio["Benchmark Return"] = (
+            portfolio["Benchmark Close"] / portfolio["Benchmark DayOfBuy Close"]
+            - 1
+        )
+
+        portfolio["Benchmark Gain / (Loss)"] = (
+            portfolio["Benchmark Adj Cost Daily"] - portfolio["Adj cost"]
+        )
+
         # #others
         # portfolio["Abs Value Compare"] = (
         #     portfolio["Adj cost daily"]
@@ -428,19 +462,6 @@ class Tracker:
         # portfolio["Abs. Return Compare"] = (
         #     portfolio["symbol Return"] - portfolio["Benchmark Return"]
         # )
-        return portfolio
-
-    # merge portfolio data with latest benchmark data and create several calcs
-    def benchmark_portfolio_calcs(self, portfolio, benchmark):
-        portfolio = pd.merge(
-            portfolio,
-            benchmark,
-            left_on=["Date Snapshot"],
-            right_on=["Date"],
-            how="left",
-        )
-        portfolio.rename(columns={"Close": "Benchmark Close"}, inplace=True)
-
         return portfolio
 
     def daily_grouped_metrics(
@@ -466,52 +487,3 @@ class Tracker:
         )
 
         return grouped_metrics
-
-
-# def portfolio_end_of_year_stats(portfolio, adj_close_end):
-#     adj_close_end = adj_close_end[
-#         adj_close_end["Date"] == adj_close_end["Date"].max()
-#     ]
-#     portfolio_end_data = pd.merge(
-#         portfolio, adj_close_end, left_on="Symbol", right_on="symbol"
-#     )
-#     portfolio_end_data.rename(
-#         columns={"Close": "symbol End Date Close"}, inplace=True
-#     )
-#     portfolio_end_data = portfolio_end_data.drop(["symbol", "Date"], axis=1)
-#     return portfolio_end_data
-
-
-def portfolio_start_of_year_stats(portfolio, adj_close_start):
-    adj_close_start = adj_close_start[
-        adj_close_start["Date"] == adj_close_start["Date"].min()
-    ]
-
-    portfolio.Symbol = portfolio.Symbol.astype("string")
-    adj_close_start.symbol = adj_close_start.symbol.astype("string")
-
-    portfolio_start = portfolio.merge(
-        adj_close_start, left_on="Symbol", right_on="symbol",
-    )
-    portfolio_start.rename(
-        columns={"Close": "symbol Start Date Close"}, inplace=True
-    )
-    portfolio_start["Adj cost per share"] = np.where(
-        portfolio_start["Open date"] <= portfolio_start["Date"],
-        portfolio_start["symbol Start Date Close"],
-        portfolio_start["Adj cost per share"],
-    )
-    portfolio_start["Adj cost"] = (
-        portfolio_start["Adj cost per share"] * portfolio_start["Qty"]
-    )
-    portfolio_start = portfolio_start.drop(["symbol", "Date"], axis=1)
-    portfolio_start["Equiv Benchmark Shares"] = (
-        portfolio_start["Adj cost"]
-        / portfolio_start["Benchmark Start Date Close"]
-    )
-    portfolio_start["Benchmark Start Date Cost"] = (
-        portfolio_start["Equiv Benchmark Shares"]
-        * portfolio_start["Benchmark Start Date Close"]
-    )
-    return portfolio_start
-
