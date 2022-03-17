@@ -439,7 +439,7 @@ class Tracker:
             portfolio["Symbol Adj Close"] / portfolio["Adj cost per share"] - 1
         )
         portfolio["Stock Gain / (Loss)"] = (
-            portfolio["Adj cost daily"] - portfolio["Adj cost"]
+            portfolio["Adj cost daily"] - portfolio["Qty"]*portfolio["Adj cost per share"]
         )
         # #benchmark
         portfolio["Benchmark Return"] = (
@@ -485,5 +485,8 @@ class Tracker:
             .unstack([x for x in by if x != "Date Snapshot"] + ["variable"])
             .sort_index(axis=1, level=1)
         )
-
+        #eventually fill gaps
+        grouped_metrics.reindex(
+            pd.date_range(grouped_metrics.index.min(),grouped_metrics.index.max(), freq='D')
+        )
         return grouped_metrics
