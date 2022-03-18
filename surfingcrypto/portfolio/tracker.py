@@ -454,12 +454,12 @@ class Tracker:
         # #others
         # portfolio["Abs Value Compare"] = (
         #     portfolio["Adj cost daily"]
-        #     - portfolio["Benchmark Start Date Cost"]
+        #     - portfolio["Benchmark DayOfBuy Close"]
         # )
         # portfolio["Abs Value Return"] = (
-        #     portfolio["Abs Value Compare"] / portfolio["Benchmark Start Date Cost"]
+        #     portfolio["Abs Value Compare"] / portfolio["Benchmark DayOfBuy Close"]
         # )
-        # portfolio["Abs. Return Compare"] = (
+        # portfolio["Abs Return Compare"] = (
         #     portfolio["symbol Return"] - portfolio["Benchmark Return"]
         # )
         return portfolio
