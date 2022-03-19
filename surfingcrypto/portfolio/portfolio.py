@@ -33,7 +33,7 @@ class Portfolio:
     """
 
     def __init__(self, portfolio_type, **kwargs):
-        self.portfolio_type=portfolio_type
+        self.portfolio_type = portfolio_type
         if self.portfolio_type.lower() == "coinbase":
             self.coinbase = MyCoinbase(active_accounts=False, **kwargs)
             self.coinbase.get_history()
@@ -58,7 +58,7 @@ class Portfolio:
 
         # exclude fiat deposit and withdrawals AND SEND
         self.std_df = self.std_df[
-            self.std_df["type"].isin(["buy", "sell", "trade","send"])
+            self.std_df["type"].isin(["buy", "sell", "trade", "send"])
         ]
 
         # set trades as buy or sell transactions
@@ -67,7 +67,7 @@ class Portfolio:
         m = (self.std_df["type"] == "trade") & (self.std_df["amount"] > 0)
         self.std_df.loc[m, "type"] = "buy"
 
-        #set sends as buy and sells
+        # set sends as buy and sells
         m = (self.std_df["type"] == "send") & (self.std_df["amount"] < 0)
         self.std_df.loc[m, "type"] = "sell"
         m = (self.std_df["type"] == "send") & (self.std_df["amount"] > 0)
@@ -103,9 +103,9 @@ class Portfolio:
         if len(self.std_df) != len(self.coinbase.history.df):
             n = len(self.coinbase.history.df) - len(self.std_df)
             print(
-                f"Warning! There are {n} transactions"\
+                f"Warning! There are {n} transactions"
                 "that were EXCLUDED in std_df."
-                )
+            )
         if not self.coinbase.history.executed_without_errors():
             print("Coinbase errors:")
             print(self.coinbase.history)

@@ -14,7 +14,7 @@ from surfingcrypto.ts import TS
 class Tracker:
     """Tracker module
 
-    This module tracks the daily portfolio value, 
+    This module tracks the daily portfolio value,
     plus it features a series of portfolio statistics.
 
     Args:
@@ -57,14 +57,14 @@ class Tracker:
             self.stocks_end = pd.Timestamp(
                 datetime.datetime.strptime(stocks_end, "%d-%m-%Y"), tz="utc"
             )
-        
-        self.benchmark=benchmark
+
+        self.benchmark = benchmark
 
         self.portfolio_df = self._format_df(df)
         self.closedata = self._load_data()
         self.active_positions = self._portfolio_start_balance()
         self.daily_snapshots = self._time_fill(self.active_positions)
-        
+
         if self.benchmark is not None:
             self._set_benchmark()
 
@@ -156,7 +156,7 @@ class Tracker:
         """sets benchmark
         """
         ts = TS(configuration=self.configuration, coin=self.benchmark)
-        self.benchmark_df=self._check_data(
+        self.benchmark_df = self._check_data(
             ts.df[["Close"]].copy(), self.stocks_start, self.stocks_end
         )
 
@@ -261,8 +261,8 @@ class Tracker:
         # Our _fifo function takes your active portfolio positions, the sales
         # dataframe created in _time_fill, and the current date in the
         #  market_cal list.
-        # It then filters sales to find any that have occurred on the current date,
-        #  and
+        # It then filters sales to find any that have occurred on the current
+        #  date, and
         # create a dataframe of positions not affected by sales:
 
         sales = sales[sales["Open date"].dt.date == date]
@@ -275,9 +275,12 @@ class Tracker:
         future_positions = portfolio[portfolio["Open date"].dt.date > date]
 
         # We’ll then use our trusty _position_adjust function to zero-out any
-        #  positions with active sales. If there were no sales for the specific date,
-        #   our function will simply append the positions_no_change onto the empty
-        #    adj_positions dataframe, leaving you with an accurate daily snapshot of positions:
+        #  positions with active sales. If there were no sales for the
+        # specific date,
+        #   our function will simply append the positions_no_change
+        # onto the empty
+        #    adj_positions dataframe, leaving you with an accurate
+        # daily snapshot of positions:
 
         adj_positions = pd.DataFrame()
         for sale in sales.iterrows():
@@ -342,7 +345,8 @@ class Tracker:
 
 
         Args:
-            daily_benchmark (pd.DataFrame, optional): if provided, uses this dataframe as benchmark.
+            daily_benchmark (pd.DataFrame, optional): if provided,
+                uses this dataframe as benchmark.
                 Defaults to None.
 
         Returns:
@@ -357,7 +361,7 @@ class Tracker:
         if self.benchmark is not None:
             df = self._benchmark_portfolio_calcs(df)
 
-        #calc return
+        # calc return
         df = self._calc_returns(df)
         return df
 
@@ -394,8 +398,7 @@ class Tracker:
         )
         portfolio.rename(columns={"Close": "Benchmark Close"}, inplace=True)
 
-        portfolio["Open date_temp"] = portfolio["Open date"].dt.floor('d')
-
+        portfolio["Open date_temp"] = portfolio["Open date"].dt.floor("d")
 
         portfolio = pd.merge(
             portfolio,
@@ -409,12 +412,10 @@ class Tracker:
             columns={"Close": "Benchmark DayOfBuy Close"}, inplace=True
         )
         portfolio["Benchmark Equiv Shares"] = (
-            portfolio["Adj cost"]
-            / portfolio["Benchmark DayOfBuy Close"]
+            portfolio["Adj cost"] / portfolio["Benchmark DayOfBuy Close"]
         )
         portfolio["Benchmark Adj Cost Daily"] = (
-            portfolio["Benchmark Equiv Shares"]
-            * portfolio["Benchmark Close"]
+            portfolio["Benchmark Equiv Shares"] * portfolio["Benchmark Close"]
         )
         return portfolio
 
@@ -432,11 +433,13 @@ class Tracker:
             portfolio["Symbol Adj Close"] / portfolio["Adj cost per share"] - 1
         )
         portfolio["Stock Gain / (Loss)"] = (
-            portfolio["Adj cost daily"] - portfolio["Qty"]*portfolio["Adj cost per share"]
+            portfolio["Adj cost daily"]
+            - portfolio["Qty"] * portfolio["Adj cost per share"]
         )
         # #benchmark
         portfolio["Benchmark Return"] = (
-            portfolio["Benchmark Close"] / portfolio["Benchmark DayOfBuy Close"]
+            portfolio["Benchmark Close"]
+            / portfolio["Benchmark DayOfBuy Close"]
             - 1
         )
 
@@ -450,7 +453,8 @@ class Tracker:
         #     - portfolio["Benchmark DayOfBuy Close"]
         # )
         # portfolio["Abs Value Return"] = (
-        #     portfolio["Abs Value Compare"] / portfolio["Benchmark DayOfBuy Close"]
+        #     portfolio["Abs Value Compare"] /
+        #   portfolio["Benchmark DayOfBuy Close"]
         # )
         # portfolio["Abs Return Compare"] = (
         #     portfolio["symbol Return"] - portfolio["Benchmark Return"]
@@ -478,8 +482,12 @@ class Tracker:
             .unstack([x for x in by if x != "Date Snapshot"] + ["variable"])
             .sort_index(axis=1, level=1)
         )
-        #eventually fill gaps
+        # eventually fill gaps
         grouped_metrics.reindex(
-            pd.date_range(grouped_metrics.index.min(),grouped_metrics.index.max(), freq='D')
+            pd.date_range(
+                grouped_metrics.index.min(),
+                grouped_metrics.index.max(),
+                freq="D",
+            )
         )
         return grouped_metrics
