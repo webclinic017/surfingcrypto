@@ -32,6 +32,7 @@ class Tracker:
         df: pd.DataFrame,
         stocks_start: str = None,
         stocks_end: str = None,
+        benchmark: str = None,
         configuration: surfingcrypto.Config = None,
     ):
         self.configuration = configuration
@@ -56,11 +57,16 @@ class Tracker:
             self.stocks_end = pd.Timestamp(
                 datetime.datetime.strptime(stocks_end, "%d-%m-%Y"), tz="utc"
             )
+        
+        self.benchmark=benchmark
 
         self.portfolio_df = self._format_df(df)
         self.closedata = self._load_data()
         self.active_positions = self._portfolio_start_balance()
         self.daily_snapshots = self._time_fill(self.active_positions)
+        
+        if self.benchmark is not None:
+            self._set_benchmark()
 
     def _format_df(
         self, df: pd.DataFrame,
@@ -98,9 +104,6 @@ class Tracker:
             axis=1,
             inplace=True,
         )
-
-        # exclude double transactions coin-fiat for the tracking purpose.
-        portfolio_df = portfolio_df[~(portfolio_df["Symbol"] == "EUR")]
 
         return portfolio_df
 
@@ -149,23 +152,13 @@ class Tracker:
         closedata.reset_index(inplace=True)
         return closedata
 
-    def set_benchmark(self, benchmark: str) -> pd.DataFrame:
+    def _set_benchmark(self) -> pd.DataFrame:
         """sets benchmark
-
-        Args:
-            benchmark (str): string code of benchmark
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            pd.DataFrame: dataframe of benchmark
         """
-        ts = TS(configuration=self.configuration, coin=benchmark)
-        df = self._check_data(
+        ts = TS(configuration=self.configuration, coin=self.benchmark)
+        self.benchmark_df=self._check_data(
             ts.df[["Close"]].copy(), self.stocks_start, self.stocks_end
         )
-        return df
 
     def _check_data(
         self, df, i: pd.Timestamp, o: pd.Timestamp,
@@ -340,7 +333,7 @@ class Tracker:
             per_day_balance.append(daily_positions)
         return per_day_balance
 
-    def per_day_portfolio_calcs(self, daily_benchmark=None) -> pd.DataFrame:
+    def per_day_portfolio_calcs(self) -> pd.DataFrame:
         """calculates daily portfolio stats.
 
         Calculates
@@ -361,8 +354,8 @@ class Tracker:
         df = self.modified_cost_per_share(df)
 
         # benchmark stats
-        if daily_benchmark is not None:
-            df = self._benchmark_portfolio_calcs(df, daily_benchmark)
+        if self.benchmark is not None:
+            df = self._benchmark_portfolio_calcs(df)
 
         #calc return
         df = self._calc_returns(df)
@@ -391,10 +384,10 @@ class Tracker:
         return df
 
     # merge portfolio data with latest benchmark data and create several calcs
-    def _benchmark_portfolio_calcs(self, portfolio, benchmark):
+    def _benchmark_portfolio_calcs(self, portfolio):
         portfolio = pd.merge(
             portfolio,
-            benchmark,
+            self.benchmark_df,
             left_on=["Date Snapshot"],
             right_on=["Date"],
             how="left",
@@ -406,7 +399,7 @@ class Tracker:
 
         portfolio = pd.merge(
             portfolio,
-            benchmark,
+            self.benchmark_df,
             left_on=["Open date_temp"],
             right_on=["Date"],
             how="left",

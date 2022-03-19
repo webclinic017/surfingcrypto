@@ -33,74 +33,14 @@ class Portfolio:
     """
 
     def __init__(self, portfolio_type, **kwargs):
-        if portfolio_type.lower() == "coinbase":
+        self.portfolio_type=portfolio_type
+        if self.portfolio_type.lower() == "coinbase":
             self.coinbase = MyCoinbase(active_accounts=False, **kwargs)
             self.coinbase.get_history()
             self._standardize()
             self._init_log()
         else:
             raise NotImplementedError
-
-    # def total_fees(self):
-    #     """
-    #     total fees paid by user for th
-    #     """
-    #     return self.coinbase.history.df["total_fee"].sum()
-
-    # def total_by_type(self):
-    #     """
-    #     total EUR by transaction type.
-
-    #     Return:
-    #         :obj:`pandas.DataFrame`
-    #     """
-    #     return self.coinbase.history.df.groupby("type")[
-    #         ["native_amount"]
-    #     ].sum()
-
-    # def live_value(self, client, amount, currency):
-    #     """
-    #     gets live value of given currency and amount.
-
-    #     Arguments:
-    #         client (:obj:`surfingcrypto.coinbase.CB.client`) : client
-    #             to coinbase account.
-    #         amount (float): amount of currency
-    #         currency (str): symbol of currency
-    #     """
-    #     change = client.get_spot_price(currency_pair=currency + "-EUR")
-    #     change = float(change["amount"])
-    #     return amount * change
-
-    # def portfolio_value(self, client):
-    #     """
-    #     gets live value of portfolio.
-
-    #     Arguments:
-    #         client (:obj:`surfingcrypto.coinbase.CB.client`) : client to
-    #             coinbase account.
-    #     """
-    #     balance = (
-    #         self.coinbase.history.df[
-    #             self.coinbase.history.df["type"].isin(
-    #                 ["buy", "sell", "trade", "send"]
-    #             )
-    #         ]
-    #         .groupby("symbol")[["amount"]]
-    #         .sum()
-    #     )
-    #     balance = balance.loc[
-    #         ~(balance.round(10) == 0.0).all(axis=1)
-    #     ].reset_index()
-    #     balance["live_value"] = balance.apply(
-    #         lambda x: self.live_value(client, x["amount"], x["symbol"]), axis=1
-    #     )
-    #     print(balance)
-    #     print(
-    #         "Total portfolio balance: "
-    #         + "{:.2f}".format(balance["live_value"].sum())
-    #         + " EUR"
-    #     )
 
     def _standardize(self):
         """
@@ -133,9 +73,12 @@ class Portfolio:
         m = (self.std_df["type"] == "send") & (self.std_df["amount"] > 0)
         self.std_df.loc[m, "type"] = "buy"
 
-        # make all floats positive
+        # make all amounts positive
         self.std_df["amount"] = self.std_df["amount"].abs()
         self.std_df["native_amount"] = self.std_df["native_amount"].abs()
+
+        # exclude double transactions coin-fiat for the tracking purpose.
+        self.std_df = self.std_df[~(self.std_df["symbol"] == "EUR")]
 
         for trade in self.std_df.trade_id.unique():
             if trade is not None:
@@ -166,3 +109,9 @@ class Portfolio:
         if not self.coinbase.history.executed_without_errors():
             print("Coinbase errors:")
             print(self.coinbase.history)
+
+    def total_fees(self):
+        """
+        total fees paid for handled transactions.
+        """
+        return self.std_df.total_fee.sum()
