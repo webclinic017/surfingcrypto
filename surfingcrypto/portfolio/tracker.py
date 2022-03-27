@@ -68,6 +68,8 @@ class Tracker:
         if self.benchmark is not None:
             self._set_benchmark()
 
+        self._per_day_portfolio_calcs()
+
     def _format_df(
         self, df: pd.DataFrame,
     ):
@@ -336,18 +338,12 @@ class Tracker:
             per_day_balance.append(daily_positions)
         return per_day_balance
 
-    def per_day_portfolio_calcs(self) -> pd.DataFrame:
+    def _per_day_portfolio_calcs(self) -> pd.DataFrame:
         """calculates daily portfolio stats.
 
         Calculates
             - Modified cost per share
             - Benchmark calculations
-
-
-        Args:
-            daily_benchmark (pd.DataFrame, optional): if provided,
-                uses this dataframe as benchmark.
-                Defaults to None.
 
         Returns:
             pd.DataFrame: _description_
@@ -355,7 +351,7 @@ class Tracker:
         df = pd.concat(self.daily_snapshots)
 
         # modified cost per share
-        df = self.modified_cost_per_share(df)
+        df = self._modified_cost_per_share(df)
 
         # benchmark stats
         if self.benchmark is not None:
@@ -363,9 +359,10 @@ class Tracker:
 
         # calc return
         df = self._calc_returns(df)
-        return df
+        
+        self.daily_calcs = df
 
-    def modified_cost_per_share(self, portfolio: pd.DataFrame) -> pd.DataFrame:
+    def _modified_cost_per_share(self, portfolio: pd.DataFrame) -> pd.DataFrame:
         """
         matches prices of each asset to open date
 
@@ -388,7 +385,7 @@ class Tracker:
         return df
 
     # merge portfolio data with latest benchmark data and create several calcs
-    def _benchmark_portfolio_calcs(self, portfolio):
+    def _benchmark_portfolio_calcs(self, portfolio:pd.DataFrame)->pd.DataFrame:
         portfolio = pd.merge(
             portfolio,
             self.benchmark_df,
@@ -462,9 +459,9 @@ class Tracker:
         return portfolio
 
     def daily_grouped_metrics(
-        self, df: pd.DataFrame, cols: list, by_symbol=False,
+        self, cols: list, by_symbol=False,
     ) -> pd.DataFrame:
-        idf = df.copy()
+        idf = self.daily_calcs.copy()
         idf["Date Snapshot"] = idf["Date Snapshot"].dt.date
 
         if not by_symbol:

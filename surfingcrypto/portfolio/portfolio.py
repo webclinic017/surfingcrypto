@@ -80,6 +80,7 @@ class Portfolio:
         # exclude double transactions coin-fiat for the tracking purpose.
         self.std_df = self.std_df[~(self.std_df["symbol"] == "EUR")]
 
+        #split trades fees among the two
         for trade in self.std_df.trade_id.unique():
             if trade is not None:
                 t = self.std_df[self.std_df["trade_id"] == trade]
@@ -100,14 +101,21 @@ class Portfolio:
         """
         prints log of initialization status.
         """
+        print("####### PORTFOLIO ")
+        print("")
+        print(self.coinbase)
+        print("")
+
         if len(self.std_df) != len(self.coinbase.history.df):
             n = len(self.coinbase.history.df) - len(self.std_df)
+            print("")
             print(
                 f"Warning! There are {n} transactions"
                 "that were EXCLUDED in std_df."
             )
         if not self.coinbase.history.executed_without_errors():
-            print("Coinbase errors:")
+            print("")
+            print("Warning! Errors while handling transactions:")
             print(self.coinbase.history)
 
     def total_fees(self):

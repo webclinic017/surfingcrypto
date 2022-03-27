@@ -148,14 +148,17 @@ class SimplePlot(BaseFigure):
 class TaPlot(BaseFigure):
     """
     this is the Technical Analysis plot.
-    It shows (at current time): candlesticks, volume and 3 TA Indicators (MACD, BB bands and RSI)
+    It shows (at current time): candlesticks,
+     volume and 3 TA Indicators (MACD, BB bands and RSI)
     Can be easily modified to fit other and/or more indicators.
 
     Arguments:
-        trendlines (bool) : UNDER DEVELOPEMENT! - plot also trendlines calculated with `src.trend_line` class.
+        trendlines (bool) : UNDER DEVELOPEMENT! - plot also trendlines 
+            calculated with `src.trend_line` class.
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         graphstart (str) : date string in d-m-Y format 
-            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
+            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from
+            which to start the graph.
  
     """
 
@@ -285,3 +288,19 @@ class ATHPlot(BaseFigure):
         # log
         print(f"{self.ts.coin} ATH plotted.")
 
+
+class PortfolioPlot(BaseFigure):
+    """
+    Portfolio plots
+
+    Arguments:
+        portfolio (:class:`surfingcrypto.portfolio.portfolio`) : 
+            `surfingcrypto.portfolio.portfolio` object
+        graphstart (str) : date string in d-m-Y format 
+            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.plot()
