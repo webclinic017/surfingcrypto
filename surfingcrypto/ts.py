@@ -121,8 +121,8 @@ class TS:
         sets the default parameters if not specified in config.json file.
         """
         # TA parameters
-        if self.config.coins[self.coin] == "":
-            # default if empty
+        if self.coin not in self.config.coins.keys() or self.config.coins[self.coin] == "":
+            # default if empty or not specified in coins
             self.ta_params = {
                 "sma": {"fast": 12, "slow": 26},
                 "macd": {"fast": 12, "slow": 26, "signal": 9},
