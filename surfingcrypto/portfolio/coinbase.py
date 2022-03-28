@@ -172,6 +172,7 @@ class MyCoinbase(CB):
     Attributes:
         accounts (:obj:`list` of :obj:`coibase.model.ApiObject`):
             list of selected accounts.
+        active_accounts (list): list of string names of active accounts (balance>0.00)
         history (:obj:`surfingcrypto.portfolio.coinbase.TransactionsHistory`):
             `TransactionsHistory` object
         last_updated (:obj:`datetime.datetime`): datetime of
@@ -188,6 +189,7 @@ class MyCoinbase(CB):
     def __init__(self, active_accounts=True, force=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.start(active_accounts, force)
+        self._set_active_accounts()
         return
 
     def start(self, active_accounts, force):
@@ -263,6 +265,19 @@ class MyCoinbase(CB):
             accounts = dict["accounts"]
             last_updated = dict["datetime"]
         return accounts, last_updated
+
+    def _set_active_accounts(self):
+        """
+        sets the currently active accounts, a.k.a. balance >0
+        this is required for the case when the module is loaded in historic mode, 
+        so to distinguish active accounts from all known accounts.
+        """
+        active = []
+        if hasattr(self, "accounts"):
+            for account in self.accounts:
+                if float(account.native_balance.amount) > 0:
+                    active.append(account.currency)
+        self.active_accounts = active
 
     def mycoinbase_report(self):
         """

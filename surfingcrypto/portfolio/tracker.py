@@ -68,7 +68,7 @@ class Tracker:
         if self.benchmark is not None:
             self._set_benchmark()
 
-        self._per_day_portfolio_calcs()
+        self.daily_calcs=self._per_day_portfolio_calcs()
 
     def _format_df(
         self, df: pd.DataFrame,
@@ -360,7 +360,7 @@ class Tracker:
         # calc return
         df = self._calc_returns(df)
         
-        self.daily_calcs = df
+        return df
 
     def _modified_cost_per_share(self, portfolio: pd.DataFrame) -> pd.DataFrame:
         """
