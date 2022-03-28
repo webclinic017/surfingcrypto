@@ -41,7 +41,19 @@ class Scraper:
         """runs the scraping process."""
         self.runs = []
         for key in self.config.scraping_req:
-            c = CoinScraper(key, self.fiat, self.config)
+
+            if key=="ALGO":
+                print(key)
+            
+            #dates are utc unaware
+            start = self.config.scraping_req[key]["start"].date()
+            end_day = self.config.scraping_req[key]["end_day"].date()
+
+            if key in self.config.rebrandings:
+                key = self.config.rebrandings[key]
+
+            path = self.config.data_folder + "/ts/" + key + ".csv"
+            c = CoinScraper(key, self.fiat,start,end_day,path)
             self.runs.append(c)
 
         self._log()
@@ -75,24 +87,24 @@ class CoinScraper:
 
     Scrapes data from coinmarketcap.com.
 
-    It scrapes data for the crypto coins specified in the keys of the
-    customizable coins.json file.Saves data in a `*.csv` file
-    stored in `data/ts/`.
+    It scrapes data for the crypto coin specified.
+    Saves data in a `*.csv` file
+    stored at the provided path.
     Checks if the file exists, if not it is downloaded.
     If it exists, it check last element of datetime index and compares it
     with today's date. If required, it updates the `*.csv` file
     to today\'s date.
 
     Arguments:
-        key (str): symbol of crypto
+        coin (str): symbol of crypto
         self.fiat = fiat
-        configuration (:obj:`surfingcrypto.config.config`): package
-            configuration object
+        start (:obj:`datetime.datetime`):  start day
+        end_day (:obj:`datetime.datetime`): end day
+        path (str): path to csv file
 
     Attributes:
-        key (str): symbol of crypto
-        config (:obj:`surfingcrypto.config.config`): package
-            configuration object
+        coin (str): symbol of crypto
+        fiat (str): fiat of prices
         start (:obj:`datetime.datetime`):  start day
         end_day (:obj:`datetime.datetime`): end day
         path (str): path to csv file
@@ -101,19 +113,15 @@ class CoinScraper:
         error (:obj:`Excection`): generic error
     """
 
-    def __init__(self, key, fiat, configuration):
-        self.config = configuration
+    def __init__(self, coin, fiat, start,end_day,path):
         self.fiat = fiat
+        self.coin=coin
         
         #dates are utc unaware
-        self.start = self.config.scraping_req[key]["start"].date()
-        self.end_day = self.config.scraping_req[key]["end_day"].date()
+        self.start = start
+        self.end_day = end_day
 
-        if key in self.config.rebrandings:
-            key = self.config.rebrandings[key]
-        self.key = key
-
-        self.path = self.config.data_folder + "/ts/" + key + ".csv"
+        self.path = path
 
         self._run()
 
@@ -123,28 +131,28 @@ class CoinScraper:
             df, last = self._load_csv()
             last = last.date()
             if last == self.end_day:
-                s = f"DF: {self.key} already up to date."
+                s = f"DF: {self.coin} already up to date."
                 self.description = s
                 self.result = True
             else:
                 try:
                     self._scrape_missing_data(last, df)
-                    s = f"DF: {self.key} successfully updated."
+                    s = f"DF: {self.coin} successfully updated."
                     self.description = s
                     self.result = True
                 except Exception as e:
-                    s = f"DF: {self.key} update failed."
+                    s = f"DF: {self.coin} update failed."
                     self.description = s
                     self.result = False
                     self.error = e
         else:
             try:
                 self._scrape_alltime_data()
-                s = f"DF: {self.key} successfully downloaded."
+                s = f"DF: {self.coin} successfully downloaded."
                 self.description = s
                 self.result = True
             except Exception as e:
-                s = f"DF: {self.key} download failed."
+                s = f"DF: {self.coin} download failed."
                 self.description = s
                 self.result = False
                 self.error = e
@@ -155,7 +163,7 @@ class CoinScraper:
         """
         start = self.start.strftime("%d-%m-%Y")
         end_day = self.end_day.strftime("%d-%m-%Y")
-        scraper = CmcScraper(self.key, start, end_day, fiat=self.fiat)
+        scraper = CmcScraper(self.coin, start, end_day, fiat=self.fiat)
         scraped = scraper.get_dataframe()
         scraped.set_index("Date", inplace=True)
         scraped.sort_index(inplace=True)
@@ -173,7 +181,7 @@ class CoinScraper:
         """
         last = (last + datetime.timedelta(1)).strftime("%d-%m-%Y")
         end_day = self.end_day.strftime("%d-%m-%Y")
-        scraper = CmcScraper(self.key, last, end_day, fiat=self.fiat)
+        scraper = CmcScraper(self.coin, last, end_day, fiat=self.fiat)
         scraped = scraper.get_dataframe()
         scraped.set_index("Date", inplace=True)
         df = pd.concat([df, scraped])
@@ -187,7 +195,7 @@ class CoinScraper:
 
         Return:
             df (:obj:`pandas.DataFrame`): dataframe of locally stored data
-            last (str): date parsed as d-m-Y of last known price
+            last (_type_): date parsed as d-m-Y of last known price
         """
         df = pd.read_csv(self.path)
         df["Date"] = pd.to_datetime(df["Date"])
@@ -200,7 +208,7 @@ class CoinScraper:
         endday = self.end_day.strftime("%d-%m-%Y")
         error = hasattr(self, "error")
         return (
-            f"CoinScraper({self.key},"
+            f"CoinScraper({self.coin},"
             f" start={start},"
             f" end_day={endday},"
             f" error={error},"
@@ -212,7 +220,7 @@ class CoinScraper:
         endday = self.end_day.strftime("%d-%m-%Y")
         error = hasattr(self, "error")
         return (
-            f"CoinScraper({self.key},"
+            f"CoinScraper({self.coin},"
             f" start={start},"
             f" end_day={endday},"
             f" error={error},"

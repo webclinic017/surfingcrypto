@@ -210,6 +210,7 @@ class MyCoinbase(CB):
             self.last_updated = dt.datetime.utcnow()
         elif active_accounts is False:
             self.isHistoric = True
+            # if faile not found, fetch all instead of failing
             if os.path.isfile(self.json_path) and not force:
                 accounts, last_updated = self._load_accounts()
                 self.last_updated = dt.datetime.strptime(
