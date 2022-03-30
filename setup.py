@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="surfingcrypto",
-    version="0.0.4",
+    version="0.1.0",
     description="A package to make money with crypto to go surfing",
     long_description_content_type="text/markdown",
     long_description=long_description,
