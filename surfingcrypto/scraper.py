@@ -41,11 +41,8 @@ class Scraper:
         """runs the scraping process."""
         self.runs = []
         for key in self.config.scraping_req:
-
-            if key=="ALGO":
-                print(key)
             
-            #dates are utc unaware
+            # dates are utc unaware
             start = self.config.scraping_req[key]["start"].date()
             end_day = self.config.scraping_req[key]["end_day"].date()
 
@@ -53,7 +50,7 @@ class Scraper:
                 key = self.config.rebrandings[key]
 
             path = self.config.data_folder + "/ts/" + key + ".csv"
-            c = CoinScraper(key, self.fiat,start,end_day,path)
+            c = CoinScraper(key, self.fiat, start, end_day, path)
             self.runs.append(c)
 
         self._log()
@@ -97,7 +94,7 @@ class CoinScraper:
 
     Arguments:
         coin (str): symbol of crypto
-        self.fiat = fiat
+        fiat (str): fiat of prices
         start (:obj:`datetime.datetime`):  start day
         end_day (:obj:`datetime.datetime`): end day
         path (str): path to csv file
@@ -113,11 +110,11 @@ class CoinScraper:
         error (:obj:`Excection`): generic error
     """
 
-    def __init__(self, coin, fiat, start,end_day,path):
+    def __init__(self, coin, fiat, start, end_day, path):
+        self.coin = coin
         self.fiat = fiat
-        self.coin=coin
-        
-        #dates are utc unaware
+
+        # dates are utc unaware
         self.start = start
         self.end_day = end_day
 
@@ -128,32 +125,30 @@ class CoinScraper:
     def _run(self):
 
         if os.path.isfile(self.path):
-            df, last = self._load_csv()
+            df, first, last = self._load_csv()
+
+            first = first.date()
             last = last.date()
-            if last == self.end_day:
-                s = f"DF: {self.coin} already up to date."
-                self.description = s
+
+            if first == self.start and last == self.end_day:
+                self.description = f"DF: {self.coin} already up to date."
                 self.result = True
             else:
                 try:
-                    self._scrape_missing_data(last, df)
-                    s = f"DF: {self.coin} successfully updated."
-                    self.description = s
+                    self._scrape_missing_data(first, last, df)
+                    self.description = f"DF: {self.coin} successfully updated."
                     self.result = True
                 except Exception as e:
-                    s = f"DF: {self.coin} update failed."
-                    self.description = s
+                    self.description = f"DF: {self.coin} update failed."
                     self.result = False
                     self.error = e
         else:
             try:
                 self._scrape_alltime_data()
-                s = f"DF: {self.coin} successfully downloaded."
-                self.description = s
+                self.description = f"DF: {self.coin} successfully downloaded."
                 self.result = True
             except Exception as e:
-                s = f"DF: {self.coin} download failed."
-                self.description = s
+                self.description = f"DF: {self.coin} download failed."
                 self.result = False
                 self.error = e
 
@@ -169,24 +164,60 @@ class CoinScraper:
         scraped.sort_index(inplace=True)
         scraped.to_csv(self.path)
 
-    def _scrape_missing_data(self, last, df):
+    def _scrape_missing_data(self, first, last, df):
         """
         scrapes the missing data and concatenates it to existing df.
 
         Arguments:
+            first (:obj:`datetime.datetime`): date parsed as string
+                with d-m-Y format of first known price
             last (:obj:`datetime.datetime`): date parsed as string
                 with d-m-Y format of last known price
             df (:obj:`pandas.DataFrame`): dataframe of
                 locally stored data
         """
-        last = (last + datetime.timedelta(1)).strftime("%d-%m-%Y")
-        end_day = self.end_day.strftime("%d-%m-%Y")
-        scraper = CmcScraper(self.coin, last, end_day, fiat=self.fiat)
-        scraped = scraper.get_dataframe()
+        if self.coin=="ALGO":
+            print("ALGO")
+        if first == self.start and last < self.end_day:
+            scraper = self._append_to_end(last)
+            scraped = scraper.get_dataframe()
+        elif self.start < first and last == self.end_day:
+            scraper = self._append_to_front(first)
+            scraped = scraper.get_dataframe()
+        elif self.start < first and last < self.end_day:
+            scraper = self._append_to_end(last)
+            scraped_last = scraper.get_dataframe()
+            scraper = self._append_to_front(first)
+            scraped_first = scraper.get_dataframe()
+            scraped = pd.concat([scraped_last, scraped_first])
+        elif first<self.start and last == self.end_day:
+            # i have more than needed, but its fine
+            # i add nothing 
+            scraped=pd.DataFrame(columns=["Date"])
+        else:
+            raise NotImplementedError
+
         scraped.set_index("Date", inplace=True)
         df = pd.concat([df, scraped])
         df.sort_index(inplace=True)
         df.to_csv(self.path)
+
+    def _append_to_front(self, first: datetime) -> CmcScraper:
+        start = self.start.strftime("%d-%m-%Y")
+        day_before_first = (first - datetime.timedelta(1)).strftime("%d-%m-%Y")
+        scraper = CmcScraper(
+            self.coin, start, day_before_first, fiat=self.fiat
+        )
+
+        return scraper
+
+    def _append_to_end(self, last: datetime) -> CmcScraper:
+        day_after_last = (last + datetime.timedelta(1)).strftime("%d-%m-%Y")
+        end_day = self.end_day.strftime("%d-%m-%Y")
+        scraper = CmcScraper(
+            self.coin, day_after_last, end_day, fiat=self.fiat
+        )
+        return scraper
 
     def _load_csv(self):
         """
@@ -195,13 +226,15 @@ class CoinScraper:
 
         Return:
             df (:obj:`pandas.DataFrame`): dataframe of locally stored data
+            first (_type_): date parsed as d-m-Y of first known price
             last (_type_): date parsed as d-m-Y of last known price
         """
         df = pd.read_csv(self.path)
         df["Date"] = pd.to_datetime(df["Date"])
         df.set_index("Date", inplace=True)
+        first = pd.to_datetime(df.index.values[0])
         last = pd.to_datetime(df.index.values[-1])
-        return df, last
+        return df, first, last
 
     def __str__(self):
         start = self.start.strftime("%d-%m-%Y")

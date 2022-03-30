@@ -153,17 +153,26 @@ class Config:
                             "start": start,
                             # timedelta is because today's close
                             # isnt yet realized
-                            "end_day": (datetime.datetime.now(datetime.timezone.utc)+ datetime.timedelta(-1)).replace(hour=0, minute=0, second=0, microsecond=0),
+                            "end_day": (
+                                datetime.datetime.now(datetime.timezone.utc)
+                                + datetime.timedelta(-1)
+                            ).replace(
+                                hour=0, minute=0, second=0, microsecond=0
+                            ),
                         }
                     # historic account
                     else:
                         req[account["currency"]] = {
                             "start": dateutil.parser.parse(
                                 account["timerange"]["1"]
-                            ).replace(hour=0, minute=0, second=0, microsecond=0),
+                            ).replace(
+                                hour=0, minute=0, second=0, microsecond=0
+                            ),
                             "end_day": dateutil.parser.parse(
                                 account["timerange"]["0"]
-                            ).replace(hour=0, minute=0, second=0, microsecond=0),
+                            ).replace(
+                                hour=0, minute=0, second=0, microsecond=0
+                            ),
                         }
             # store coinbase requirements paresed correctly
             # for portfolio tracker features
@@ -182,26 +191,29 @@ class Config:
             params[coin] = {
                 # first date from BTC history to be "relevant", if other coin means first
                 # available
-                "start": datetime.datetime(2017, 10, 1,tzinfo=datetime.timezone.utc),
+                "start": datetime.datetime(
+                    2017, 10, 1, tzinfo=datetime.timezone.utc
+                ),
                 # timedelta is because today's close isnt yet realized
-                "end_day": datetime.datetime.now(datetime.timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+                "end_day": datetime.datetime.now(
+                    datetime.timezone.utc
+                ).replace(hour=0, minute=0, second=0, microsecond=0)
                 + datetime.timedelta(-1),
             }
 
         self.scraping_req = params
 
-    def add_coins(self,coins:list)->None:
+    def add_coins(self, coins: list) -> None:
         """add coins to `coins` attribute
 
         Args:
             coins (list): list of coin strings
         """
-        #add coins to attribute
+        # add coins to attribute
         for coin in coins:
-            #avoid overrunning
+            # avoid overrunning
             if coin not in self.coins:
-                self.coins[coin]=""
-        #rerun 
+                self.coins[coin] = ""
+        # rerun
         self._set_scraping_parameters()
-        
 

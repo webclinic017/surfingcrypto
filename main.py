@@ -8,7 +8,7 @@ from surfingcrypto import Config, TS
 from surfingcrypto.scraper import Scraper
 from surfingcrypto.reporting.figures import ATHPlot, TaPlot
 from surfingcrypto.telegram_bot import TelegramBot
-from surfingcrypto.portfolio import MyCoinbase
+from surfingcrypto.portfolio import Portfolio
 
 
 cwd = Path(__file__).resolve().parent
@@ -19,6 +19,12 @@ timestr = now.strftime("%Y%m%d-%H%M%S")
 
 # config
 c = Config(str(cwd) + "/config")
+
+# coinbase portfolio
+p = Portfolio("coinbase",configuration=c)
+
+# update config for coins that are not specified in config
+c.add_coins(p.coinbase.active_accounts)
 
 # telegram bot in channel mode
 tg = TelegramBot(c, channel_mode=True)
@@ -31,8 +37,11 @@ tg.send_message_to_all(
     message=s.output_description
 )  # send scraper log to telegram
 
+
+coins_to_plot = [x for x in set(p.coinbase.active_accounts+list(c.coins.keys())) if x!="USDC"]
+
 # produce reports for each coin in configuration
-for coin in c.coins:
+for coin in coins_to_plot:
     # daily TA plots
     ts = TS(c, coin=coin)
     fig = TaPlot(trendlines=False, ts=ts, graphstart="3m")
@@ -48,5 +57,5 @@ for coin in c.coins:
         ath.save(tmpname)
         tg.send_photo_to_all(tmpname)
 
-cb = MyCoinbase(configuration=c)
-tg.send_message_to_user(cb.mycoinbase_report(), "admin")
+
+tg.send_message_to_user(p.coinbase.mycoinbase_report(), "admin")
