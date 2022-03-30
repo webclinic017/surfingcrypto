@@ -8,11 +8,11 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="surfingcrypto",
-    version="0.1.0",
-    description="A package to make money with crypto to go surfing",
+    version="0.1.1",
+    description="Customizable interface to cryptocurrencies.",
     long_description_content_type="text/markdown",
     long_description=long_description,
-    url="https://github.com/giocaizzi/surfing_crypto",
+    url="https://github.com/giocaizzi/surfingcrypto",
     author="giocaizzi",
     author_email="giocaizzi@gmail.com",
     packages=find_packages(include=["surfingcrypto", "surfingcrypto.*"]),
@@ -26,12 +26,19 @@ setup(
         "coinbase",
         "pandas_ta",
         "python_dateutil",
-        "python_telegram_bot",
         "pytrends",
         "trendln",
         "cryptocmd",
     ],
     extras_require={"dev": [],},
-    classifiers=["Programming Language :: Python :: 3.7",],
-    project_urls={"Documentation": "", "Bug Reports": "", "Source": "",},
+    classifiers=[
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        ],
+    project_urls={
+        "Documentation": "https://giocaizzi.github.io/surfingcrypto/",
+        "Bug Reports": "https://github.com/giocaizzi/surfingcrypto/issues",
+        "Source": "https://github.com/giocaizzi/surfingcrypto",
+     },
 )

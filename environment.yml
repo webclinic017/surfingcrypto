@@ -12,7 +12,6 @@ dependencies:
   - numpy
   - pandas
   - python-dateutil
-  - python-telegram-bot
   - pytrends
 #formatting and linting
   - black
