@@ -149,7 +149,7 @@ class TaPlot(BaseFigure):
     """
     this is the Technical Analysis plot.
     It shows (at current time): candlesticks,
-     volume and 3 TA Indicators (MACD, BB bands and RSI)
+    volume and 3 TA Indicators (MACD, BB bands and RSI)
     Can be easily modified to fit other and/or more indicators.
 
     Arguments:

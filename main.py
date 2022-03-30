@@ -4,10 +4,12 @@ script to be run on ec2 istance
 import datetime as dt
 from pathlib import Path
 
+
+from TelegramBotNotifications import TelegramBot
+
 from surfingcrypto import Config, TS
 from surfingcrypto.scraper import Scraper
 from surfingcrypto.reporting.figures import ATHPlot, TaPlot
-from surfingcrypto.telegram_bot import TelegramBot
 from surfingcrypto.portfolio import Portfolio
 
 
@@ -27,7 +29,7 @@ p = Portfolio("coinbase",configuration=c)
 c.add_coins(p.coinbase.active_accounts)
 
 # telegram bot in channel mode
-tg = TelegramBot(c, channel_mode=True)
+tg = TelegramBot(c.telegram["token"], channel_mode=True,users_path=str(cwd) + "/config/telegram_users.csv")
 
 # scrape required data
 print("### Scraper")
