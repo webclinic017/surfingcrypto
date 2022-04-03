@@ -185,20 +185,26 @@ class CoinScraper:
 
         elif self.start < first and last == self.end_day:
             scraper = self._append_to_front(first)
-            scraped = scraper.get_dataframe()
+            if scraper.rows:
+                scraped = scraper.get_dataframe()
+            else:
+                scraped = pd.DataFrame(columns=["Date"])
 
         elif self.start < first and last < self.end_day:
-            #end
+            # end
             scraper = self._append_to_end(last)
             scraped_last = scraper.get_dataframe()
-            #front
+            # front
             scraper = self._append_to_front(first)
+            # quickfix for when start < first
+            # because it was created after
+            #  it's actually up to date.
             if scraper.rows:
                 scraped_first = scraper.get_dataframe()
-            else: 
-                scraped_first = pd.DataFrame()
+            else:
+                scraped_first = pd.DataFrame(columns=["Date"])
 
-            #concat 
+            # concat
             scraped = pd.concat([scraped_last, scraped_first])
 
         elif first < self.start and last == self.end_day:
