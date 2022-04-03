@@ -16,7 +16,7 @@ class Scraper:
             configuration object
         fiat (str): prices will be restituted in the selected fiat,
             defaults is `EUR`
-        log (bool): wether to log at the end of execution
+        verbose (bool): wether to log at the end of execution
 
     Attributes:
         config (:obj:`surfingcrypto.config.config`): package
@@ -25,9 +25,11 @@ class Scraper:
         verbose (bool): wether to print log
         runs (:obj:`list` of :obj:`surfincrypto.scraper.CoinScraper`): list
             of `CoinScraper` objects
+        errors (:obj:`list` of :obj:`surfincrypto.scraper.CoinScraper`): list
+            of `CoinScraper` objects that have errors
         output (bool): Overall boolean output of process. If
             everything went well.
-        output_descrition (str): Overall log string of ouput.
+        output_descrition (str): Overall string description of output.
 
 
     """
@@ -41,7 +43,7 @@ class Scraper:
         """runs the scraping process."""
         self.runs = []
         for key in self.config.scraping_req:
-            
+
             # dates are utc unaware
             start = self.config.scraping_req[key]["start"].date()
             end_day = self.config.scraping_req[key]["end_day"].date()
@@ -60,17 +62,18 @@ class Scraper:
         produce a log of all executions.
         """
         length = len(self.runs)
-        errors = []
+        self.errors = []
         for run in self.runs:
             if hasattr(run, "error"):
-                errors.append(run)
+                self.errors.append(run)
 
-        if len(errors) == 0:
+        if len(self.errors) == 0:
             self.output_description = "Update successful."
             self.output = True
         else:
             self.output_description = (
-                "Update failed." f" There are ({len(errors)}/{length}) errors."
+                "Update failed."
+                f" There are ({len(self.errors)}/{length}) errors."
             )
             self.output = False
 
@@ -176,24 +179,33 @@ class CoinScraper:
             df (:obj:`pandas.DataFrame`): dataframe of
                 locally stored data
         """
-        if self.coin=="ALGO":
-            print("ALGO")
         if first == self.start and last < self.end_day:
             scraper = self._append_to_end(last)
             scraped = scraper.get_dataframe()
+
         elif self.start < first and last == self.end_day:
             scraper = self._append_to_front(first)
             scraped = scraper.get_dataframe()
+
         elif self.start < first and last < self.end_day:
+            #end
             scraper = self._append_to_end(last)
             scraped_last = scraper.get_dataframe()
+            #front
             scraper = self._append_to_front(first)
-            scraped_first = scraper.get_dataframe()
+            if scraper.rows:
+                scraped_first = scraper.get_dataframe()
+            else: 
+                scraped_first = pd.DataFrame()
+
+            #concat 
             scraped = pd.concat([scraped_last, scraped_first])
-        elif first<self.start and last == self.end_day:
+
+        elif first < self.start and last == self.end_day:
             # i have more than needed, but its fine
-            # i add nothing 
-            scraped=pd.DataFrame(columns=["Date"])
+            # i add nothing
+            scraped = pd.DataFrame()
+
         else:
             raise NotImplementedError
 
