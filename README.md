@@ -7,49 +7,18 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/giocaizzi/surfingcrypto/ci)
 ![Codecov](https://img.shields.io/codecov/c/gh/giocaizzi/surfingcrypto)
 
+python package to surf crypto-waves.
+
+- Scrapes *OHLC data* from [www.coinmarketcap.com](www.coinmarketcap.com) and stores it locally.
+- Compute *Technical Analysis* indicators and plot complex graphs
+- Interact with *Coinbase API* to read transaction data and to compute Portfolio statistics
+
 ## Installation
 
-1. Clone repo
-    ```shell
-    git clone git@github.com:giocaizzi/surfingcrypto.git
-    ```
-2. Install requirements.
-
-    ```shell
-    pip install -r requirements.txt
-    ```
-
-3. Install package with `pip`
+Install with `pip`
    ```shell
-   pip install .
+   pip install surfingcrypto
    ```
-
-## Configuration
-
-In order to use the package, provide `surfingcrypto.Config` class with the path to a folder containing a `config.json`. The json file must contain at least a dictionary of `coins`. It can also contain private keys for `telegram` and `coinbase` modules.
-
-```
-{
-    "coins":
-    {
-        "BTC":"",
-        "ETH":"",
-        "MATIC":"",
-        "ADA":"",
-        "SOL":""
-    },
-    "telegram":
-    {
-        "token":"XXXXXXXXXX"
-    },
-    "coinbase":
-    {
-        "key":"XXXXXXXXXX",
-        "scrt":"XXXXXXXXXX"
-    }
-    
-}
-```
 
 ## Documentation
 
