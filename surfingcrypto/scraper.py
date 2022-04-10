@@ -210,7 +210,7 @@ class CoinScraper:
         elif first < self.start and last == self.end_day:
             # i have more than needed, but its fine
             # i add nothing
-            scraped = pd.DataFrame()
+            scraped = pd.DataFrame(columns=["Date"])
 
         else:
             raise NotImplementedError

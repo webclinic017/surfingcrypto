@@ -280,32 +280,6 @@ class MyCoinbase(CB):
                     active.append(account.currency)
         self.active_accounts = active
 
-    def live_value_report(self):
-        """
-        Nicely formatted report of accounts portfolio and user total
-        balance in EUR.
-
-        Returns:
-            s (str): text
-        """
-        s = ""
-        tot = 0
-        if hasattr(self, "accounts"):
-            for account in self.accounts:
-                if float(account.native_balance.amount) > 0:
-                    s = (
-                        s
-                        + str(account.currency)
-                        + " : "
-                        + str(account.native_balance)
-                        + "\n"
-                    )
-                    tot += float(account.native_balance.amount)
-            s = s + "---\n" + "Portfolio: EUR " + "{:.2f}".format(tot)
-            return s
-        else:
-            raise ValueError("Must get accounts first.")
-
     def get_history(self):
         """
         start a TransactionsHistory object

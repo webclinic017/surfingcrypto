@@ -9,7 +9,11 @@ from TelegramBotNotifications import TelegramBot
 
 from surfingcrypto import Config, TS
 from surfingcrypto.scraper import Scraper
-from surfingcrypto.reporting.reporting import report_percentage_diff
+from surfingcrypto.reporting.reporting import (
+    report_percentage_diff,
+    report_coinbase_live_value,
+    report_stock_gain,
+)
 from surfingcrypto.reporting.figures import ATHPlot, TaPlot
 from surfingcrypto.portfolio import Portfolio
 
@@ -24,13 +28,20 @@ timestr = now.strftime("%Y%m%d-%H%M%S")
 c = Config(str(cwd) + "/config")
 
 # coinbase portfolio
-p = Portfolio("coinbase",configuration=c)
+p = Portfolio("coinbase", configuration=c)
+p.start_tracker(
+    stocks_start="1-1-2021", benchmark="ETH",
+)
 
 # update config for coins that are not specified in config
 c.add_coins(p.coinbase.active_accounts)
 
 # telegram bot in channel mode
-tg = TelegramBot(c.telegram["token"], channel_mode=True,users_path=str(cwd) + "/config/telegram_users.csv")
+tg = TelegramBot(
+    c.telegram["token"],
+    channel_mode=True,
+    users_path=str(cwd) + "/config/telegram_users.csv",
+)
 
 # scrape required data
 print("### Scraper")
@@ -41,16 +52,20 @@ tg.send_message_to_all(
 )  # send scraper log to telegram
 
 
-coins_to_plot = [x for x in set(p.coinbase.active_accounts+list(c.coins.keys())) if x!="USDC"]
+coins_to_plot = [
+    x
+    for x in set(p.coinbase.active_accounts + list(c.coins.keys()))
+    if x != "USDC"
+]
 
 # produce reports for each coin in configuration
 for coin in coins_to_plot:
     # daily TA plots
     ts = TS(c, coin=coin)
-    fig = TaPlot(trendlines=False, ts=ts, graphstart="6m")
+    fig = TaPlot(trendlines=False, object=ts, graphstart="6m")
     tmpname = c.temp_folder + "/" + coin + "_" + timestr + ".jpeg"
     fig.save(tmpname)
-    tg.send_message_to_all(report_percentage_diff(ts.df,ts.coin))
+    tg.send_message_to_all(report_percentage_diff(ts.df, ts.coin))
     tg.send_photo_to_all(tmpname)
 
     # ATH(BTC) plot every monday
@@ -61,4 +76,5 @@ for coin in coins_to_plot:
         tg.send_photo_to_all(tmpname)
 
 
-tg.send_message_to_user(p.coinbase.live_value_report(), "admin")
+tg.send_message_to_user(report_coinbase_live_value(p), "admin")
+tg.send_message_to_user(report_stock_gain(p.tracker.daily_snaphost("last")), "admin")

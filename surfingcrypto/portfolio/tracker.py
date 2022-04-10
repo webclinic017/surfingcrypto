@@ -352,7 +352,7 @@ class Tracker:
             per_day_balance.append(daily_positions)
         return per_day_balance
 
-    def _per_day_portfolio_calcs(self,daily_snapshots) -> pd.DataFrame:
+    def _per_day_portfolio_calcs(self, daily_snapshots) -> pd.DataFrame:
         """calculates daily portfolio stats.
 
         Calculates
@@ -532,13 +532,16 @@ class Tracker:
 
         return grouped_metrics
 
-    def daily_snaphost(self,day:str)->pd.DataFrame:
+    def daily_snaphost(self, day: str) -> pd.DataFrame:
         """_summary_
 
         Args:
-            day (str): date as string in "Y-m-d" format
+            day (str): date as string in "Y-m-d" format, or "last" to 
+                get last date available
 
         Returns:
             pd.DataFrame: daily snapshot dataframe
         """
+        if day == "last":
+            day = self.daily_calcs["Date Snapshot"].unique()[-1]
         return self.daily_calcs.set_index("Date Snapshot").loc[day]
