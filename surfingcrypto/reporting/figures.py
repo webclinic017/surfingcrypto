@@ -321,7 +321,7 @@ class PortfolioPlot(BaseFigure):
     def plot(self, variables: list, by_symbol: bool, zero_line: bool):
         # figure
         self.f, self.ax = plt.subplots(dpi=200,)
-        df = self.object.daily_grouped_metrics(variables, by_symbol=by_symbol)
+        df = self.object.tracker.daily_grouped_metrics(variables, by_symbol=by_symbol)
         df = df.loc[self.graphstart :].dropna(axis=1, how="all")
         df.plot(ax=self.ax)
         if zero_line:

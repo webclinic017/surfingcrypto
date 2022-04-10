@@ -2,6 +2,7 @@
 reporting with text
 """
 
+from unittest.util import strclass
 import pandas as pd
 
 
@@ -18,9 +19,7 @@ def percentage_diff(df: pd.DataFrame, window=7):
         (df.Close[-1] - df.Close[-window - 1]) / (df.Close[-window - 1]) * 100
     )
 
-
-
-def report_percentage_diff(df, coin, windows=[1, 3, 7, 14, 60]) -> str:
+def report_percentage_diff(df: pd.DataFrame, coin:str, windows=[1, 3, 7, 14, 60]) -> str:
     """
     Produces verbose and pretty report on latest price
     difference from a given list of windows.
@@ -43,3 +42,8 @@ def report_percentage_diff(df, coin, windows=[1, 3, 7, 14, 60]) -> str:
             + " %\n"
         )
     return s
+
+
+def report_stock_gain(df: pd.DataFrame):
+
+    pass

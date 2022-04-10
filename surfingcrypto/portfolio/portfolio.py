@@ -3,6 +3,8 @@ portfolio objects.
 """
 import pandas as pd
 from surfingcrypto.portfolio import MyCoinbase
+from surfingcrypto.portfolio.tracker import Tracker
+
 
 
 class Portfolio:
@@ -123,6 +125,11 @@ class Portfolio:
             .sum()
         )
         return investment
+
+    def start_tracker(self,stocks_start="1-1-2021", benchmark=None):
+        self.tracker = Tracker(
+            self.std_df, stocks_start=stocks_start, benchmark=benchmark, configuration=self.coinbase.configuration
+        )
 
     def _init_log(self):
         """

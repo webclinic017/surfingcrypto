@@ -18,11 +18,12 @@ class Tracker:
     plus it features a series of portfolio statistics.
 
     Args:
-        df (pd.DataFrame): _description_
+        df (pd.DataFrame): dataframe with only "buy" or "sell" transaction.
         stocks_start (str, optional): time from which start tracking.
             Defaults to None.
         stocks_end (str, optional): time from which stop tracking.
             Defaults to None.
+        benchmark (str, optional): string code of benchmark. Defaults to None.
         configuration (Config, optional): surfingcrypto configuration object.
             Defaults to None.
     """
@@ -63,12 +64,12 @@ class Tracker:
         self.portfolio_df = self._format_df(df)
         self.closedata = self._load_data()
         self.active_positions = self._portfolio_start_balance()
-        self.daily_snapshots = self._time_fill(self.active_positions)
+        daily_snapshots = self._time_fill(self.active_positions)
 
         if self.benchmark is not None:
             self._set_benchmark()
 
-        self.daily_calcs = self._per_day_portfolio_calcs()
+        self.daily_calcs = self._per_day_portfolio_calcs(daily_snapshots)
 
     def _format_df(
         self, df: pd.DataFrame,
@@ -351,17 +352,22 @@ class Tracker:
             per_day_balance.append(daily_positions)
         return per_day_balance
 
-    def _per_day_portfolio_calcs(self) -> pd.DataFrame:
+    def _per_day_portfolio_calcs(self,daily_snapshots) -> pd.DataFrame:
         """calculates daily portfolio stats.
 
         Calculates
             - Modified cost per share
             - Benchmark calculations
+            - Returns
+
+        Args:
+            daily_snapshots (pandas.DataFrame): portfolio 
+                daily snapshots
 
         Returns:
             pd.DataFrame: _description_
         """
-        df = pd.concat(self.daily_snapshots)
+        df = pd.concat(daily_snapshots)
 
         # modified cost per share
         df = self._modified_cost_per_share(df)
@@ -525,3 +531,14 @@ class Tracker:
         grouped_metrics.columns = grouped_metrics.columns.droplevel(0)
 
         return grouped_metrics
+
+    def daily_snaphost(self,day:str)->pd.DataFrame:
+        """_summary_
+
+        Args:
+            day (str): date as string in "Y-m-d" format
+
+        Returns:
+            pd.DataFrame: daily snapshot dataframe
+        """
+        return self.daily_calcs.set_index("Date Snapshot").loc[day]
