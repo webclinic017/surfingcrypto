@@ -35,6 +35,7 @@ dependencies:
     - pandas-ta
     - trendln
     - cryptocmd
+    - calplot
     # dev 
     - backtrader
     #full python api wrapper for testing

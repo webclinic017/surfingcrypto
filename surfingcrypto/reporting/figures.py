@@ -6,6 +6,11 @@ import matplotlib as mpl
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 import matplotlib.dates as mdates
 from matplotlib.cm import ScalarMappable
+import matplotlib.cm as cm
+
+import pandas as pd
+
+import calplot
 
 import dateutil
 import datetime
@@ -15,9 +20,10 @@ from surfingcrypto.ts import TS
 from surfingcrypto.portfolio import Portfolio
 import surfingcrypto.reporting.plotting as scplot
 from surfingcrypto.reporting.trend_line import trend_line
+from surfingcrypto.reporting.plotting import shiftedColorMap
 
 
-##GLOBAL VARIABLES (?!?) TO SET PLOT STYLE
+# GLOBAL VARIABLES (?!?) TO SET PLOT STYLE
 plt.style.use("dark_background")
 mpl.rcParams["font.size"] = 4
 
@@ -27,8 +33,7 @@ class BaseFigure:
     This is the base class object for all figures.
 
     Arguments:
-        object (:class:`surfingcrypto.ts.TS` or
-            :class:`surfingcrypto.portfolio.Portfolio` ) :
+        object (:class:`surfingcrypto.ts.TS` or :class:`surfingcrypto.portfolio.Portfolio` ) :
             timeseries :obj:`TS` or :obj:`Portfolio` object
         graphstart (str) : date string in d-m-Y format
             (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which
@@ -50,7 +55,7 @@ class BaseFigure:
         elif graphstart.lower() == "1y":
             self.graphstart = datetime.date.today() + relativedelta(years=-1)
         else:
-            self.graphstart = dateutil.parser.parse(graphstart)
+            self.graphstart = dateutil.parser.parse(graphstart).date()
 
     def save(self, path):
         """
@@ -61,13 +66,16 @@ class BaseFigure:
         """
         return self.f.savefig(path)
 
+    def subset_series(self):
+        pass
+
     def center_series(self, ax, on="Close"):
         """
         centers the active series in the graph.
         This is useful when dealing only with "zoomed-in" views.
         
         Arguments:
-            ax (:obj:`matplotlib.axes.Axes`) object is 
+            ax (:obj:`matplotlib.axes.Axes`) object is
             on (str): `Close` or TA indicator name
         """
         xlim = mdates.num2date(ax.get_xlim())
@@ -80,13 +88,15 @@ class BaseFigure:
             raise ValueError("Error: `on` parameter not known.")
         ax.set_ylim((min - 0.1 * min, max + 0.1 * max))
 
-    def set_axes(self, xlims):
+    def set_axes(self):
         """
-        set all axes to the specified xlims.
-
-        Arguments:
-            xlims(:obj:`tuple`): tuple of xlims as datetime objects.
+        set axes look.
+        set axes to the specified xlims.
         """
+        xlims = (
+            self.graphstart,
+            self.object.df.index[-1] + datetime.timedelta(days=5),
+        )
         if hasattr(self, "axes"):
             for iax in self.axes:
                 iax.grid(which="major", axis="x", linewidth=0.1)
@@ -136,12 +146,7 @@ class SimplePlot(BaseFigure):
             style="candlesticks",
         )
         # axes look
-        self.set_axes(
-            (
-                self.graphstart,
-                self.object.df.index[-1] + datetime.timedelta(days=5),
-            )
-        )
+        self.set_axes()
         self.axes[0].set_title(
             self.object.coin, fontsize=10, va="center", ha="center", pad=20
         )
@@ -215,12 +220,7 @@ class TaPlot(BaseFigure):
             #     show_min_maxs=False
             #     )
         # axes look
-        self.set_axes(
-            (
-                self.graphstart,
-                self.object.df.index[-1] + datetime.timedelta(days=5),
-            )
-        )
+        self.set_axes()
         self.axes[0].set_title(
             self.object.coin, fontsize=10, va="center", ha="center", pad=20
         )
@@ -279,12 +279,7 @@ class ATHPlot(BaseFigure):
         self.f.colorbar(cmappable)
 
         # axes look
-        self.set_axes(
-            (
-                self.graphstart,
-                self.object.df.index[-1] + datetime.timedelta(days=5),
-            )
-        )
+        self.set_axes()
         self.ax.set_title(
             "Distance from All Time High: " + self.object.coin,
             fontsize=10,
@@ -313,7 +308,12 @@ class PortfolioPlot(BaseFigure):
     """
 
     def __init__(
-        self, variables: list, by_symbol=False, zero_line=False, *args, **kwargs
+        self,
+        variables: list,
+        by_symbol=False,
+        zero_line=False,
+        *args,
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.plot(variables, by_symbol, zero_line)
@@ -321,11 +321,43 @@ class PortfolioPlot(BaseFigure):
     def plot(self, variables: list, by_symbol: bool, zero_line: bool):
         # figure
         self.f, self.ax = plt.subplots(dpi=200,)
-        self.object.daily_grouped_metrics(variables, by_symbol=by_symbol).plot(
-            ax=self.ax
-        )
+        df = self.object.daily_grouped_metrics(variables, by_symbol=by_symbol)
+        df = df.loc[self.graphstart :].dropna(axis=1, how="all")
+        df.plot(ax=self.ax)
         if zero_line:
-            self.ax.axhline(0,color="r")
-        
-        self.ax.legend(bbox_to_anchor=(1,1))
+            self.ax.axhline(0, color="r")
 
+        self.ax.legend(bbox_to_anchor=(1, 1))
+
+
+class CalendarPlot:
+    """calendar plot
+
+    This object is a good visualisation of a variable in a calendar style.
+
+    Args:
+        values (pd.Series): variable to plot
+    """
+
+    def __init__(self,values:pd.Series):
+        norm = Normalize(
+            vmin=values["Stock Gain / (Loss)"].min(),
+            vmax=values["Stock Gain / (Loss)"].max(),
+        )
+        cmap = shiftedColorMap(
+            LinearSegmentedColormap.from_list(
+                "colorbar",
+                [
+                    "darkred",
+                    "red",
+                    "orange",
+                    "grey",
+                    "lightgreen",
+                    "green",
+                    "darkgreen",
+                ],
+            ),
+            midpoint=norm(0),
+        )
+        self.calplot = calplot.calplot(values["Stock Gain / (Loss)"], cmap=cmap)
+        pass

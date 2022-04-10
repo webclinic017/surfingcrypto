@@ -29,6 +29,7 @@ setup(
         "pytrends",
         "trendln",
         "cryptocmd",
+        "calplot",
     ],
     extras_require={"dev": [],},
     classifiers=[
