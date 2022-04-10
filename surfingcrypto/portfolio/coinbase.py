@@ -280,7 +280,7 @@ class MyCoinbase(CB):
                     active.append(account.currency)
         self.active_accounts = active
 
-    def mycoinbase_report(self):
+    def live_value_report(self):
         """
         Nicely formatted report of accounts portfolio and user total
         balance in EUR.

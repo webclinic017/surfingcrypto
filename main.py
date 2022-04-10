@@ -60,4 +60,4 @@ for coin in coins_to_plot:
         tg.send_photo_to_all(tmpname)
 
 
-tg.send_message_to_user(p.coinbase.mycoinbase_report(), "admin")
+tg.send_message_to_user(p.coinbase.live_value_report(), "admin")

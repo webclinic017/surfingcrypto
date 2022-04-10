@@ -1,6 +1,7 @@
 """
 portfolio objects.
 """
+import pandas as pd
 from surfingcrypto.portfolio import MyCoinbase
 
 
@@ -80,7 +81,7 @@ class Portfolio:
         # exclude double transactions coin-fiat for the tracking purpose.
         self.std_df = self.std_df[~(self.std_df["symbol"] == "EUR")]
 
-        #split trades fees among the two
+        # split trades fees among the two
         for trade in self.std_df.trade_id.unique():
             if trade is not None:
                 t = self.std_df[self.std_df["trade_id"] == trade]
@@ -96,6 +97,32 @@ class Portfolio:
                     raise ValueError(
                         "Did not find 2 trades with matching trade_id"
                     )
+
+    def total_fees(self) -> float:
+        """total fees paid
+
+        Returns:
+            float: total fees paid for handled transactions.
+
+        """
+        return self.std_df.total_fee.sum()
+
+    def total_investment(self) -> pd.DataFrame:
+        """get total investment
+
+        Returns:
+            pd.DataFrame: dataframe resuming investment
+        """
+        investment = (
+            self.coinbase.history.df[
+                self.coinbase.history.df.type.isin(
+                    ["fiat_deposit", "fiat_withdrawal"]
+                )
+            ]
+            .groupby("type")[["amount"]]
+            .sum()
+        )
+        return investment
 
     def _init_log(self):
         """
@@ -117,9 +144,3 @@ class Portfolio:
             print("")
             print("Warning! Errors while handling transactions:")
             print(self.coinbase.history)
-
-    def total_fees(self):
-        """
-        total fees paid for handled transactions.
-        """
-        return self.std_df.total_fee.sum()
