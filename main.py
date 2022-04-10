@@ -46,7 +46,7 @@ coins_to_plot = [x for x in set(p.coinbase.active_accounts+list(c.coins.keys()))
 for coin in coins_to_plot:
     # daily TA plots
     ts = TS(c, coin=coin)
-    fig = TaPlot(trendlines=False, ts=ts, graphstart="3m")
+    fig = TaPlot(trendlines=False, object=ts, graphstart="3m")
     tmpname = c.temp_folder + "/" + coin + "_" + timestr + ".jpeg"
     fig.save(tmpname)
     tg.send_message_to_all(ts.report_percentage_diff())

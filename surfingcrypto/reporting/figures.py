@@ -12,6 +12,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from surfingcrypto.ts import TS
+from surfingcrypto.portfolio import Portfolio
 import surfingcrypto.reporting.plotting as scplot
 from surfingcrypto.reporting.trend_line import trend_line
 
@@ -26,15 +27,19 @@ class BaseFigure:
     This is the base class object for all figures.
 
     Arguments:
-        ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
-        graphstart (str) : date string in d-m-Y format (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
+        object (:class:`surfingcrypto.ts.TS` or
+            :class:`surfingcrypto.portfolio.Portfolio` ) :
+            timeseries :obj:`TS` or :obj:`Portfolio` object
+        graphstart (str) : date string in d-m-Y format
+            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which
+            to start the graph.
     """
 
     def __init__(
-        self, ts, graphstart="1-1-2021",
+        self, object: TS or Portfolio, graphstart="1-1-2021",
     ):
 
-        self.ts = ts
+        self.object = object
 
         if graphstart.lower() == "3m":
             self.graphstart = datetime.date.today() + relativedelta(months=-3)
@@ -67,8 +72,8 @@ class BaseFigure:
         """
         xlim = mdates.num2date(ax.get_xlim())
         if on.lower() == "close":
-            max = self.ts.df.loc[xlim[0] : xlim[1], "Close"].max()
-            min = self.ts.df.loc[xlim[0] : xlim[1], "Close"].min()
+            max = self.object.df.loc[xlim[0] : xlim[1], "Close"].max()
+            min = self.object.df.loc[xlim[0] : xlim[1], "Close"].min()
         elif on.lower() == "macd":
             pass
         else:
@@ -124,7 +129,7 @@ class SimplePlot(BaseFigure):
         )
         # plot
         scplot.candlesticks(
-            self.ts,
+            self.object,
             ax=self.axes[0],
             volume=True,
             vol_ax=self.axes[1],
@@ -134,15 +139,15 @@ class SimplePlot(BaseFigure):
         self.set_axes(
             (
                 self.graphstart,
-                self.ts.df.index[-1] + datetime.timedelta(days=5),
+                self.object.df.index[-1] + datetime.timedelta(days=5),
             )
         )
         self.axes[0].set_title(
-            self.ts.coin, fontsize=10, va="center", ha="center", pad=20
+            self.object.coin, fontsize=10, va="center", ha="center", pad=20
         )
         self.center_series(self.axes[0], on="Close")
         # log
-        print(f"{self.ts.coin} plotted.")
+        print(f"{self.object.coin} plotted.")
 
 
 class TaPlot(BaseFigure):
@@ -180,20 +185,20 @@ class TaPlot(BaseFigure):
             figsize=(7.5, 7.5),
         )
         # ta indicators
-        self.ts.ta_indicators()
+        self.object.ta_indicators()
         # plots
         scplot.candlesticks(
-            self.ts,
+            self.object,
             ax=self.axes[0],
             volume=True,
             vol_ax=self.axes[1],
             style="candlesticks",
         )
-        scplot.plot_moving_averages(self.ts, ax=self.axes[0])
-        scplot.plot_macd(self.ts, self.axes[2], plot_lines=False)
-        scplot.candlesticks(self.ts, self.axes[3], style="ohlc")
-        scplot.plot_bb(self.ts, self.axes[3])
-        scplot.plot_RSI(self.ts, self.axes[4])
+        scplot.plot_moving_averages(self.object, ax=self.axes[0])
+        scplot.plot_macd(self.object, self.axes[2], plot_lines=False)
+        scplot.candlesticks(self.object, self.axes[3], style="ohlc")
+        scplot.plot_bb(self.object, self.axes[3])
+        scplot.plot_RSI(self.object, self.axes[4])
 
         # trendlines
         if trendlines:
@@ -213,15 +218,15 @@ class TaPlot(BaseFigure):
         self.set_axes(
             (
                 self.graphstart,
-                self.ts.df.index[-1] + datetime.timedelta(days=5),
+                self.object.df.index[-1] + datetime.timedelta(days=5),
             )
         )
         self.axes[0].set_title(
-            self.ts.coin, fontsize=10, va="center", ha="center", pad=20
+            self.object.coin, fontsize=10, va="center", ha="center", pad=20
         )
         self.center_series(self.axes[0], on="Close")
         # log
-        print(f"{self.ts.coin} plotted.")
+        print(f"{self.object.coin} plotted.")
 
 
 class ATHPlot(BaseFigure):
@@ -249,11 +254,11 @@ class ATHPlot(BaseFigure):
         # figure
         self.f, self.ax = plt.subplots(dpi=200,)
         # compute distance
-        self.ts.distance_from_ath()
+        self.object.distance_from_ath()
 
         # normalizzato su tutto intervallo
-        vmin = self.ts.df["distance_ATH"].min()
-        vmax = self.ts.df["distance_ATH"].max()
+        vmin = self.object.df["distance_ATH"].min()
+        vmax = self.object.df["distance_ATH"].max()
 
         # cmap normalized and mappable
         norm = Normalize(vmin=vmin, vmax=vmax)
@@ -262,12 +267,14 @@ class ATHPlot(BaseFigure):
         )
         colors = [
             mpl.colors.rgb2hex(x)
-            for x in cmap(norm(self.ts.df["distance_ATH"]))
+            for x in cmap(norm(self.object.df["distance_ATH"]))
         ]
         cmappable = ScalarMappable(norm, cmap=cmap)
 
         # points
-        self.ax.scatter(self.ts.df.index, self.ts.df.Close, c=colors, s=2)
+        self.ax.scatter(
+            self.object.df.index, self.object.df.Close, c=colors, s=2
+        )
         # colorbar
         self.f.colorbar(cmappable)
 
@@ -275,18 +282,18 @@ class ATHPlot(BaseFigure):
         self.set_axes(
             (
                 self.graphstart,
-                self.ts.df.index[-1] + datetime.timedelta(days=5),
+                self.object.df.index[-1] + datetime.timedelta(days=5),
             )
         )
         self.ax.set_title(
-            "Distance from All Time High: " + self.ts.coin,
+            "Distance from All Time High: " + self.object.coin,
             fontsize=10,
             va="center",
             ha="center",
             pad=20,
         )
         # log
-        print(f"{self.ts.coin} ATH plotted.")
+        print(f"{self.object.coin} ATH plotted.")
 
 
 class PortfolioPlot(BaseFigure):
@@ -294,13 +301,31 @@ class PortfolioPlot(BaseFigure):
     Portfolio plots
 
     Arguments:
-        portfolio (:class:`surfingcrypto.portfolio.portfolio`) : 
+        variables (list): list of variables to plot
+        by_symbol (bool, optional): _description_. Defaults to False.
+        zero_line (bool, optional): _description_. Defaults to False.
+        portfolio (:class:`surfingcrypto.portfolio.portfolio`) :
             `surfingcrypto.portfolio.portfolio` object
-        graphstart (str) : date string in d-m-Y format 
-            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
+        graphstart (str) : date string in d-m-Y format
+            (or relative from today eg. 1 month: `1m`,3 month: `3m`)
+            from which to start the graph.
 
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self, variables: list, by_symbol=False, zero_line=False, *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
-        self.plot()
+        self.plot(variables, by_symbol, zero_line)
+
+    def plot(self, variables: list, by_symbol: bool, zero_line: bool):
+        # figure
+        self.f, self.ax = plt.subplots(dpi=200,)
+        self.object.daily_grouped_metrics(variables, by_symbol=by_symbol).plot(
+            ax=self.ax
+        )
+        if zero_line:
+            self.ax.axhline(0,color="r")
+        
+        self.ax.legend(bbox_to_anchor=(1,1))
+

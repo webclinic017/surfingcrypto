@@ -68,7 +68,7 @@ class Tracker:
         if self.benchmark is not None:
             self._set_benchmark()
 
-        self.daily_calcs=self._per_day_portfolio_calcs()
+        self.daily_calcs = self._per_day_portfolio_calcs()
 
     def _format_df(
         self, df: pd.DataFrame,
@@ -165,6 +165,19 @@ class Tracker:
     def _check_data(
         self, df, i: pd.Timestamp, o: pd.Timestamp,
     ) -> pd.DataFrame:
+        """_summary_
+
+        Args:
+            df (_type_): _description_
+            i (pd.Timestamp): _description_
+            o (pd.Timestamp): _description_
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            pd.DataFrame: _description_
+        """
         if df.index.min() <= i and df.index.max() >= o:
             return df
         else:
@@ -359,10 +372,12 @@ class Tracker:
 
         # calc return
         df = self._calc_returns(df)
-        
+
         return df
 
-    def _modified_cost_per_share(self, portfolio: pd.DataFrame) -> pd.DataFrame:
+    def _modified_cost_per_share(
+        self, portfolio: pd.DataFrame
+    ) -> pd.DataFrame:
         """
         matches prices of each asset to open date
 
@@ -385,7 +400,17 @@ class Tracker:
         return df
 
     # merge portfolio data with latest benchmark data and create several calcs
-    def _benchmark_portfolio_calcs(self, portfolio:pd.DataFrame)->pd.DataFrame:
+    def _benchmark_portfolio_calcs(
+        self, portfolio: pd.DataFrame
+    ) -> pd.DataFrame:
+        """make benchmark calculations
+
+        Args:
+            portfolio (pd.DataFrame): portfolio
+
+        Returns:
+            pd.DataFrame: portfolio with appended benchmark calcs
+        """
         portfolio = pd.merge(
             portfolio,
             self.benchmark_df,
@@ -461,6 +486,15 @@ class Tracker:
     def daily_grouped_metrics(
         self, cols: list, by_symbol=False,
     ) -> pd.DataFrame:
+        """_summary_
+
+        Args:
+            cols (list): _description_
+            by_symbol (bool, optional): _description_. Defaults to False.
+
+        Returns:
+            pd.DataFrame: _description_
+        """
         idf = self.daily_calcs.copy()
         idf["Date Snapshot"] = idf["Date Snapshot"].dt.date
 
@@ -487,4 +521,7 @@ class Tracker:
                 freq="D",
             )
         )
+        # drop first "value" level, unrequired
+        grouped_metrics.columns = grouped_metrics.columns.droplevel(0)
+
         return grouped_metrics
