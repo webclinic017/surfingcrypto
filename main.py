@@ -9,6 +9,7 @@ from TelegramBotNotifications import TelegramBot
 
 from surfingcrypto import Config, TS
 from surfingcrypto.scraper import Scraper
+from surfingcrypto.reporting.reporting import report_percentage_diff
 from surfingcrypto.reporting.figures import ATHPlot, TaPlot
 from surfingcrypto.portfolio import Portfolio
 
@@ -49,7 +50,7 @@ for coin in coins_to_plot:
     fig = TaPlot(trendlines=False, ts=ts, graphstart="6m")
     tmpname = c.temp_folder + "/" + coin + "_" + timestr + ".jpeg"
     fig.save(tmpname)
-    tg.send_message_to_all(ts.report_percentage_diff())
+    tg.send_message_to_all(report_percentage_diff(ts.df,ts.coin))
     tg.send_photo_to_all(tmpname)
 
     # ATH(BTC) plot every monday

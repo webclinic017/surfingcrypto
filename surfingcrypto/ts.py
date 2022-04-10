@@ -58,40 +58,6 @@ class TS:
         else:
             raise FileNotFoundError(f"{self.coin}.csv not found.")
 
-    def percentage_diff(self, window=7):
-        """
-        Percentage difference given a window size.
-
-        Arguments:
-            window (int): number of days used to computer percentage
-                difference.
-        """
-        return (
-            (self.df.Close[-1] - self.df.Close[-window - 1])
-            / (self.df.Close[-window - 1])
-            * 100
-        )
-
-    def report_percentage_diff(self, windows=[1, 3, 7, 14, 60]):
-        """
-        Produces verbose and pretty report on latest price
-        difference from a given list of windows.
-
-        Arguments:
-            windows (:obj:`list` of :obj:`int`): list of windows
-                to compute percentage difference.
-
-        """
-        s = f"**{self.coin}**\n"
-        for window in windows:
-            s = (
-                s
-                + f"- {window}d: "
-                + "{:.2f}".format(self.percentage_diff(window))
-                + " %\n"
-            )
-        return s
-
     # TA INDICATORS SAVED TO DF
     def ta_indicators(self):
         """
