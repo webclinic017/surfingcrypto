@@ -17,7 +17,7 @@ from surfingcrypto.reporting.reporting import (
 from surfingcrypto.reporting.figures import ATHPlot, TaPlot
 from surfingcrypto.portfolio import Portfolio
 
-
+# get cwd
 cwd = Path(__file__).resolve().parent
 
 # time of execution
@@ -29,9 +29,6 @@ c = Config(str(cwd) + "/config")
 
 # coinbase portfolio
 p = Portfolio("coinbase", configuration=c)
-p.start_tracker(
-    stocks_start="1-1-2021", benchmark="ETH",
-)
 
 # update config for coins that are not specified in config
 c.add_coins(p.coinbase.active_accounts)
@@ -51,6 +48,10 @@ tg.send_message_to_all(
     message=s.output_description
 )  # send scraper log to telegram
 
+# start tracker AFTER having scraped required data
+p.start_tracker(
+    stocks_start="1-1-2021", benchmark="ETH",
+)
 
 coins_to_plot = [
     x
@@ -77,4 +78,7 @@ for coin in coins_to_plot:
 
 
 tg.send_message_to_user(report_coinbase_live_value(p), "admin")
-tg.send_message_to_user(report_stock_gain(p.tracker.daily_snaphost("last")), "admin")
+tg.send_message_to_user(
+    report_stock_gain(p.tracker.daily_snaphost("last")), "admin"
+)
+
