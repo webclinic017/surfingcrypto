@@ -5,6 +5,7 @@ from cryptocmd import CmcScraper
 import datetime
 import pandas as pd
 import os
+import traceback
 
 
 class Scraper:
@@ -141,19 +142,19 @@ class CoinScraper:
                     self._scrape_missing_data(first, last, df)
                     self.description = f"DF: {self.coin} successfully updated."
                     self.result = True
-                except Exception as e:
+                except:
                     self.description = f"DF: {self.coin} update failed."
                     self.result = False
-                    self.error = e
+                    self.error = traceback.format_exc()
         else:
             try:
                 self._scrape_alltime_data()
                 self.description = f"DF: {self.coin} successfully downloaded."
                 self.result = True
-            except Exception as e:
+            except:
                 self.description = f"DF: {self.coin} download failed."
                 self.result = False
-                self.error = e
+                self.error = traceback.format_exc()
 
     def _scrape_alltime_data(self):
         """
@@ -179,26 +180,30 @@ class CoinScraper:
             df (:obj:`pandas.DataFrame`): dataframe of
                 locally stored data
         """
-        if first == self.start and last < self.end_day:
+        # appending to front can cause exceptions because
+        # coin data is available from a date that is later
+        # than the start parameter
+
+        if (first == self.start or first < self.start) and last < self.end_day:
+            # only to the end
             scraper = self._append_to_end(last)
             scraped = scraper.get_dataframe()
 
         elif self.start < first and last == self.end_day:
+            # only to the front
             scraper = self._append_to_front(first)
             if scraper.rows:
                 scraped = scraper.get_dataframe()
             else:
                 scraped = pd.DataFrame(columns=["Date"])
 
-        elif self.start < first and last < self.end_day:
+        elif (self.start < first and last < self.end_day):
             # end
             scraper = self._append_to_end(last)
             scraped_last = scraper.get_dataframe()
+
             # front
             scraper = self._append_to_front(first)
-            # quickfix for when start < first
-            # because it was created after
-            #  it's actually up to date.
             if scraper.rows:
                 scraped_first = scraper.get_dataframe()
             else:
