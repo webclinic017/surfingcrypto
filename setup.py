@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="surfingcrypto",
-    version="0.1.5",
+    version="0.1.6",
     description="Customizable interface to cryptocurrencies.",
     long_description_content_type="text/markdown",
     long_description=long_description,
