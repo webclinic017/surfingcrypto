@@ -40,6 +40,7 @@ class Portfolio:
         if self.portfolio_type.lower() == "coinbase":
             self.coinbase = MyCoinbase(active_accounts=False, **kwargs)
             self.coinbase.get_history()
+            self.errors=[]
             self._standardize()
             self._init_log()
         else:
@@ -93,12 +94,11 @@ class Portfolio:
                         (self.std_df["trade_id"] == trade), "total_fee"
                     ] = (fee[-1] / 2)
 
-                elif len(t) > 2:
-                    raise ValueError("More than 2 trades found.")
                 else:
-                    raise ValueError(
-                        "Did not find 2 trades with matching trade_id"
-                    )
+                    self.errors.append({
+                        "descr":"Can't split trade because not found 2 trades with matching trade_id",
+                        "t":trade
+                    })
 
     def total_fees(self) -> float:
         """total fees paid
@@ -135,19 +135,14 @@ class Portfolio:
         """
         prints log of initialization status.
         """
-        print("####### PORTFOLIO ")
-        print("")
+        print("### PORTFOLIO ")
         print(self.coinbase)
-        print("")
-
         if len(self.std_df) != len(self.coinbase.history.df):
             n = len(self.coinbase.history.df) - len(self.std_df)
-            print("")
             print(
                 f"Warning! There are {n} transactions"
                 "that were EXCLUDED in std_df."
             )
         if not self.coinbase.history.executed_without_errors():
-            print("")
             print("Warning! Errors while handling transactions:")
             print(self.coinbase.history)
