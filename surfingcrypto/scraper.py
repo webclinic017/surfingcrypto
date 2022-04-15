@@ -197,7 +197,7 @@ class CoinScraper:
             else:
                 scraped = pd.DataFrame(columns=["Date"])
 
-        elif (self.start < first and last < self.end_day):
+        elif self.start < first and last < self.end_day:
             # end
             scraper = self._append_to_end(last)
             scraped_last = scraper.get_dataframe()
@@ -212,8 +212,10 @@ class CoinScraper:
             # concat
             scraped = pd.concat([scraped_last, scraped_first])
 
-        elif first < self.start and last == self.end_day:
-            # i have more than needed, but its fine
+        elif (first == self.start or first < self.start) and (
+            self.end_day == last or self.end_day < last
+        ):
+            # i have what is needed
             # i add nothing
             scraped = pd.DataFrame(columns=["Date"])
 
