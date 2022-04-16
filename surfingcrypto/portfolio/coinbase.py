@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import datetime as dt
 
+import coinbase.wallet as wallet
 from coinbase.wallet.client import Client
 
 
@@ -50,9 +51,9 @@ class CB:
         else:
             raise ValueError("config.json file must contain a coinbase token.")
 
-    def _get_paginated_items(self, api_method, limit=100):
+    def _get_paginated_items(self, api_method, cache=None,limit=100):
         """
-        Generic getter for paginated items
+        Generic getter for paginated items,
         """
         all_items = []
         starting_after = None
@@ -60,11 +61,18 @@ class CB:
             items = api_method(limit=limit, starting_after=starting_after)
             if items.pagination.next_starting_after is not None:
                 starting_after = items.pagination.next_starting_after
-                all_items += items.data
+                all_items += self._filter_by_cache(items.data,cache=cache)
             else:
-                all_items += items.data
+                all_items += self._filter_by_cache(items.data,cache=cache)
                 break
         return all_items
+
+    def _filter_by_cache(self,data:list,cache:dict or None):
+        if cache not None:
+            return data
+        else:
+            return data
+
 
     def _get_accounts(self, limit=100):
         """
@@ -72,7 +80,7 @@ class CB:
         """
         return self._get_paginated_items(self.client.get_accounts, limit=100)
 
-    def _get_transactions(self, account, limit=100):
+    def _get_transactions(self, account,limit=100):
         """
         get all transaction from specified account through pagination.
 
@@ -109,45 +117,58 @@ class CB:
 
         Return:
             has_transactions (:obj:`list` of :obj:`coinbase.ApiObject`): list
-                of coinbase accounts
-            timeranges (:obj:`list` of :obj:`dict`): list of
-                dictionaries with dates of first and last transaction
-                for each account in `has_transactions`
+                of coinbase accounts that have transactions
+            account_transactions (_type_): _descr_
         """
         has_transactions = []
-        timeranges = []
+        transactions = []
         accounts = self._get_accounts()
-        _list = len(accounts)
-        for account, i in zip(accounts, range(_list)):
+        for account, i in zip(accounts, range(len(accounts))):
             if verbose:
-                print(f"## {i+1} of {_list}")
+                print(f"## {i+1} of {len(accounts)}")
                 print(account["currency"])
-            transactions = self._get_transactions(account)
+            account_transactions = self._get_transactions(account)
             if len(transactions) > 0:
-                timerange = {
-                    0: transactions[0]["created_at"],
-                    1: transactions[-1]["created_at"],
-                }
                 has_transactions.append(account)
-                timeranges.append(timerange)
-        return has_transactions, timeranges
+                transactions.append(account_transactions)
+        return has_transactions, transactions
 
-    def get_accounts_from_list(self, _list=None):
+    def _cache_response(
+        self, account: wallet.model.ApiObject, transactions: list
+    ):
+        """_summary_
+
+        Args:
+            account (wallet.model.ApiObject): _description_
+            transactions (list): _description_
+
+        Returns:
+            dict: _description_
         """
-        gets accounts from a list dumped locally in the config folder.
+        return {
+            "currency": account["currency"],
+            "account_id": account["id"],
+            "active": "True"
+            if float(account["balance"]["amount"]) > 0
+            else "False",
+            "last_transaction_id":transactions[0]["id"],
+            "timerange": {
+                0: transactions[0]["created_at"],
+                1: transactions[-1]["created_at"],
+            },
+        }
+
+    def _load_accounts_from_cache(self, _list: list):
+        """
+        gets accounts from cached dumped locally.
 
         Return:
             from_list (:obj:`list` of :obj:`coinbase.ApiObject`): list
                 of coinbase accounts
         """
-        if isinstance(_list, list):
-            from_list = []
-            for account in _list:
-                from_list.append(
-                    self.client.get_account(account["account_id"])
-                )
-        else:
-            raise ValueError("Must be a list.")
+        from_list = []
+        for account in _list:
+            from_list.append(self.client.get_account(account["account_id"]))
         return from_list
 
 
@@ -172,14 +193,13 @@ class MyCoinbase(CB):
     Attributes:
         accounts (:obj:`list` of :obj:`coibase.model.ApiObject`):
             list of selected accounts.
+        transactions (:obj:`list` of :obj:`coibase.model.ApiObject`): 
+            list of transactions.
         active_accounts (list): list of string names of active accounts (balance>0.00)
         history (:obj:`surfingcrypto.portfolio.coinbase.TransactionsHistory`):
             `TransactionsHistory` object
         last_updated (:obj:`datetime.datetime`): datetime of
             last updates of account list.
-        timeranges (:obj:`list` of :obj:`dict`): list of
-            dictionaries with dates of first and last transaction for
-            each account
         isHistoric (bool): if module has been loaded in historic mode,
             a.k.a. all accounts with a transaction in the record
         json_path (str): path to json dump file
@@ -216,43 +236,32 @@ class MyCoinbase(CB):
                 self.last_updated = dt.datetime.strptime(
                     last_updated, "%Y-%m-%dT%H:%M:%SZ"
                 )
+                # but has to be not older than 7 days
                 if dt.datetime.utcnow() - self.last_updated < dt.timedelta(
                     days=7
                 ):
-                    self.accounts = self.get_accounts_from_list(accounts)
+                    self.accounts = self._load_accounts_from_cache(accounts)
                 else:
-                    (
-                        self.accounts,
-                        self.timeranges,
-                    ) = self.get_all_accounts_with_transactions()
-                    self._dump_accounts()
+                (
+                    self.accounts,
+                    self.transactions,
+                ) = self.get_all_accounts_with_transactions()
             else:
                 (
                     self.accounts,
-                    self.timeranges,
+                    self.transactions,
                 ) = self.get_all_accounts_with_transactions()
-                self._dump_accounts()
                 self.last_updated = dt.datetime.now(dt.timezone.utc)
         else:
             raise ValueError("Either true or false.")
 
-    def _dump_accounts(self):
+    def _dump_accounts(self, cached_response: list):
         """
         dumps fetched accounts for faster execution time in following sessions.
         """
-        _list = []
-        for account, timerange in zip(self.accounts, self.timeranges):
-            _list.append(
-                {
-                    "currency": account["currency"],
-                    "account_id": account["id"],
-                    "balance": account["balance"]["amount"],
-                    "timerange": timerange,
-                }
-            )
         dump = {
             "datetime": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "accounts": _list,
+            "accounts": cached_response,
         }
         with open(self.json_path, "w") as f:
             json.dump(dump, f, indent=4, default=str)
@@ -313,7 +322,7 @@ class TransactionsHistory:
 
     Attributes:
         df (:obj:`pandas.DataFrame`): dataframe of all known transactions
-        transactions (:obj:`list` of :obj:`coibase.model.ApiObject`): list
+        processed_transactions (:obj:`list` of :obj:`coibase.model.ApiObject`): list
             of processed transactions.
         known_types (list): list of string names
             of supported transaction types.
@@ -346,7 +355,7 @@ class TransactionsHistory:
             self.errors = []
 
             self.df = []
-            self.transactions = []
+            self.processed_transactions = []
 
             if hasattr(self._mycoinbase, "accounts"):
                 for account in self._mycoinbase.accounts:
@@ -398,7 +407,7 @@ class TransactionsHistory:
             total, subtotal, total_fee = self._get_transact_data(
                 account, transaction
             )
-            self.transactions.append(transaction)
+            self.processed_transactions.append(transaction)
         except Exception as e:
             total, subtotal, total_fee = None, None, None
 
@@ -504,7 +513,7 @@ class TransactionsHistory:
     def __repr__(self):
         return (
             f"TransactionsHistory("
-            f"Transactions:{len(self.transactions)+len(self.unhandled_trans)+len(self.error_log)} "
+            f"Transactions:{len(self.processed_transactions)+len(self.unhandled_trans)+len(self.error_log)} "
             f"- Processed:{len(self.df)}, "
             f"Unhandled:{len(self.unhandled_trans)} "
             f"- Errors:{len(self.error_log)}"
@@ -514,7 +523,7 @@ class TransactionsHistory:
     def __str__(self):
         return (
             f"TransactionsHistory("
-            f"Transactions:{len(self.transactions)+len(self.unhandled_trans)+len(self.error_log)} "
+            f"Transactions:{len(self.processed_transactions)+len(self.unhandled_trans)+len(self.error_log)} "
             f"- Processed:{len(self.df)}, "
             f"Unhandled:{len(self.unhandled_trans)} "
             f"- Errors:{len(self.error_log)}"

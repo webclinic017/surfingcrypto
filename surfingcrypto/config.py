@@ -145,7 +145,7 @@ class Config:
             for account in self.coinbase_req["accounts"]:
                 if account["currency"] not in ["EUR"]:
                     # active account
-                    if float(account["balance"]) > 0.0:
+                    if str(account["active"])=="True":
                         start = dateutil.parser.parse(
                             account["timerange"]["1"],
                         ).replace(hour=0, minute=0, second=0, microsecond=0)
