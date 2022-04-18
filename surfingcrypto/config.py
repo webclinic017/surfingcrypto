@@ -142,10 +142,10 @@ class Config:
         req = {}
         # first get - if possible - coinbase requirements
         if self.coinbase_req is not None:
-            for account in self.coinbase_req["accounts"]:
+            for account in self.coinbase_req["accounts"].values():
                 if account["currency"] not in ["EUR"]:
                     # active account
-                    if str(account["active"])=="True":
+                    if str(account["active"]) == "True":
                         start = dateutil.parser.parse(
                             account["timerange"]["1"],
                         ).replace(hour=0, minute=0, second=0, microsecond=0)

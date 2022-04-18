@@ -5,8 +5,8 @@ import json
 import os
 import pandas as pd
 import datetime as dt
+import pickle
 
-import coinbase.wallet as wallet
 from coinbase.wallet.client import Client
 
 
@@ -51,9 +51,9 @@ class CB:
         else:
             raise ValueError("config.json file must contain a coinbase token.")
 
-    def _get_paginated_items(self, api_method, cache=None,limit=100):
+    def _get_paginated_items(self, api_method, limit=100):
         """
-        Generic getter for paginated items,
+        Generic getter for paginated items.
         """
         all_items = []
         starting_after = None
@@ -61,34 +61,48 @@ class CB:
             items = api_method(limit=limit, starting_after=starting_after)
             if items.pagination.next_starting_after is not None:
                 starting_after = items.pagination.next_starting_after
-                all_items += self._filter_by_cache(items.data,cache=cache)
+                all_items += items.data
             else:
-                all_items += self._filter_by_cache(items.data,cache=cache)
+                all_items += items.data
                 break
         return all_items
 
-    def _filter_by_cache(self,data:list,cache:dict or None):
-        if cache not None:
-            return data
-        else:
-            return data
+    def _filter_paginated_items(
+        self, api_method, account: str, filter=dict, limit=2
+    ):
+        """
+        filter the reponse for updating data using a cached dict.
+        Two transactions at the time for cutting time.
+        """
+        all_items = []
+        starting_after = None
+        finished = False
+        while True:
+            items = api_method(limit=limit, starting_after=starting_after)
+            if items.pagination.next_starting_after is not None:
+                starting_after = items.pagination.next_starting_after
+                all_items += self._filter_by_cache(items.data, filter, account)
+                if len(all_items) < len(items.data):
+                    break
+            else:
+                all_items += self._filter_by_cache(items.data, filter, account)
+                break
+        return all_items
 
+    def _filter_by_cache(self, data: list, filter: dict, account: str):
+        # this filter works as the transactions are returned in chronological order
+        new_items = []
+        for item in data:
+            if item["id"] == filter["accounts"][account]["last_transaction_id"]:
+                return new_items
+            else:
+                new_items.append(item)
 
     def _get_accounts(self, limit=100):
         """
         get all accounts through pagination.
         """
         return self._get_paginated_items(self.client.get_accounts, limit=100)
-
-    def _get_transactions(self, account,limit=100):
-        """
-        get all transaction from specified account through pagination.
-
-        Arguments
-            account (:obj:`coinbase.wallet.model.ApiObject`) : coinbase
-                account object.
-        """
-        return self._get_paginated_items(account.get_transactions, limit)
 
     def get_active_accounts(self):
         """
@@ -105,37 +119,68 @@ class CB:
                 active.append(account)
         return active
 
-    def get_all_accounts_with_transactions(self, verbose=False):
+    def _get_transactions(self, account, cache=None, limit=100):
+        """
+        get transaction from specified account through pagination.
+        if provided with 
+
+        Arguments
+            account (:obj:`coinbase.wallet.model.ApiObject`) : coinbase
+                account object.
+            cache (_type_) : _descr_
+        """
+        if cache is None or account["currency"] not in [
+            x for x in cache["accounts"].keys()
+        ]:
+            return self._get_paginated_items(account.get_transactions, limit)
+        else:
+            return self._filter_paginated_items(
+                account.get_transactions, account["currency"], cache
+            )
+
+    def get_full_history(self,cache:None or dict, transactions=[]) -> tuple:
         """
         get all accounts with recorded transactions.
+
+        From v0.2 features updating accounts and transactions from cache.
 
         Note:
             SUPER FUCKING SLOW!!!
 
         Params:
-            verbose (bool): verbose mode in order to check status
-
+            cache (None or dict): _descr_
         Return:
             has_transactions (:obj:`list` of :obj:`coinbase.ApiObject`): list
                 of coinbase accounts that have transactions
             account_transactions (_type_): _descr_
+            account_responses (_type_): _descr_
         """
         has_transactions = []
-        transactions = []
+        new_transactions = []
+        account_responses = {}
+    
         accounts = self._get_accounts()
-        for account, i in zip(accounts, range(len(accounts))):
-            if verbose:
-                print(f"## {i+1} of {len(accounts)}")
-                print(account["currency"])
-            account_transactions = self._get_transactions(account)
-            if len(transactions) > 0:
-                has_transactions.append(account)
-                transactions.append(account_transactions)
-        return has_transactions, transactions
 
-    def _cache_response(
-        self, account: wallet.model.ApiObject, transactions: list
-    ):
+        for account in accounts:
+
+            if cache is None or account["currency"] not in cache["accounts"].keys():
+                new_account_transactions = self._get_transactions(account)
+            else:
+                new_account_transactions = self._get_transactions(account,cache)
+            
+            if len(new_account_transactions) > 0 or account["currency"] in cache["accounts"].keys():
+                has_transactions.append(account)
+
+                #all known account transactions for finding the response info
+                account_transactions = new_account_transactions + [x for x in transactions if x["amount"]["currency"]==account["currency"]]
+                account_responses[account["currency"]]=self._fmt_account_response(account, account_transactions)
+
+                new_transactions=new_transactions+new_account_transactions
+
+        return has_transactions, (new_transactions+transactions), account_responses
+
+    def _fmt_account_response(self, account, transactions: list):
+
         """_summary_
 
         Args:
@@ -151,25 +196,12 @@ class CB:
             "active": "True"
             if float(account["balance"]["amount"]) > 0
             else "False",
-            "last_transaction_id":transactions[0]["id"],
+            "last_transaction_id": transactions[0]["id"],
             "timerange": {
                 0: transactions[0]["created_at"],
                 1: transactions[-1]["created_at"],
             },
         }
-
-    def _load_accounts_from_cache(self, _list: list):
-        """
-        gets accounts from cached dumped locally.
-
-        Return:
-            from_list (:obj:`list` of :obj:`coinbase.ApiObject`): list
-                of coinbase accounts
-        """
-        from_list = []
-        for account in _list:
-            from_list.append(self.client.get_account(account["account_id"]))
-        return from_list
 
 
 class MyCoinbase(CB):
@@ -184,9 +216,9 @@ class MyCoinbase(CB):
 
     Arguments:
         active_accounts (bool) : default `True`, select
-            active (balance>0) accounts only.
+            active (balance>0) accounts only. Defaults to True.
         force (bool): force update from API even if
-            local cache is found.
+            local cache is found. Defaults to False.
         configuration (:obj:`surfingcrypto.config.config`) : package
             configuration object.
 
@@ -198,8 +230,6 @@ class MyCoinbase(CB):
         active_accounts (list): list of string names of active accounts (balance>0.00)
         history (:obj:`surfingcrypto.portfolio.coinbase.TransactionsHistory`):
             `TransactionsHistory` object
-        last_updated (:obj:`datetime.datetime`): datetime of
-            last updates of account list.
         isHistoric (bool): if module has been loaded in historic mode,
             a.k.a. all accounts with a transaction in the record
         json_path (str): path to json dump file
@@ -212,7 +242,7 @@ class MyCoinbase(CB):
         self._set_active_accounts()
         return
 
-    def start(self, active_accounts, force):
+    def start(self, active_accounts: bool, force: bool):
         """
         start MyCoinbase module, loading accounts as specified.
 
@@ -223,58 +253,65 @@ class MyCoinbase(CB):
         self.json_path = (
             self.configuration.config_folder + "/coinbase_accounts.json"
         )
+        self.pickle_path = (
+            self.configuration.config_folder + "/coinbase_transactions"
+        )
+
+        cache=None
+        self.transactions=[]
 
         if active_accounts:
             self.accounts = self.get_active_accounts()
             self.isHistoric = False
-            self.last_updated = dt.datetime.utcnow()
-        elif active_accounts is False:
-            self.isHistoric = True
-            # if faile not found, fetch all instead of failing
-            if os.path.isfile(self.json_path) and not force:
-                accounts, last_updated = self._load_accounts()
-                self.last_updated = dt.datetime.strptime(
-                    last_updated, "%Y-%m-%dT%H:%M:%SZ"
-                )
-                # but has to be not older than 7 days
-                if dt.datetime.utcnow() - self.last_updated < dt.timedelta(
-                    days=7
-                ):
-                    self.accounts = self._load_accounts_from_cache(accounts)
-                else:
-                (
-                    self.accounts,
-                    self.transactions,
-                ) = self.get_all_accounts_with_transactions()
-            else:
-                (
-                    self.accounts,
-                    self.transactions,
-                ) = self.get_all_accounts_with_transactions()
-                self.last_updated = dt.datetime.now(dt.timezone.utc)
         else:
-            raise ValueError("Either true or false.")
+            self.isHistoric = True
+            # if cache is found, use it
+            if (
+                os.path.isfile(self.json_path)
+                and os.path.isfile(self.pickle_path)
+                and not force
+            ):
+                cache, self.transactions = self._load_cache()
+            # get data
+            (
+                self.accounts,
+                self.transactions,
+                responses,
+            ) = self.get_full_history(cache,self.transactions)
+            self._dump_cache(responses)
+    
+    def _dump_cache(self, responses: dict):
+        """
+        dumps a dict for accounts and and a pickle object for transactions,
+        for faster execution time in following sessions.
 
-    def _dump_accounts(self, cached_response: list):
         """
-        dumps fetched accounts for faster execution time in following sessions.
-        """
-        dump = {
+        dict = {
             "datetime": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "accounts": cached_response,
+            "accounts": responses,
         }
         with open(self.json_path, "w") as f:
-            json.dump(dump, f, indent=4, default=str)
+            json.dump(dict, f, indent=4, default=str)
+        with open(self.pickle_path, "wb") as f2:
+            pickle.dump(self.transactions, f2)
 
-    def _load_accounts(self):
+    def _load_cache(self) -> dict and list:
         """
-        load accounts from dumped `coinbase_accounts.json` file.
+        load accounts and transactions from dumped cache
+
+        Returns:
+            dict and list: _description_
         """
         with open(self.json_path, "rb") as f:
             dict = json.load(f)
-            accounts = dict["accounts"]
-            last_updated = dict["datetime"]
-        return accounts, last_updated
+        # format datetime
+        dict["datetime"] = dt.datetime.strptime(
+            dict["datetime"], "%Y-%m-%dT%H:%M:%SZ"
+        )
+
+        with open(self.pickle_path, "rb") as f2:
+            transactions = pickle.load(f2)
+        return dict, transactions
 
     def _set_active_accounts(self):
         """
@@ -299,14 +336,12 @@ class MyCoinbase(CB):
     def __repr__(self):
         return (
             f"MyCoinbase( isHistoric:{self.isHistoric},"
-            f" last_updated:{self.last_updated},"
             f" N_accounts:{len(self.accounts)})"
         )
 
     def __str__(self):
         return (
             f"MyCoinbase( isHistoric:{self.isHistoric},"
-            f" last updated:{self.last_updated},"
             f" N_accounts:{len(self.accounts)})"
         )
 
@@ -384,17 +419,18 @@ class TransactionsHistory:
         """
         handles the transactions based on type.
         """
-        for transaction in self._mycoinbase._get_transactions(account):
-            if transaction["type"] in self.known_types:
-                self._process_transaction(account, transaction)
-            else:
-                self.unhandled_trans.append(
-                    {
-                        "transaction_type": transaction["type"],
-                        "account_id": account["id"],
-                        "transaction_id": transaction["id"],
-                    }
-                )
+        for transaction in self._mycoinbase.transactions:
+            if transaction["amount"]["currency"]==account["currency"]:
+                if transaction["type"] in self.known_types:
+                    self._process_transaction(account, transaction)
+                else:
+                    self.unhandled_trans.append(
+                        {
+                            "transaction_type": transaction["type"],
+                            "account_id": account["id"],
+                            "transaction_id": transaction["id"],
+                        }
+                    )
 
     def _process_transaction(self, account, transaction):
         """
