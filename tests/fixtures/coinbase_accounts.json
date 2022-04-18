@@ -1,23 +1,25 @@
 {
-    "datetime": "16-12-21",
-    "accounts": [
-        {
+    "datetime": "2022-04-18T16:47:39Z",
+    "accounts": {
+        "SOL": {
             "currency": "SOL",
-            "account_id": "XXXXXXXXXXXXX",
-            "balance": "1.026155936",
+            "account_id": "e5efeea6-737c-50bc-9e83-97a34eee6bd9",
+            "active": "True",
+            "last_transaction_id": "d4e078a5-cafa-5263-ba88-46c8cfd0df55",
             "timerange": {
-                "0": "2021-11-29T10:47:17Z",
+                "0": "2022-04-13T21:13:35Z",
                 "1": "2021-11-29T10:47:17Z"
             }
         },
-        {
+        "AAVE": {
             "currency": "AAVE",
-            "account_id": "XXXXXXXXXXXXX",
-            "balance": "0.00000000",
+            "account_id": "04899755-24da-5936-846c-d27237cd08b3",
+            "active": "False",
+            "last_transaction_id": "37d37d63-d087-53a8-9e9a-3da2a1332896",
             "timerange": {
-                "0": "2021-08-26T19:45:56Z",
+                "0": "2022-04-11T21:35:13Z",
                 "1": "2021-07-04T21:58:17Z"
             }
         }
-    ]
+    }
 }
