@@ -93,7 +93,10 @@ class CB:
         # this filter works as the transactions are returned in chronological order
         new_items = []
         for item in data:
-            if item["id"] == filter["accounts"][account]["last_transaction_id"]:
+            if (
+                item["id"]
+                == filter["accounts"][account]["last_transaction_id"]
+            ):
                 return new_items
             else:
                 new_items.append(item)
@@ -138,7 +141,7 @@ class CB:
                 account.get_transactions, account["currency"], cache
             )
 
-    def get_full_history(self,cache:None or dict, transactions=[]) -> tuple:
+    def get_full_history(self, cache: None or dict, transactions=[]) -> tuple:
         """
         get all accounts with recorded transactions.
 
@@ -158,26 +161,49 @@ class CB:
         has_transactions = []
         new_transactions = []
         account_responses = {}
-    
+
         accounts = self._get_accounts()
 
         for account in accounts:
 
-            if cache is None or account["currency"] not in cache["accounts"].keys():
-                new_account_transactions = self._get_transactions(account)
-            else:
-                new_account_transactions = self._get_transactions(account,cache)
-            
-            if len(new_account_transactions) > 0 or account["currency"] in cache["accounts"].keys():
-                has_transactions.append(account)
+            has_activity = account["created_at"] != account["updated_at"]
 
-                #all known account transactions for finding the response info
-                account_transactions = new_account_transactions + [x for x in transactions if x["amount"]["currency"]==account["currency"]]
-                account_responses[account["currency"]]=self._fmt_account_response(account, account_transactions)
+            if has_activity:
+                # get transactions, either all or updating from cache
+                if (
+                    cache is None # no cache available or force
+                    or account["currency"] not in cache["accounts"].keys() # not present in cache
+                ):
+                    new_account_transactions = self._get_transactions(account)
+                    update=False
+                else:
+                    new_account_transactions = self._get_transactions(
+                        account, cache
+                    )
+                    update=True
 
-                new_transactions=new_transactions+new_account_transactions
+                if len(new_account_transactions) > 0 or update is True:
+                    # save account
+                    has_transactions.append(account)
 
-        return has_transactions, (new_transactions+transactions), account_responses
+                    # all known account transactions for finding the latest response info
+                    account_transactions = new_account_transactions + [
+                        x
+                        for x in transactions
+                        if x["amount"]["currency"] == account["currency"]
+                    ]
+                    account_responses[
+                        account["currency"]
+                    ] = self._fmt_account_response(account, account_transactions)
+                    
+                    # append transactions
+                    new_transactions = new_transactions + new_account_transactions
+
+        return (
+            has_transactions,
+            (new_transactions + transactions),
+            account_responses,
+        )
 
     def _fmt_account_response(self, account, transactions: list):
 
@@ -257,8 +283,8 @@ class MyCoinbase(CB):
             self.configuration.config_folder + "/coinbase_transactions"
         )
 
-        cache=None
-        self.transactions=[]
+        cache = None
+        self.transactions = []
 
         if active_accounts:
             self.accounts = self.get_active_accounts()
@@ -277,9 +303,9 @@ class MyCoinbase(CB):
                 self.accounts,
                 self.transactions,
                 responses,
-            ) = self.get_full_history(cache,self.transactions)
+            ) = self.get_full_history(cache, self.transactions)
             self._dump_cache(responses)
-    
+
     def _dump_cache(self, responses: dict):
         """
         dumps a dict for accounts and and a pickle object for transactions,
@@ -420,7 +446,7 @@ class TransactionsHistory:
         handles the transactions based on type.
         """
         for transaction in self._mycoinbase.transactions:
-            if transaction["amount"]["currency"]==account["currency"]:
+            if transaction["amount"]["currency"] == account["currency"]:
                 if transaction["type"] in self.known_types:
                     self._process_transaction(account, transaction)
                 else:
