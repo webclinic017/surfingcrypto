@@ -51,32 +51,14 @@ class CB:
         else:
             raise ValueError("config.json file must contain a coinbase token.")
 
-    def _get_paginated_items(self, api_method, limit=100):
-        """
-        Generic getter for paginated items.
-        """
-        all_items = []
-        starting_after = None
-        while True:
-            items = api_method(limit=limit, starting_after=starting_after)
-            if items.pagination.next_starting_after is not None:
-                starting_after = items.pagination.next_starting_after
-                all_items += items.data
-            else:
-                all_items += items.data
-                break
-        return all_items
-
     def _filter_paginated_items(
-        self, api_method, account: str, filter=dict, limit=2
+        self, api_method, account: str, filter=dict or None, limit=2
     ):
         """
         filter the reponse for updating data using a cached dict.
-        Two transactions at the time for cutting time.
         """
         all_items = []
         starting_after = None
-        finished = False
         while True:
             items = api_method(limit=limit, starting_after=starting_after)
             if items.pagination.next_starting_after is not None:
@@ -89,23 +71,28 @@ class CB:
                 break
         return all_items
 
-    def _filter_by_cache(self, data: list, filter: dict, account: str):
+    def _filter_by_cache(self, data: list, filter: dict or None, account: str):
         # this filter works as the transactions are returned in chronological order
-        new_items = []
-        for item in data:
-            if (
-                item["id"]
-                == filter["accounts"][account]["last_transaction_id"]
-            ):
-                return new_items
-            else:
-                new_items.append(item)
+        if filter is not None:
+            new_items = []
+            for item in data:
+                if (
+                    item["id"]
+                    == filter["accounts"][account]["last_transaction_id"]
+                ):
+                    return new_items
+                else:
+                    new_items.append(item)
+        else:
+            return data
 
     def _get_accounts(self, limit=100):
         """
         get all accounts through pagination.
         """
-        return self._get_paginated_items(self.client.get_accounts, limit=100)
+        return self._filter_paginated_items(
+            self.client.get_accounts, None, filter=None, limit=100
+        )
 
     def get_active_accounts(self):
         """
@@ -122,7 +109,7 @@ class CB:
                 active.append(account)
         return active
 
-    def _get_transactions(self, account, cache=None, limit=100):
+    def _get_transactions(self, account, cache=None):
         """
         get transaction from specified account through pagination.
         if provided with 
@@ -132,14 +119,9 @@ class CB:
                 account object.
             cache (_type_) : _descr_
         """
-        if cache is None or account["currency"] not in [
-            x for x in cache["accounts"].keys()
-        ]:
-            return self._get_paginated_items(account.get_transactions, limit)
-        else:
-            return self._filter_paginated_items(
-                account.get_transactions, account["currency"], cache
-            )
+        return self._filter_paginated_items(
+            account.get_transactions, account["currency"], cache, limit=5
+        )
 
     def get_full_history(self, cache: None or dict, transactions=[]) -> tuple:
         """
@@ -147,16 +129,12 @@ class CB:
 
         From v0.2 features updating accounts and transactions from cache.
 
-        Note:
-            SUPER FUCKING SLOW!!!
+        Args:
+            cache (None or dict): _description_
+            transactions (list, optional): _description_. Defaults to [].
 
-        Params:
-            cache (None or dict): _descr_
-        Return:
-            has_transactions (:obj:`list` of :obj:`coinbase.ApiObject`): list
-                of coinbase accounts that have transactions
-            account_transactions (_type_): _descr_
-            account_responses (_type_): _descr_
+        Returns:
+            tuple: _description_
         """
         has_transactions = []
         new_transactions = []
@@ -171,16 +149,17 @@ class CB:
             if has_activity:
                 # get transactions, either all or updating from cache
                 if (
-                    cache is None # no cache available or force
-                    or account["currency"] not in cache["accounts"].keys() # not present in cache
+                    cache is None  # no cache available or force
+                    or account["currency"]
+                    not in cache["accounts"].keys()  # not present in cache
                 ):
                     new_account_transactions = self._get_transactions(account)
-                    update=False
+                    update = False
                 else:
                     new_account_transactions = self._get_transactions(
                         account, cache
                     )
-                    update=True
+                    update = True
 
                 if len(new_account_transactions) > 0 or update is True:
                     # save account
@@ -194,10 +173,14 @@ class CB:
                     ]
                     account_responses[
                         account["currency"]
-                    ] = self._fmt_account_response(account, account_transactions)
-                    
+                    ] = self._fmt_account_response(
+                        account, account_transactions
+                    )
+
                     # append transactions
-                    new_transactions = new_transactions + new_account_transactions
+                    new_transactions = (
+                        new_transactions + new_account_transactions
+                    )
 
         return (
             has_transactions,
