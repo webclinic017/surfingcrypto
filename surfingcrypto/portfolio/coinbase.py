@@ -446,16 +446,16 @@ class TransactionsHistory:
         process a transaction.
         """
         # spot price??
-        symbol, amount, datetime = self._get_transact_info(transaction)
+        symbol, amount, datetime, id = self._get_transact_info(transaction)
         nat_amount, nat_symbol = self._get_native_amount(transaction)
+        total, subtotal, total_fee = None, None, None
         try:
             total, subtotal, total_fee = self._get_transact_data(
                 account, transaction
             )
             self.processed_transactions.append(transaction)
-        except Exception as e:
-            total, subtotal, total_fee = None, None, None
 
+        except Exception as e:
             self.errors.append(transaction)
             self.error_log.append(
                 {
@@ -493,6 +493,7 @@ class TransactionsHistory:
                 "subtotal": subtotal,
                 "total_fee": total_fee,
                 "spot_price": abs(spot_price),
+                "transaction_id": id,
                 "trade_id": trade_id,
             }
         )
@@ -504,7 +505,8 @@ class TransactionsHistory:
         symbol = transaction["amount"]["currency"]
         amount = float(transaction["amount"]["amount"])
         datetime = transaction["created_at"]
-        return symbol, amount, datetime
+        id = transaction["id"]
+        return symbol, amount, datetime, id
 
     def _get_native_amount(self, transaction):
         """
