@@ -129,21 +129,15 @@ class Tracker:
 
                 # considering rebrandings
                 rebrandings = [
-                    k
-                    for k, v in self.configuration.rebrandings.items()
-                    if v == ts.coin
+                    k for k, v in self.configuration.rebrandings.items() if v == ts.coin
                 ]
                 if rebrandings:
                     ts.coin = rebrandings[0]
 
                 df = self._check_data(
                     ts.df[["Close"]].copy(),
-                    pd.Timestamp(
-                        self.configuration.coinbase_req[ts.coin]["start"]
-                    ),
-                    pd.Timestamp(
-                        self.configuration.coinbase_req[ts.coin]["end_day"]
-                    ),
+                    pd.Timestamp(self.configuration.coinbase_req[ts.coin]["start"]),
+                    pd.Timestamp(self.configuration.coinbase_req[ts.coin]["end_day"]),
                 )
                 df["symbol"] = symbol
                 dfs.append(df)
@@ -163,9 +157,7 @@ class Tracker:
             ts.df[["Close"]].copy(), self.stocks_start, self.stocks_end
         )
 
-    def _check_data(
-        self, df, i: pd.Timestamp, o: pd.Timestamp,
-    ) -> pd.DataFrame:
+    def _check_data(self, df, i: pd.Timestamp, o: pd.Timestamp,) -> pd.DataFrame:
         """_summary_
 
         Args:
@@ -381,9 +373,7 @@ class Tracker:
 
         return df
 
-    def _modified_cost_per_share(
-        self, portfolio: pd.DataFrame
-    ) -> pd.DataFrame:
+    def _modified_cost_per_share(self, portfolio: pd.DataFrame) -> pd.DataFrame:
         """
         matches prices of each asset to open date
 
@@ -406,9 +396,7 @@ class Tracker:
         return df
 
     # merge portfolio data with latest benchmark data and create several calcs
-    def _benchmark_portfolio_calcs(
-        self, portfolio: pd.DataFrame
-    ) -> pd.DataFrame:
+    def _benchmark_portfolio_calcs(self, portfolio: pd.DataFrame) -> pd.DataFrame:
         """make benchmark calculations
 
         Args:
@@ -436,9 +424,7 @@ class Tracker:
             how="left",
         )
         portfolio.drop("Open date_temp", axis=1, inplace=True)
-        portfolio.rename(
-            columns={"Close": "Benchmark DayOfBuy Close"}, inplace=True
-        )
+        portfolio.rename(columns={"Close": "Benchmark DayOfBuy Close"}, inplace=True)
         portfolio["Benchmark Equiv Shares"] = (
             portfolio["Adj cost"] / portfolio["Benchmark DayOfBuy Close"]
         )
@@ -466,9 +452,7 @@ class Tracker:
         )
         # #benchmark
         portfolio["Benchmark Return"] = (
-            portfolio["Benchmark Close"]
-            / portfolio["Benchmark DayOfBuy Close"]
-            - 1
+            portfolio["Benchmark Close"] / portfolio["Benchmark DayOfBuy Close"] - 1
         )
 
         portfolio["Benchmark Gain / (Loss)"] = (
@@ -489,9 +473,7 @@ class Tracker:
         # )
         return portfolio
 
-    def daily_grouped_metrics(
-        self, cols: list, by_symbol=False,
-    ) -> pd.DataFrame:
+    def daily_grouped_metrics(self, cols: list, by_symbol=False,) -> pd.DataFrame:
         """_summary_
 
         Args:
@@ -511,9 +493,7 @@ class Tracker:
 
         # group by day
         grouped_metrics = idf.groupby(by)[cols].sum().reset_index()
-        grouped_metrics = pd.melt(
-            grouped_metrics, id_vars=by, value_vars=cols,
-        )
+        grouped_metrics = pd.melt(grouped_metrics, id_vars=by, value_vars=cols,)
         grouped_metrics = (
             grouped_metrics.set_index(by + ["variable"])
             .unstack([x for x in by if x != "Date Snapshot"] + ["variable"])
@@ -522,9 +502,7 @@ class Tracker:
         # eventually fill gaps
         grouped_metrics.reindex(
             pd.date_range(
-                grouped_metrics.index.min(),
-                grouped_metrics.index.max(),
-                freq="D",
+                grouped_metrics.index.min(), grouped_metrics.index.max(), freq="D",
             )
         )
         # drop first "value" level, unrequired

@@ -26,9 +26,7 @@ class GTrends:
         df_list = []
         for kw in self.kw_list:
             pytrends = TrendReq(hl="en-US", tz=360)
-            pytrends.build_payload(
-                [kw], cat=0, timeframe="today 5-y", geo="", gprop=""
-            )
+            pytrends.build_payload([kw], cat=0, timeframe="today 5-y", geo="", gprop="")
             df_list.append(pytrends.interest_over_time())
 
         df = df_list[0].copy()
@@ -48,4 +46,3 @@ class GTrends:
             df2[column] = df2[column].interpolate("time")
 
         return df2
-

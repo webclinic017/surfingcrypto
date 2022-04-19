@@ -42,8 +42,7 @@ def test_scraping_without_coinbase(temp_test_env, run, check_files):
             if file[:-4] == "BTC":
                 # check price is downloaded in EUR by checking known values
                 assert (
-                    df.set_index("Date").loc["2021-12-31", "Close"]
-                    == 40712.7200439697
+                    df.set_index("Date").loc["2021-12-31", "Close"] == 40712.7200439697
                 )
                 assert (
                     df.set_index("Date").loc["2022-01-25,", "Close"]
@@ -60,17 +59,12 @@ def test_scraping_without_coinbase(temp_test_env, run, check_files):
             # test last of df is last price available
             assert df["Date"].iat[
                 -1
-            ].date() == datetime.datetime.utcnow().date() + datetime.timedelta(
-                -1
-            )
+            ].date() == datetime.datetime.utcnow().date() + datetime.timedelta(-1)
 
 
 scenarios = [
     # scrape data from config with the addtional coibase requirements
-    (
-        ("config.json", "coinbase_accounts.json"),
-        ["BTC.csv", "SOL.csv", "AAVE.csv"],
-    ),
+    (("config.json", "coinbase_accounts.json"), ["BTC.csv", "SOL.csv", "AAVE.csv"],),
     (
         (("config.json", "coinbase_accounts.json"), ("BTC.csv",)),
         ["BTC.csv", "SOL.csv", "AAVE.csv"],
@@ -103,7 +97,4 @@ def test_scraping_with_coinbase(temp_test_env, check_files):
         assert len(
             pd.date_range(df["Date"].iat[0], df["Date"].iat[-1], freq="D")
         ) == len(df)
-        assert (
-            df["Date"].iat[-1] == pd.Timestamp(c.scraping_req[file[:-4]]["end_day"])
-        )
-
+        assert df["Date"].iat[-1] == pd.Timestamp(c.scraping_req[file[:-4]]["end_day"])

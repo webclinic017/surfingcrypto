@@ -13,9 +13,7 @@ class trend_line:
 
         self.name = ts.coin
         self.df = ts.df
-        self.trendln_start = dateutil.parser.parse(
-            trendln_start, dayfirst=True
-        )
+        self.trendln_start = dateutil.parser.parse(trendln_start, dayfirst=True)
 
     def build(
         self,
@@ -138,9 +136,7 @@ class trend_line:
                 self.df_trends[col].duplicated(keep="first"), col
             ] = np.nan
 
-        ordinal_index = self.df_trends.index.map(
-            datetime.datetime.toordinal
-        ).to_numpy()
+        ordinal_index = self.df_trends.index.map(datetime.datetime.toordinal).to_numpy()
 
         ext = []
         for column in self.df_trends.columns:
@@ -165,12 +161,8 @@ class trend_line:
         ext = pd.concat(ext, axis=1)
 
         self.df_trends = pd.concat([self.df_trends, ext]).sort_index()
-        self.df_trends = self.df_trends.groupby(self.df_trends.index).agg(
-            nanmean
-        )
-        self.df_trends = self.df_trends.interpolate(
-            how="index", limit_area="inside"
-        )
+        self.df_trends = self.df_trends.groupby(self.df_trends.index).agg(nanmean)
+        self.df_trends = self.df_trends.interpolate(how="index", limit_area="inside")
 
     def plot_trend(self, ax, nbest=2, extend=True, show_min_maxs=False):
 
@@ -207,9 +199,7 @@ class trend_line:
 
                 for ii in range(nbest_res):
                     self.df.iloc[
-                        self.obtain_correct_indexes(
-                            self.resistance[3][i][ii][0]
-                        )
+                        self.obtain_correct_indexes(self.resistance[3][i][ii][0])
                     ].plot(
                         y="Close",
                         ax=ax,

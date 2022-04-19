@@ -73,8 +73,7 @@ class Scraper:
             self.output = True
         else:
             self.output_description = (
-                "Update failed."
-                f" There are ({len(self.errors)}/{length}) errors."
+                "Update failed." f" There are ({len(self.errors)}/{length}) errors."
             )
             self.output = False
 
@@ -230,18 +229,14 @@ class CoinScraper:
     def _append_to_front(self, first: datetime) -> CmcScraper:
         start = self.start.strftime("%d-%m-%Y")
         day_before_first = (first - datetime.timedelta(1)).strftime("%d-%m-%Y")
-        scraper = CmcScraper(
-            self.coin, start, day_before_first, fiat=self.fiat
-        )
+        scraper = CmcScraper(self.coin, start, day_before_first, fiat=self.fiat)
 
         return scraper
 
     def _append_to_end(self, last: datetime) -> CmcScraper:
         day_after_last = (last + datetime.timedelta(1)).strftime("%d-%m-%Y")
         end_day = self.end_day.strftime("%d-%m-%Y")
-        scraper = CmcScraper(
-            self.coin, day_after_last, end_day, fiat=self.fiat
-        )
+        scraper = CmcScraper(self.coin, day_after_last, end_day, fiat=self.fiat)
         return scraper
 
     def _load_csv(self):
@@ -284,4 +279,3 @@ class CoinScraper:
             f" error={error},"
             ")"
         )
-

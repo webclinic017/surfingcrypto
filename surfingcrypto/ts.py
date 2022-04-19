@@ -45,12 +45,8 @@ class TS:
         reads the data from data stored locally in `data/ts/` and
         saved in .csv format.
         """
-        if os.path.isfile(
-            self.config.data_folder + "/ts/" + self.coin + ".csv"
-        ):
-            self.df = pd.read_csv(
-                self.config.data_folder + "/ts/" + self.coin + ".csv"
-            )
+        if os.path.isfile(self.config.data_folder + "/ts/" + self.coin + ".csv"):
+            self.df = pd.read_csv(self.config.data_folder + "/ts/" + self.coin + ".csv")
             self.df["Date"] = pd.to_datetime(self.df["Date"], utc=True)
             self.df.set_index("Date", inplace=True)
             if any(self.df.index.duplicated()):
@@ -78,16 +74,17 @@ class TS:
             std=self.ta_params["bbands"]["std"],
             append=True,
         )
-        self.df.ta.rsi(
-            timeperiod=self.ta_params["rsi"]["timeperiod"], append=True
-        )
+        self.df.ta.rsi(timeperiod=self.ta_params["rsi"]["timeperiod"], append=True)
 
     def parametrization(self):
         """
         sets the default parameters if not specified in config.json file.
         """
         # TA parameters
-        if self.coin not in self.config.coins.keys() or self.config.coins[self.coin] == "":
+        if (
+            self.coin not in self.config.coins.keys()
+            or self.config.coins[self.coin] == ""
+        ):
             # default if empty or not specified in coins
             self.ta_params = {
                 "sma": {"fast": 12, "slow": 26},
@@ -98,14 +95,10 @@ class TS:
         elif isinstance(self.config.coins[self.coin], dict):
             self.ta_params = self.config.coins[self.coin]
         else:
-            raise ValueError(
-                "Must provide TA parametrization in the correct format."
-            )
+            raise ValueError("Must provide TA parametrization in the correct format.")
 
     def distance_from_ath(self):
         d = {}
         for idx in self.df.index:
-            d[idx] = abs(
-                self.df.loc[idx, "Close"] - self.df[:idx]["Close"].max()
-            )
+            d[idx] = abs(self.df.loc[idx, "Close"] - self.df[:idx]["Close"].max())
         self.df["distance_ATH"] = pd.Series(d)

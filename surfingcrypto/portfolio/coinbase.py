@@ -76,10 +76,7 @@ class CB:
         if filter is not None:
             new_items = []
             for item in data:
-                if (
-                    item["id"]
-                    == filter["accounts"][account]["last_transaction_id"]
-                ):
+                if item["id"] == filter["accounts"][account]["last_transaction_id"]:
                     return new_items
                 else:
                     new_items.append(item)
@@ -156,9 +153,7 @@ class CB:
                     new_account_transactions = self._get_transactions(account)
                     update = False
                 else:
-                    new_account_transactions = self._get_transactions(
-                        account, cache
-                    )
+                    new_account_transactions = self._get_transactions(account, cache)
                     update = True
 
                 if len(new_account_transactions) > 0 or update is True:
@@ -171,16 +166,12 @@ class CB:
                         for x in transactions
                         if x["amount"]["currency"] == account["currency"]
                     ]
-                    account_responses[
-                        account["currency"]
-                    ] = self._fmt_account_response(
+                    account_responses[account["currency"]] = self._fmt_account_response(
                         account, account_transactions
                     )
 
                     # append transactions
-                    new_transactions = (
-                        new_transactions + new_account_transactions
-                    )
+                    new_transactions = new_transactions + new_account_transactions
 
         return (
             has_transactions,
@@ -202,9 +193,7 @@ class CB:
         return {
             "currency": account["currency"],
             "account_id": account["id"],
-            "active": "True"
-            if float(account["balance"]["amount"]) > 0
-            else "False",
+            "active": "True" if float(account["balance"]["amount"]) > 0 else "False",
             "last_transaction_id": transactions[0]["id"],
             "timerange": {
                 0: transactions[0]["created_at"],
@@ -259,12 +248,8 @@ class MyCoinbase(CB):
             active_accounts (bool): get only active (balance>0) accounts
             force (bool): force update from API even if local cache is found.
         """
-        self.json_path = (
-            self.configuration.config_folder + "/coinbase_accounts.json"
-        )
-        self.pickle_path = (
-            self.configuration.config_folder + "/coinbase_transactions"
-        )
+        self.json_path = self.configuration.config_folder + "/coinbase_accounts.json"
+        self.pickle_path = self.configuration.config_folder + "/coinbase_transactions"
 
         cache = None
         self.transactions = []
@@ -282,11 +267,9 @@ class MyCoinbase(CB):
             ):
                 cache, self.transactions = self._load_cache()
             # get data
-            (
-                self.accounts,
-                self.transactions,
-                responses,
-            ) = self.get_full_history(cache, self.transactions)
+            (self.accounts, self.transactions, responses,) = self.get_full_history(
+                cache, self.transactions
+            )
             self._dump_cache(responses)
 
     def _dump_cache(self, responses: dict):
@@ -314,9 +297,7 @@ class MyCoinbase(CB):
         with open(self.json_path, "rb") as f:
             dict = json.load(f)
         # format datetime
-        dict["datetime"] = dt.datetime.strptime(
-            dict["datetime"], "%Y-%m-%dT%H:%M:%SZ"
-        )
+        dict["datetime"] = dt.datetime.strptime(dict["datetime"], "%Y-%m-%dT%H:%M:%SZ")
 
         with open(self.pickle_path, "rb") as f2:
             transactions = pickle.load(f2)
@@ -413,14 +394,10 @@ class TransactionsHistory:
                     "native_amount",
                     "nat_symbol",
                 ]
-                neworder = order + [
-                    c for c in self.df.columns if c not in order
-                ]
+                neworder = order + [c for c in self.df.columns if c not in order]
                 self.df = self.df.reindex(columns=neworder)
             else:
-                raise ValueError(
-                    "MyCoinbase objects must have an accounts attribute."
-                )
+                raise ValueError("MyCoinbase objects must have an accounts attribute.")
         else:
             raise ValueError("Must load historic data.")
 
@@ -446,12 +423,12 @@ class TransactionsHistory:
         process a transaction.
         """
         # spot price??
-        symbol, amount, datetime, id, nat_amount, nat_symbol = self._get_transact_info(transaction)
+        symbol, amount, datetime, id, nat_amount, nat_symbol = self._get_transact_info(
+            transaction
+        )
         total, subtotal, total_fee = None, None, None
         try:
-            total, subtotal, total_fee = self._get_transact_data(
-                account, transaction
-            )
+            total, subtotal, total_fee = self._get_transact_data(account, transaction)
             self.processed_transactions.append(transaction)
 
         except Exception as e:
@@ -461,11 +438,7 @@ class TransactionsHistory:
                     "transaction_type": transaction["type"],
                     "account_id": account["id"],
                     "transaction_id": transaction["id"],
-                    "info": {
-                        "amount": amount,
-                        "symbol": symbol,
-                        "date": datetime,
-                    },
+                    "info": {"amount": amount, "symbol": symbol, "date": datetime,},
                     "error_log": e,
                 }
             )
@@ -487,7 +460,7 @@ class TransactionsHistory:
             type_id = transaction["fiat_withdrawal"]["id"]
         elif transaction["type"] == "fiat_deposit":
             type_id = transaction["fiat_deposit"]["id"]
-                                    
+
         else:
             type_id = None
 
@@ -530,9 +503,7 @@ class TransactionsHistory:
                 account["id"], transaction["sell"]["id"]
             )
         elif transaction["type"] == "buy":
-            t = self._mycoinbase.client.get_buy(
-                account["id"], transaction["buy"]["id"]
-            )
+            t = self._mycoinbase.client.get_buy(account["id"], transaction["buy"]["id"])
         elif transaction["type"] == "fiat_withdrawal":
             t = self._mycoinbase.client.get_withdrawal(
                 account["id"], transaction["fiat_withdrawal"]["id"]

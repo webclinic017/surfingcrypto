@@ -49,9 +49,7 @@ def candlesticks(ts, ax, volume=False, vol_ax=None, style="candlesticks"):
                 show_nontrading=True,
             )
     elif style == "ohlc":
-        mplf.plot(
-            ts.df, ax=ax, type="ohlc", style="mike", show_nontrading=True
-        )
+        mplf.plot(ts.df, ax=ax, type="ohlc", style="mike", show_nontrading=True)
     else:
         raise ValueError("Must specify style.")
     return
@@ -109,16 +107,10 @@ def plot_macd(ts, ax, plot_lines=True):
     if plot_lines:
         # ax1.plot(prices)
         ax.plot(
-            macd,
-            color="grey",
-            linewidth=1.5,
-            label="MACD(" + fast + "-" + slow,
+            macd, color="grey", linewidth=1.5, label="MACD(" + fast + "-" + slow,
         )
         ax.plot(
-            signal,
-            color="skyblue",
-            linewidth=1.5,
-            label="SIGNAL(" + sign + ")",
+            signal, color="skyblue", linewidth=1.5, label="SIGNAL(" + sign + ")",
         )
 
     for i in range(len(prices)):
@@ -159,16 +151,10 @@ def plot_bb(ts, iax):
         alpha=0.35,
     )  # middle band
     iax.plot(
-        ts.df["BBU_" + length + "_" + std],
-        label="_",
-        color="greenyellow",
-        alpha=0.35,
+        ts.df["BBU_" + length + "_" + std], label="_", color="greenyellow", alpha=0.35,
     )  # Upper band
     iax.plot(
-        ts.df["BBL_" + length + "_" + std],
-        label="_",
-        color="coral",
-        alpha=0.35,
+        ts.df["BBL_" + length + "_" + std], label="_", color="coral", alpha=0.35,
     )  # lower band
     iax.fill_between(
         ts.df.index,

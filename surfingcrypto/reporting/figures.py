@@ -266,15 +266,12 @@ class ATHPlot(BaseFigure):
             "colorbar", ["green", "orange", "red", "magenta"]
         )
         colors = [
-            mpl.colors.rgb2hex(x)
-            for x in cmap(norm(self.object.df["distance_ATH"]))
+            mpl.colors.rgb2hex(x) for x in cmap(norm(self.object.df["distance_ATH"]))
         ]
         cmappable = ScalarMappable(norm, cmap=cmap)
 
         # points
-        self.ax.scatter(
-            self.object.df.index, self.object.df.Close, c=colors, s=2
-        )
+        self.ax.scatter(self.object.df.index, self.object.df.Close, c=colors, s=2)
         # colorbar
         self.f.colorbar(cmappable)
 
@@ -308,12 +305,7 @@ class PortfolioPlot(BaseFigure):
     """
 
     def __init__(
-        self,
-        variables: list,
-        by_symbol=False,
-        zero_line=False,
-        *args,
-        **kwargs,
+        self, variables: list, by_symbol=False, zero_line=False, *args, **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.plot(variables, by_symbol, zero_line)
@@ -339,7 +331,7 @@ class CalendarPlot:
         values (pd.Series): variable to plot
     """
 
-    def __init__(self,values:pd.Series):
+    def __init__(self, values: pd.Series):
         norm = Normalize(
             vmin=values["Stock Gain / (Loss)"].min(),
             vmax=values["Stock Gain / (Loss)"].max(),

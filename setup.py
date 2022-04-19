@@ -36,10 +36,10 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        ],
+    ],
     project_urls={
         "Documentation": "https://giocaizzi.github.io/surfingcrypto/",
         "Bug Reports": "https://github.com/giocaizzi/surfingcrypto/issues",
         "Source": "https://github.com/giocaizzi/surfingcrypto",
-     },
+    },
 )

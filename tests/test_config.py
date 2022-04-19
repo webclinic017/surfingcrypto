@@ -26,7 +26,7 @@ def test_init_with_datafolder(temp_test_env, scrp_req, cb_req):
     assert hasattr(c, "coins")
     assert isinstance(c.data_folder, str)
     assert os.path.isdir(root / "data" / "ts")
-    assert os.path.isdir(root / "data"/"temp")
+    assert os.path.isdir(root / "data" / "temp")
     print(scrp_req, cb_req)
     assert isinstance(c.scraping_req, scrp_req)
     assert "BTC" in c.scraping_req.keys()
@@ -50,7 +50,7 @@ def test_init_without_datafolder(temp_test_env, scrp_req, cb_req):
     assert hasattr(c, "coins")
     assert isinstance(c.data_folder, str)
     assert os.path.isdir(root / "data" / "ts")
-    assert os.path.isdir(root / "data"/"temp")
+    assert os.path.isdir(root / "data" / "temp")
     print(scrp_req, cb_req)
     assert isinstance(c.scraping_req, scrp_req)
     assert "BTC" in c.scraping_req.keys()
@@ -68,20 +68,20 @@ def test_fail_init(temp_test_env):
     with pytest.raises(FileNotFoundError):
         c = Config(str(root / "config"))
 
+
 @pytest.mark.parametrize(
     "temp_test_env", [("config.json",)], indirect=["temp_test_env"]
 )
 def test_temp_folder(temp_test_env):
     root = temp_test_env
-    #first run to create folder struct
+    # first run to create folder struct
     c = Config(str(root / "config"))
-    #create file
-    with open(root/"data"/"temp"/"test.txt","wb") as f:
+    # create file
+    with open(root / "data" / "temp" / "test.txt", "wb") as f:
         f.close()
-    #calling again the init should empty the temp dir
+    # calling again the init should empty the temp dir
     c = Config(str(root / "config"))
-    #directory exits
-    assert os.path.isdir(root / "data"/"temp")
-    #but all temp files from previous run are removed with init
-    assert not os.listdir(root / "data"/"temp")
-
+    # directory exits
+    assert os.path.isdir(root / "data" / "temp")
+    # but all temp files from previous run are removed with init
+    assert not os.listdir(root / "data" / "temp")

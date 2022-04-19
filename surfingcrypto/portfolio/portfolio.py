@@ -96,8 +96,7 @@ class Portfolio:
                 if len(t) == 2:
                     fee = t["native_amount"].diff()
                     self.std_df.loc[
-                        (self.std_df["transaction_type_id"] == trade),
-                        "total_fee",
+                        (self.std_df["transaction_type_id"] == trade), "total_fee",
                     ] = (fee[-1] / 2)
 
                 else:
@@ -125,9 +124,7 @@ class Portfolio:
         """
         investment = (
             self.coinbase.history.df[
-                self.coinbase.history.df.type.isin(
-                    ["fiat_deposit", "fiat_withdrawal"]
-                )
+                self.coinbase.history.df.type.isin(["fiat_deposit", "fiat_withdrawal"])
             ]
             .groupby("type")[["amount"]]
             .sum()
@@ -142,27 +139,28 @@ class Portfolio:
             configuration=self.coinbase.configuration,
         )
 
-    def live_snapshot(self)-> pd.DataFrame:
-        last=self.tracker.daily_snaphost("last")
-        
-        def update_price(series):
-            string=f'{series["Symbol"]}-EUR'
-            return float(self.coinbase.client.get_spot_price(currency_pair = string)["amount"])
+    def live_snapshot(self) -> pd.DataFrame:
+        last = self.tracker.daily_snaphost("last")
 
-        last["Symbol Adj Close"]=last.apply(update_price,axis=1)
+        def update_price(series):
+            string = f'{series["Symbol"]}-EUR'
+            return float(
+                self.coinbase.client.get_spot_price(currency_pair=string)["amount"]
+            )
+
+        last["Symbol Adj Close"] = last.apply(update_price, axis=1)
 
         # for the moment does not consider benchmark
-        to_drop=[x for x in last.columns if "benchmark" in x.lower()]
-        last.drop(to_drop,axis=1,inplace=True)
+        to_drop = [x for x in last.columns if "benchmark" in x.lower()]
+        last.drop(to_drop, axis=1, inplace=True)
 
         # update calcs to live price
-        last["Adj cost daily"]=last["Symbol Adj Close"]*last["Qty"]
+        last["Adj cost daily"] = last["Symbol Adj Close"] * last["Qty"]
         last["symbol Return"] = (
             last["Symbol Adj Close"] / last["Adj cost per share"] - 1
         )
         last["Stock Gain / (Loss)"] = (
-            last["Adj cost daily"]
-            - last["Qty"] * last["Adj cost per share"]
+            last["Adj cost daily"] - last["Qty"] * last["Adj cost per share"]
         )
 
         return last
@@ -176,8 +174,7 @@ class Portfolio:
         if len(self.std_df) != len(self.coinbase.history.df):
             n = len(self.coinbase.history.df) - len(self.std_df)
             print(
-                f"Warning! There are {n} transactions"
-                "that were EXCLUDED in std_df."
+                f"Warning! There are {n} transactions" "that were EXCLUDED in std_df."
             )
         if not self.coinbase.history.executed_without_errors():
             print("Warning! Errors while handling transactions:")
