@@ -446,8 +446,7 @@ class TransactionsHistory:
         process a transaction.
         """
         # spot price??
-        symbol, amount, datetime, id = self._get_transact_info(transaction)
-        nat_amount, nat_symbol = self._get_native_amount(transaction)
+        symbol, amount, datetime, id, nat_amount, nat_symbol = self._get_transact_info(transaction)
         total, subtotal, total_fee = None, None, None
         try:
             total, subtotal, total_fee = self._get_transact_data(
@@ -477,9 +476,20 @@ class TransactionsHistory:
             spot_price = subtotal / amount
 
         if transaction["type"] == "trade":
-            trade_id = transaction["trade"]["id"]
+            type_id = transaction["trade"]["id"]
+        elif transaction["type"] == "buy":
+            type_id = transaction["buy"]["id"]
+        elif transaction["type"] == "sell":
+            type_id = transaction["sell"]["id"]
+        elif transaction["type"] == "sell":
+            type_id = transaction["sell"]["id"]
+        elif transaction["type"] == "fiat_withdrawal":
+            type_id = transaction["fiat_withdrawal"]["id"]
+        elif transaction["type"] == "fiat_deposit":
+            type_id = transaction["fiat_deposit"]["id"]
+                                    
         else:
-            trade_id = None
+            type_id = None
 
         self.df.append(
             {
@@ -494,7 +504,7 @@ class TransactionsHistory:
                 "total_fee": total_fee,
                 "spot_price": abs(spot_price),
                 "transaction_id": id,
-                "trade_id": trade_id,
+                "transaction_type_id": type_id,
             }
         )
 
@@ -506,15 +516,9 @@ class TransactionsHistory:
         amount = float(transaction["amount"]["amount"])
         datetime = transaction["created_at"]
         id = transaction["id"]
-        return symbol, amount, datetime, id
-
-    def _get_native_amount(self, transaction):
-        """
-        gets native amount from transaction
-        """
         native_amount = float(transaction["native_amount"]["amount"])
         native_symbol = transaction["native_amount"]["currency"]
-        return native_amount, native_symbol
+        return symbol, amount, datetime, id, native_amount, native_symbol
 
     def _get_transact_data(self, account, transaction):
         """

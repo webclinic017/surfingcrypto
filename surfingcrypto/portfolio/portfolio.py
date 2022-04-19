@@ -6,7 +6,6 @@ from surfingcrypto.portfolio import MyCoinbase
 from surfingcrypto.portfolio.tracker import Tracker
 
 
-
 class Portfolio:
     """
     User portfolio.
@@ -40,7 +39,7 @@ class Portfolio:
         if self.portfolio_type.lower() == "coinbase":
             self.coinbase = MyCoinbase(active_accounts=False, **kwargs)
             self.coinbase.get_history()
-            self.errors=[]
+            self.errors = []
             self._standardize()
             self._init_log()
         else:
@@ -85,20 +84,25 @@ class Portfolio:
         self.std_df = self.std_df[~(self.std_df["symbol"] == "EUR")]
 
         # split trades fees among the two
-        for trade in self.std_df.trade_id.unique():
+        for trade in self.std_df[self.std_df["type"] == "trade"][
+            "transaction_type_id"
+        ].unique():
             if trade is not None:
-                t = self.std_df[self.std_df["trade_id"] == trade]
+                t = self.std_df[self.std_df["transaction_type_id"] == trade]
                 if len(t) == 2:
                     fee = t["native_amount"].diff()
                     self.std_df.loc[
-                        (self.std_df["trade_id"] == trade), "total_fee"
+                        (self.std_df["transaction_type_id"] == trade),
+                        "total_fee",
                     ] = (fee[-1] / 2)
 
                 else:
-                    self.errors.append({
-                        "descr":"Can't split trade because not found 2 trades with matching trade_id",
-                        "t":trade
-                    })
+                    self.errors.append(
+                        {
+                            "descr": "Can't split trade because not found 2 trades with matching transaction_type_id",
+                            "t": trade,
+                        }
+                    )
 
     def total_fees(self) -> float:
         """total fees paid
@@ -126,9 +130,12 @@ class Portfolio:
         )
         return investment
 
-    def start_tracker(self,stocks_start="1-1-2021", benchmark=None):
+    def start_tracker(self, stocks_start="1-1-2021", benchmark=None):
         self.tracker = Tracker(
-            self.std_df, stocks_start=stocks_start, benchmark=benchmark, configuration=self.coinbase.configuration
+            self.std_df,
+            stocks_start=stocks_start,
+            benchmark=benchmark,
+            configuration=self.coinbase.configuration,
         )
 
     def _init_log(self):
