@@ -103,7 +103,7 @@ class Tracker:
 
         # drop unused columns
         portfolio_df.drop(
-            ["trade_id", "nat_symbol", "total", "subtotal", "total_fee"],
+            ["transaction_type_id", "nat_symbol", "total", "subtotal", "total_fee"],
             axis=1,
             inplace=True,
         )

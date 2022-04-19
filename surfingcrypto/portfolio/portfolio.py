@@ -59,10 +59,16 @@ class Portfolio:
         """
         self.std_df = self.coinbase.history.df.copy()
 
-        # exclude fiat deposit and withdrawals AND SEND
+        # exclude fiat deposit and withdrawals
         self.std_df = self.std_df[
             self.std_df["type"].isin(["buy", "sell", "trade", "send"])
         ]
+
+        # get unique transaction-ids for trades
+
+        trades_trans_id = self.std_df[self.std_df["type"] == "trade"][
+            "transaction_type_id"
+        ].unique()
 
         # set trades as buy or sell transactions
         m = (self.std_df["type"] == "trade") & (self.std_df["amount"] < 0)
@@ -84,9 +90,7 @@ class Portfolio:
         self.std_df = self.std_df[~(self.std_df["symbol"] == "EUR")]
 
         # split trades fees among the two
-        for trade in self.std_df[self.std_df["type"] == "trade"][
-            "transaction_type_id"
-        ].unique():
+        for trade in trades_trans_id:
             if trade is not None:
                 t = self.std_df[self.std_df["transaction_type_id"] == trade]
                 if len(t) == 2:
@@ -137,6 +141,31 @@ class Portfolio:
             benchmark=benchmark,
             configuration=self.coinbase.configuration,
         )
+
+    def live_snapshot(self)-> pd.DataFrame:
+        last=self.tracker.daily_snaphost("last")
+        
+        def update_price(series):
+            string=f'{series["Symbol"]}-EUR'
+            return float(self.coinbase.client.get_spot_price(currency_pair = string)["amount"])
+
+        last["Symbol Adj Close"]=last.apply(update_price,axis=1)
+
+        # for the moment does not consider benchmark
+        to_drop=[x for x in last.columns if "benchmark" in x.lower()]
+        last.drop(to_drop,axis=1,inplace=True)
+
+        # update calcs to live price
+        last["Adj cost daily"]=last["Symbol Adj Close"]*last["Qty"]
+        last["symbol Return"] = (
+            last["Symbol Adj Close"] / last["Adj cost per share"] - 1
+        )
+        last["Stock Gain / (Loss)"] = (
+            last["Adj cost daily"]
+            - last["Qty"] * last["Adj cost per share"]
+        )
+
+        return last
 
     def _init_log(self):
         """
