@@ -81,3 +81,9 @@ class BackTest:
         ) = pyfoliozer.get_pf_items()
         self.returns.name = "Strategy"
         return pf.timeseries.perf_stats(self.returns)
+
+    def print_log(self):
+        if len(self.backtest_result)==1:
+            print(self.backtest_result[0].log_text)
+        else:
+            raise NotImplementedError

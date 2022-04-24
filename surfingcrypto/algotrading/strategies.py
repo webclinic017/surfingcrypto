@@ -11,6 +11,8 @@ class MLStrategy(bt.Strategy):
 
     def __init__(self):
 
+        self.log_text=""
+
         # keep track of open, close prices and predicted value in the series
         self.data_predicted = self.datas[0].predicted
         self.data_open = self.datas[0].open
@@ -25,7 +27,10 @@ class MLStrategy(bt.Strategy):
     def log(self, txt):
         """Logging function"""
         dt = self.datas[0].datetime.date(0).isoformat()
-        print(f"{dt}, {txt}")
+        s=f"{dt}, {txt}"
+        if self.params.verbose:
+            print(s)
+        self.log_text+=(s+"\n")
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -35,30 +40,25 @@ class MLStrategy(bt.Strategy):
         # report executed order
         if order.status in [order.Completed]:
             if order.isbuy():
-                if self.params.verbose:
-                    self.log(f"Open: {self.data_open[0]}, Close: {self.data_close[0]}")
-                    self.log(
-                        f"BUY EXECUTED --- Price: {order.executed.price:.2f}, Cost: {order.executed.value:.2f},Commission: {order.executed.comm:.2f}"
-                    )
+                self.log(f"Open: {self.data_open[0]}, Close: {self.data_close[0]}")
+                self.log(
+                    f"BUY EXECUTED --- Price: {order.executed.price:.2f}, Cost: {order.executed.value:.2f},Commission: {order.executed.comm:.2f}"
+                )
                 self.price = order.executed.price
                 self.comm = order.executed.comm
             else:
-                if self.params.verbose:
-                    self.log(f"Open: {self.data_open[0]}, Close: {self.data_close[0]}")
-                    self.log(
-                        f"SELL EXECUTED --- Price: {order.executed.price:.2f}, Cost: {order.executed.value:.2f},Commission: {order.executed.comm:.2f}"
-                    )
+                self.log(f"Open: {self.data_open[0]}, Close: {self.data_close[0]}")
+                self.log(
+                    f"SELL EXECUTED --- Price: {order.executed.price:.2f}, Cost: {order.executed.value:.2f},Commission: {order.executed.comm:.2f}"
+                )
 
         # report failed order
         elif order.status in [order.Canceled]:
-            if self.params.verbose:
-                self.log(f"Order Canceled")
+            self.log(f"Order Canceled")
         elif order.status in [order.Rejected]:
-            if self.params.verbose:
-                self.log(f"Order Rejected")
+            self.log(f"Order Rejected")
         elif order.status in [order.Margin]:
-            if self.params.verbose:
-                self.log(f"Order Failed: Margin")
+            self.log(f"Order Failed: Margin")
 
         # set no pending order
         self.order = None
@@ -80,16 +80,14 @@ class MLStrategy(bt.Strategy):
                 size = (
                     self.broker.getcash() / self.datas[0].open
                 )  #  fractional
-                if self.params.verbose:
                 # buy order
-                    self.log(
-                        f"BUY CREATED --- Size: {size}, Cash: {self.broker.getcash():.2f}, Open: {self.data_open[0]}, Close: {self.data_close[0]}"
-                    )
+                self.log(
+                    f"BUY CREATED --- Size: {size}, Cash: {self.broker.getcash():.2f}, Open: {self.data_open[0]}, Close: {self.data_close[0]}"
+                )
                 self.buy(size=size)
         else:
             # Already in the market ... we might sell
             if self.data_predicted < 0:
                 # sell order
-                if self.params.verbose:
-                    self.log(f"SELL CREATED --- Size: {self.position.size}")
+                self.log(f"SELL CREATED --- Size: {self.position.size}")
                 self.sell(size=self.position.size)
