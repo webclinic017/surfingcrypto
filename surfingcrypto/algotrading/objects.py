@@ -26,7 +26,7 @@ class CryptoPandasData(bt.feeds.PandasData):
 class CryptoComissionInfo(bt.CommissionInfo):
     """ commission info for crypto"""
     params = (
-        ("commission", 0.05),
+        ("commission", 1), # percentage
         ("mult", 1.0),
         ("margin", None),
         ("commtype", None),
@@ -52,6 +52,7 @@ class BackTest:
         # cerebro.broker = bt.brokers.BackBroker(slip_open=True)  # consider market slippage
         self.cerebro.broker.setcash(1250.0)  #  cash value
         self.cerebro.adddata(CryptoPandasData(dataname=data), name=self.name)
+        self.cerebro.addsizer(CryptoSizer)
         self.cerebro.addstrategy(MLStrategy,verbose=self.verbose)  # strategy
         self.cerebro.broker.addcommissioninfo(
             CryptoComissionInfo()
@@ -87,3 +88,24 @@ class BackTest:
             print(self.backtest_result[0].log_text)
         else:
             raise NotImplementedError
+
+class CryptoSizer(bt.Sizer):
+    """sizer for getting proper sizing"""
+    params = (('prop', 1),)
+
+    def _getsizing(self, comminfo, cash, data, isbuy):
+        """Returns the proper sizing"""
+
+        if isbuy:    # Buying
+            target = self.broker.getvalue() * self.params.prop    # Ideal total value of the position
+            price = data.close[0]
+            size_net = target / price    # How many shares are needed to get target
+            size = size_net * 0.99
+
+            if size * price > cash:
+                return 0    # Not enough money for this trade
+            else:
+                return size
+
+        else:    # Selling
+            return self.broker.getposition(data).size    # Clear the position
