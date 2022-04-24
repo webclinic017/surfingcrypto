@@ -37,21 +37,21 @@ class MLStrategy(bt.Strategy):
         if order.status in [order.Submitted]:
             if order.isbuy():
                 self.log(
-                    "                 "
                     f"Open: {self.data_open[0]:.3f}, Close: {self.data_close[0]:.3f}"
                 )
                 cost = order.created.size * order.created.price
                 self.log(
+                    "    "
                     f"BUY CREATED --- Size: {order.created.size:.3f}, "
                     f"Price: {order.created.price:.3f}, Cost: {cost:.3f}"
                 )
             if order.issell():
                 self.log(
-                    "                 "
                     f"Open: {self.data_open[0]:.3f}, Close: {self.data_close[0]:.3f}"
                 )
                 cost = order.created.size * order.created.price
                 self.log(
+                    "    "
                     f"SELL CREATED --- Size: {order.created.size:.3f}, "
                     f"Price: {order.created.price:.3f}, Cost: {cost:.3f}"
                 )
@@ -62,6 +62,7 @@ class MLStrategy(bt.Strategy):
             if order.isbuy():
                 cost=order.executed.size * order.executed.price
                 self.log(
+                    "    "
                     f"BUY EXECUTED --- Size: {order.executed.size:.3f}, "
                     f"Price: {order.executed.price:.3f}, "
                     f"Cost: {cost:.3f}, Commission: {order.executed.comm:.3f}"
@@ -71,16 +72,17 @@ class MLStrategy(bt.Strategy):
             else:
                 cost=order.executed.size * order.executed.price
                 self.log(
+                    "    "
                     f"SELL EXECUTED --- Size: {order.executed.size:.3f}, "
                     f"Price: {order.executed.price:.3f}, "
                     f"Cost: {cost:.3f}, Commission: {order.executed.comm:.3f}"
                 )
         elif order.status in [order.Canceled]:
-            self.log(f"Order Canceled")
+            self.log("    "f"Order Canceled")
         elif order.status in [order.Rejected]:
-            self.log(f"Order Rejected")
+            self.log("    "f"Order Rejected")
         elif order.status in [order.Margin]:
-            self.log(f"Order Failed: Margin")
+            self.log("    "f"Order Failed: Margin")
 
         # set no pending order
         self.order = None
@@ -89,30 +91,16 @@ class MLStrategy(bt.Strategy):
         if not trade.isclosed:
             return
         self.log(
-            f" ---> OPERATION RESULT --- Gross: {trade.pnl:.3f}, Net: {trade.pnlcomm:.3f}"
+            "        "
+            f" -> OPERATION RESULT --- Gross: {trade.pnl:.3f}, Net: {trade.pnlcomm:.3f}"
         )
 
     def next(self):
-        # self.log("------")
-        # self.log(f"Open: {self.data_open[0]}, Close: {self.data_close[0]}")
         # Check if we are in the market
         if not self.position:
             if self.data_predicted > 0:
-                # calculate the max number of shares ('all-in')
-                # size = int(self.broker.getcash() / self.datas[0].open) #   this is for stocks
-                # size = (
-                #     self.broker.getcash() / self.datas[0].open
-                # )  #  fractional
-                # # buy order
-                # self.log(
-                #     f"BUY CREATED --- Size: {size}, Cost: {self.broker.getcash():.3f}"
-                # )
-                # self.buy(size=size)
                 self.buy()
         else:
             # Already in the market ... we might sell
             if self.data_predicted < 0:
-                # sell order
-                # self.log(f"SELL CREATED --- Size: {self.position.size}")
-                # self.sell(size=self.position.size)
                 self.sell()

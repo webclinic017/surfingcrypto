@@ -44,7 +44,7 @@ class CryptoComissionInfo(bt.CommissionInfo):
 
 class BackTest:
     """backtest istance"""
-    def __init__(self, data: pd.DataFrame, name: str, verbose=False):
+    def __init__(self, data: pd.DataFrame, name: str, verbose=False,):
         self.verbose=verbose
         self.name=name
         # instantiate Cerebro, add strategy, data, initial cash, commission and pyfolio for performance analysis
@@ -55,7 +55,7 @@ class BackTest:
         self.cerebro.addsizer(CryptoSizer)
         self.cerebro.addstrategy(MLStrategy,verbose=self.verbose)  # strategy
         self.cerebro.broker.addcommissioninfo(
-            CryptoComissionInfo()
+            CryptoComissionInfo(),
         )  # fractional prices and commissions scheme
         self.cerebro.addanalyzer(
             bt.analyzers.PyFolio, _name="pyfolio"
