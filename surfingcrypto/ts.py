@@ -61,8 +61,10 @@ class TS:
         """
         self.parametrization()
 
-        self.df.ta.sma(length=self.ta_params["sma"]["slow"], append=True)
-        self.df.ta.sma(length=self.ta_params["sma"]["fast"], append=True)
+        #all sma 
+        for sma in self.ta_params["sma"]:
+            self.df.ta.sma(length=sma["slow"], append=True)
+            self.df.ta.sma(length=sma["fast"], append=True)
         self.df.ta.macd(
             window_slow=self.ta_params["macd"]["slow"],
             window_fast=self.ta_params["macd"]["fast"],
@@ -87,7 +89,7 @@ class TS:
         ):
             # default if empty or not specified in coins
             self.ta_params = {
-                "sma": {"fast": 12, "slow": 26},
+                "sma": [{"fast": 12, "slow": 26},{"fast":100,"slow":200}],
                 "macd": {"fast": 12, "slow": 26, "signal": 9},
                 "bbands": {"length": 20, "std": 2},
                 "rsi": {"timeperiod": 14},
