@@ -65,12 +65,14 @@ class TS:
         for sma in self.ta_params["sma"]:
             self.df.ta.sma(length=sma["slow"], append=True)
             self.df.ta.sma(length=sma["fast"], append=True)
+        #macd
         self.df.ta.macd(
             window_slow=self.ta_params["macd"]["slow"],
             window_fast=self.ta_params["macd"]["fast"],
             window_sign=self.ta_params["macd"]["signal"],
             append=True,
         )
+        #bollinger bands
         self.df.ta.bbands(
             length=self.ta_params["bbands"]["length"],
             std=self.ta_params["bbands"]["std"],
