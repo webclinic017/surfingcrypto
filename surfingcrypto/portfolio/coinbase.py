@@ -91,7 +91,7 @@ class CB:
             self.client.get_accounts, None, filter=None, limit=100
         )
 
-    def get_active_accounts(self):
+    def _get_active_accounts(self):
         """
         get active accounts (balance > 0)
 
@@ -120,7 +120,7 @@ class CB:
             account.get_transactions, account["currency"], cache, limit=5
         )
 
-    def get_full_history(self, cache: None or dict, transactions=[]) -> tuple:
+    def _get_full_history(self, cache: None or dict, transactions=[]) -> tuple:
         """
         get all accounts with recorded transactions.
 
@@ -255,7 +255,7 @@ class MyCoinbase(CB):
         self.transactions = []
 
         if active_accounts:
-            self.accounts = self.get_active_accounts()
+            self.accounts = self._get_active_accounts()
             self.isHistoric = False
         else:
             self.isHistoric = True
@@ -267,7 +267,7 @@ class MyCoinbase(CB):
             ):
                 cache, self.transactions = self._load_cache()
             # get data
-            (self.accounts, self.transactions, responses,) = self.get_full_history(
+            (self.accounts, self.transactions, responses,) = self._get_full_history(
                 cache, self.transactions
             )
             self._dump_cache(responses)
