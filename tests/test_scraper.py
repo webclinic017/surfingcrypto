@@ -20,6 +20,7 @@ scenarios = [
     ((("config.json",), ("BTC.csv",)), True, ["SOL.csv", "BTC.csv"]),
 ]
 
+COINS = {"BTC": ""}
 
 @pytest.mark.parametrize(
     "temp_test_env,run,check_files", scenarios, indirect=["temp_test_env"]
@@ -30,7 +31,7 @@ def test_scraping_without_coinbase(temp_test_env, run, check_files):
     """
     root = temp_test_env
 
-    c = Config(str(root / "config"))
+    c = Config(COINS,str(root / "config"))
     s = Scraper(c)
     assert isinstance(s.config, Config)
     if run:
@@ -81,7 +82,7 @@ def test_scraping_with_coinbase(temp_test_env, check_files):
     """
     root = temp_test_env
 
-    c = Config(str(root / "config"))
+    c = Config(COINS,str(root / "config"))
     s = Scraper(c)
     assert isinstance(s.config, Config)
     s.run()

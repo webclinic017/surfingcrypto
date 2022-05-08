@@ -12,6 +12,7 @@ scenarios = [
     (("config.json", "coinbase_accounts.json"), dict, dict),
 ]
 
+COINS = {"BTC": "", "ETH": "", "MATIC": "", "ADA": "", "SOL": ""}
 
 @pytest.mark.parametrize(
     "temp_test_env,scrp_req,cb_req", scenarios, indirect=["temp_test_env"]
@@ -22,7 +23,8 @@ def test_init_with_datafolder(temp_test_env, scrp_req, cb_req):
     """
     root = temp_test_env
     os.mkdir(root / "data")
-    c = Config(str(root / "config"), str(root / "data"))
+    coins = {"BTC": "", "ETH": "", "MATIC": "", "ADA": "", "SOL": ""}
+    c = Config(COINS, str(root / "config"), str(root / "data"))
     assert hasattr(c, "coins")
     assert isinstance(c.data_folder, str)
     assert os.path.isdir(root / "data" / "ts")
@@ -46,7 +48,7 @@ def test_init_without_datafolder(temp_test_env, scrp_req, cb_req):
     test initialization of config class without specifying a data folder
     """
     root = temp_test_env
-    c = Config(str(root / "config"))
+    c = Config(COINS,str(root / "config"))
     assert hasattr(c, "coins")
     assert isinstance(c.data_folder, str)
     assert os.path.isdir(root / "data" / "ts")
@@ -66,7 +68,7 @@ def test_init_without_datafolder(temp_test_env, scrp_req, cb_req):
 def test_fail_init(temp_test_env):
     root = temp_test_env
     with pytest.raises(FileNotFoundError):
-        c = Config(str(root / "config"))
+        c = Config(COINS,str(root / "config"))
 
 
 @pytest.mark.parametrize(
@@ -75,12 +77,12 @@ def test_fail_init(temp_test_env):
 def test_temp_folder(temp_test_env):
     root = temp_test_env
     # first run to create folder struct
-    c = Config(str(root / "config"))
+    c = Config(COINS,str(root / "config"))
     # create file
     with open(root / "data" / "temp" / "test.txt", "wb") as f:
         f.close()
     # calling again the init should empty the temp dir
-    c = Config(str(root / "config"))
+    c = Config(COINS,str(root / "config"))
     # directory exits
     assert os.path.isdir(root / "data" / "temp")
     # but all temp files from previous run are removed with init
