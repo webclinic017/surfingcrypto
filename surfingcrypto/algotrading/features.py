@@ -54,7 +54,7 @@ class BinaryLaggedFeatures:
         return df
 
     def get_model_dataframe(self, indicatori: dict) -> pd.DataFrame:
-        model_df = self.df[["Close"] + list(indicatori.values())]
+        model_df = self.df[["Close"] + list(indicatori.values())].copy()
 
         model_df.rename(columns={"Close": self.ts.coin}, inplace=True)
         model_df.rename(
@@ -70,24 +70,15 @@ class BinaryLaggedFeatures:
         # calculate binary direction of market
         model_df["direction"] = np.sign(model_df["returns"]).astype(int)
 
-        # get lagged values
-        cols = []
+        # get lagged values of all indicators
+        self.x_cols_names = []
         for key in indicatori:
             for lag in self.lags:
                 col = f"{key}_lag{str(lag).zfill(2)}"
                 model_df[col] = model_df[key].shift(lag)
-                cols.append(col)
+                self.x_cols_names.append(col)
 
         model_df.dropna(inplace=True)
-
-        # get colun names columns
-        self.x_cols_names = []
-        for col in model_df.columns:
-            if col[:2] == "i_":
-                if re.match(r"(i_[0-9]{2})_(lag[0-9]{2})", col):
-                    self.x_cols_names.append(col)
-
-        model_df.tail(2)
 
         return model_df
 

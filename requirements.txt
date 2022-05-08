@@ -1,4 +1,4 @@
-matplotlib
+matplotlib==3.2.2
 mplfinance
 numpy
 pandas
@@ -10,4 +10,5 @@ trendln
 cryptocmd
 calplot
 backtrader
+scikit-learn
 git+https://github.com/giocaizzi/pyfolio.git

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 plt.rcParams["figure.figsize"] = [15, 5]
 
-from surfingcrypto.algotrading.features import BinaryLaggedFeatures
+from surfingcrypto.algotrading.model import Model
 
 
 # class to define the columns we will provide
@@ -45,17 +45,41 @@ class CryptoComissionInfo(bt.CommissionInfo):
         """Returns fractional size for cash operation @price"""
         return self.p.leverage * (cash / price)
 
+class CryptoSizer(bt.Sizer):
+    """sizer for getting proper sizing"""
 
+    params = (("prop", 1),)
+
+    def _getsizing(self, comminfo, cash, data, isbuy):
+        """Returns the proper sizing"""
+
+        if isbuy:  # Buying
+            target = (
+                self.broker.getvalue() * self.params.prop
+            )  # Ideal total value of the position
+            price = data.close[0]
+            size_net = (
+                target / price
+            )  # How many shares are needed to get target
+            size = size_net * 0.99
+
+            if size * price > cash:
+                return 0  # Not enough money for this trade
+            else:
+                return size
+
+        else:  # Selling
+            return self.broker.getposition(data).size  # Clear the position
+            
 class BackTest:
     """backtest istance"""
 
     def __init__(
-        self, f: BinaryLaggedFeatures, start: str, algo: str, verbose=False,
+        self, m: Model, start: str, verbose=False,
     ):
-        self.feature = f
+        self.model = m
         self.start = start
-        self.name = self.feature.ts.coin
-        self.algo = algo
+        self.name = self.model.feature.ts.coin
         self.verbose = verbose
 
         # backtrader data
@@ -76,7 +100,7 @@ class BackTest:
         )  # analyizer
 
     def _fmt_dataframe(self) -> pd.DataFrame:
-        prices = self.feature.df[["Open", "High", "Low", "Close", "Volume"]]
+        prices = self.model.feature.df[["Open", "High", "Low", "Close", "Volume"]]
         prices = prices.loc[self.start :]
         prices.rename(
             columns={
@@ -91,13 +115,10 @@ class BackTest:
         # add the predicted column to prices dataframe.
         # right joining them so to start from backtesting startdate.
         # predictions = stock[["strategy_" + key]]
-        predictions = self.feature.model_df[["pos_" + self.algo]]
-
-        # predictions.rename(columns={"strategy_" + key: "predicted"}, inplace=True)
-
-        predictions.rename(
-            columns={"pos_" + self.algo: "predicted"}, inplace=True
-        )
+        predictions = self.model.estimated
+        # predictions.rename(
+        #     columns={"pos_" + self.algo: "predicted"}, inplace=True
+        # )
         backtestdata = predictions.join(prices, how="right").dropna()
 
         return backtestdata
@@ -138,7 +159,7 @@ class BackTest:
             raise NotImplementedError
 
     def plot_timeline(self):
-        figs = self.cerebro.plot(
+        figs= self.cerebro.plot(
             style="candlesticks",
             barup="darkgreen",
             bardown="darkred",
@@ -150,7 +171,7 @@ class BackTest:
 
     def plot_performance(self):
         # get benchmark returns # just buy and hold
-        benchmark_rets = self.feature.model_df["returns"]
+        benchmark_rets = self.model.feature.model_df["returns"]
         benchmark_rets = benchmark_rets.filter(self.returns.index)
         benchmark_rets.name = "Buy&Hold"
         benchmark_rets.tail()
@@ -176,36 +197,8 @@ class BackTest:
 
         plt.grid(True)
         plt.legend()
-        plt.tight_layout()
 
         return fig
-
-
-class CryptoSizer(bt.Sizer):
-    """sizer for getting proper sizing"""
-
-    params = (("prop", 1),)
-
-    def _getsizing(self, comminfo, cash, data, isbuy):
-        """Returns the proper sizing"""
-
-        if isbuy:  # Buying
-            target = (
-                self.broker.getvalue() * self.params.prop
-            )  # Ideal total value of the position
-            price = data.close[0]
-            size_net = (
-                target / price
-            )  # How many shares are needed to get target
-            size = size_net * 0.99
-
-            if size * price > cash:
-                return 0  # Not enough money for this trade
-            else:
-                return size
-
-        else:  # Selling
-            return self.broker.getposition(data).size  # Clear the position
 
 
 # define backtesting strategy class

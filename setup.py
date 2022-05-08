@@ -31,7 +31,8 @@ setup(
         "cryptocmd",
         "calplot",
         "backtrader",
-        "git+https://github.com/giocaizzi/pyfolio.git"
+        "git+https://github.com/giocaizzi/pyfolio.git",
+        "scikit-learn"
     ],
     extras_require={"dev": [],},
     classifiers=[
