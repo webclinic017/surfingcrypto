@@ -49,7 +49,7 @@ def test_load_data_and_default_parametrization(temp_test_env):
     ts = TS(c, coin="BTC")
     # load dataframe
     assert isinstance(ts.df, pd.DataFrame)
-    ts.parametrization()
+    ts.parametrization(None)
     assert hasattr(ts, "ta_params")
     #
     assert ts.ta_params == DEFAULT_TA
@@ -67,12 +67,12 @@ def test_load_data_and_custom_params(temp_test_env):
     ts = TS(c, coin="BTC")
     # load dataframe
     assert isinstance(ts.df, pd.DataFrame)
-    ts.parametrization()
+    ts.parametrization(None)
     assert hasattr(ts, "ta_params")
     assert ts.ta_params["sma"]["fast"] == 14
     assert ts.ta_params["sma"]["slow"] == 28
 
-
+@pytest.mark.skip # skiped instead of deleted because a check of params could be convinient
 @pytest.mark.parametrize(
     "temp_test_env",
     [(("config_ta_error.json",), ("BTC.csv",))],
@@ -86,4 +86,4 @@ def test_invalid_ta_params(temp_test_env):
     # load dataframe
     assert isinstance(ts.df, pd.DataFrame)
     with pytest.raises(ValueError):
-        ts.parametrization()
+        ts.parametrization(None)

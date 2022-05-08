@@ -55,11 +55,11 @@ class TS:
             raise FileNotFoundError(f"{self.coin}.csv not found.")
 
     # TA INDICATORS SAVED TO DF
-    def ta_indicators(self):
+    def ta_indicators(self,params=None):
         """
         computes the selected TA indicators and appends them to df attribute.
         """
-        self.parametrization()
+        self.parametrization(params)
 
         #all sma 
         for sma in self.ta_params["sma"]:
@@ -80,26 +80,24 @@ class TS:
         )
         self.df.ta.rsi(timeperiod=self.ta_params["rsi"]["timeperiod"], append=True)
 
-    def parametrization(self):
+    def parametrization(self,params:dict or None):
         """
         sets the default parameters if not specified in config.json file.
         """
-        # TA parameters
-        if (
-            self.coin not in self.config.coins.keys()
-            or self.config.coins[self.coin] == ""
-        ):
-            # default if empty or not specified in coins
-            self.ta_params = {
-                "sma": [{"fast": 12, "slow": 26},{"fast":100,"slow":200}],
-                "macd": {"fast": 12, "slow": 26, "signal": 9},
-                "bbands": {"length": 20, "std": 2},
-                "rsi": {"timeperiod": 14},
-            }
-        elif isinstance(self.config.coins[self.coin], dict):
+
+        # default if empty or not specified in coins
+        self.ta_params = {
+            "sma": [{"fast": 12, "slow": 26},{"fast":100,"slow":200}],
+            "macd": {"fast": 12, "slow": 26, "signal": 9},
+            "bbands": {"length": 20, "std": 2},
+            "rsi": {"timeperiod": 14},
+        }
+        #if provided in config, override default
+        if isinstance(self.config.coins[self.coin], dict):
             self.ta_params = self.config.coins[self.coin]
-        else:
-            raise ValueError("Must provide TA parametrization in the correct format.")
+        #if provided via the method, overide previous
+        if  params is not None:
+            self.ta_params = params
 
     def distance_from_ath(self):
         d = {}
