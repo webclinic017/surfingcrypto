@@ -38,9 +38,9 @@ class TS:
             if coin in self.config.rebrandings:
                 coin = self.config.rebrandings[coin]
             self.coin = coin
-            self.build_ts()
+            self._build_ts()
 
-    def build_ts(self):
+    def _build_ts(self):
         """
         reads the data from data stored locally in `data/ts/` and
         saved in .csv format.
@@ -106,3 +106,4 @@ class TS:
         for idx in self.df.index:
             d[idx] = abs(self.df.loc[idx, "Close"] - self.df[:idx]["Close"].max())
         self.df["distance_ATH"] = pd.Series(d)
+

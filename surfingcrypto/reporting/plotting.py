@@ -3,16 +3,14 @@ plotting methods.
 """
 import mplfinance as mplf
 import numpy as np
+import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 
-# warning di mplfinance per too many data in candlestick plot
-import warnings
-
-warnings.filterwarnings("ignore")
+from surfingcrypto.ts import TS
 
 
-def candlesticks(ts, ax, volume=False, vol_ax=None, style="candlesticks"):
+def candlesticks(ts:TS, ax, volume=False, vol_ax=None, style="candlesticks"):
     """
     plotting candlesticks into a matplotlib.axes.Axes object.
 
@@ -49,13 +47,15 @@ def candlesticks(ts, ax, volume=False, vol_ax=None, style="candlesticks"):
                 show_nontrading=True,
             )
     elif style == "ohlc":
-        mplf.plot(ts.df, ax=ax, type="ohlc", style="mike", show_nontrading=True)
+        mplf.plot(
+            ts.df, ax=ax, type="ohlc", style="mike", show_nontrading=True
+        )
     else:
         raise ValueError("Must specify style.")
     return
 
 
-def plot_moving_averages(ts, ax, windows=None):
+def plot_moving_averages(ts:TS, ax):
     """
     Plot two simple moving averages.
     Default windows are 12 and 26 days. Can be customized by using
@@ -67,23 +67,22 @@ def plot_moving_averages(ts, ax, windows=None):
             windows to compute MA
     """
 
-    colors = ["yellow", "orange"]
-    if windows is None:
-        windows = [ts.ta_params["sma"]["fast"], ts.ta_params["sma"]["slow"]]
-    for window, color in zip(windows, colors):
-        ax.plot(
-            ts.df["SMA_" + str(window)],
-            linestyle="-",
-            color=color,
-            label="SMA" + str(window),
-            alpha=0.3,
-            linewidth=1,
-        )
+    colors = [["yellow", "orange"], ["lightblue", "dodgerblue"]]
+    for sma_i, colors_i in zip(ts.ta_params["sma"], colors):
+        for window, color in zip(sma_i.values(), colors_i):
+            ax.plot(
+                ts.df["SMA_" + str(window)],
+                linestyle="-",
+                color=color,
+                label="SMA" + str(window),
+                alpha=0.3,
+                linewidth=1,
+            )
         l = ax.legend(loc="upper left", prop={"size": 3})
         l.get_frame().set_linewidth(0.5)
 
 
-def plot_macd(ts, ax, plot_lines=True):
+def plot_macd(ts: TS, ax, plot_lines=True):
     """
     plot macd indicator into a matplotlib.axes.Axes object.
 
@@ -94,32 +93,29 @@ def plot_macd(ts, ax, plot_lines=True):
         plot_lines (bool): plot lines in addition to histogram.
 
     """
+    colors = {-1: "#ef5350", 1: "#26a69a"}
 
     fast = str(ts.ta_params["macd"]["fast"])
     slow = str(ts.ta_params["macd"]["slow"])
     sign = str(ts.ta_params["macd"]["signal"])
 
-    prices = ts.df["Open"]
-    macd = ts.df["MACD_" + fast + "_" + slow + "_" + sign]
-    signal = ts.df["MACDs_" + fast + "_" + slow + "_" + sign]
-    hist = ts.df["MACDh_" + fast + "_" + slow + "_" + sign]
+    h_colname = "MACDh_" + fast + "_" + slow + "_" + sign
+    macd_colname = "MACD_" + fast + "_" + slow + "_" + sign
+    signal_colname = "MACDs_" + fast + "_" + slow + "_" + sign
+
+    prices = ts.df[["Close", h_colname,macd_colname, signal_colname]]
+
+    prices["colors"] = prices[h_colname]
+    prices["colors"].loc[prices[h_colname] <= 0] = -1
+    prices["colors"].loc[prices[h_colname] > 0] = 1
+    prices["colors"] = prices["colors"].map(colors)
+
+    prices.dropna(inplace=True)
+
+    prices.plot(kind="bar",y=[h_colname],ax=ax,color="pink",zorder=2)
 
     if plot_lines:
-        # ax1.plot(prices)
-        ax.plot(
-            macd, color="grey", linewidth=1.5, label="MACD(" + fast + "-" + slow,
-        )
-        ax.plot(
-            signal, color="skyblue", linewidth=1.5, label="SIGNAL(" + sign + ")",
-        )
-
-    for i in range(len(prices)):
-        if str(hist[i])[0] == "-":
-            ax.bar(prices.index[i], hist[i], color="#ef5350")
-        else:
-            ax.bar(prices.index[i], hist[i], color="#26a69a")
-
-    if plot_lines:
+        prices.plot(y=[macd_colname, signal_colname], ax=ax,zorder=3)
         l = ax.legend(loc="lower left", prop={"size": 3})
         l.get_frame().set_linewidth(0.5)
 
@@ -151,10 +147,16 @@ def plot_bb(ts, iax):
         alpha=0.35,
     )  # middle band
     iax.plot(
-        ts.df["BBU_" + length + "_" + std], label="_", color="greenyellow", alpha=0.35,
+        ts.df["BBU_" + length + "_" + std],
+        label="_",
+        color="greenyellow",
+        alpha=0.35,
     )  # Upper band
     iax.plot(
-        ts.df["BBL_" + length + "_" + std], label="_", color="coral", alpha=0.35,
+        ts.df["BBL_" + length + "_" + std],
+        label="_",
+        color="coral",
+        alpha=0.35,
     )  # lower band
     iax.fill_between(
         ts.df.index,

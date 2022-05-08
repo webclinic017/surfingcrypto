@@ -9,17 +9,17 @@ from matplotlib.cm import ScalarMappable
 import matplotlib.cm as cm
 
 import pandas as pd
-
+import copy
 import calplot
 
 import dateutil
 import datetime
+import pytz
 from dateutil.relativedelta import relativedelta
 
 from surfingcrypto.ts import TS
 from surfingcrypto.portfolio import Portfolio
 import surfingcrypto.reporting.plotting as scplot
-from surfingcrypto.reporting.trend_line import trend_line
 from surfingcrypto.reporting.plotting import shiftedColorMap
 
 
@@ -44,8 +44,13 @@ class BaseFigure:
         self, object: TS or Portfolio, graphstart="1-1-2021",
     ):
 
-        self.object = object
+        self.object = copy.copy(object)  # copy so can be sliced for purpose
 
+        self._set_graphstart(graphstart)
+        if isinstance(object,TS):
+            self.subset_ts_df(self.graphstart)
+
+    def _set_graphstart(self, graphstart):
         if graphstart.lower() == "3m":
             self.graphstart = datetime.date.today() + relativedelta(months=-3)
         elif graphstart.lower() == "6m":
@@ -56,6 +61,27 @@ class BaseFigure:
             self.graphstart = datetime.date.today() + relativedelta(years=-1)
         else:
             self.graphstart = dateutil.parser.parse(graphstart).date()
+        # localize UTC
+        self.graphstart = datetime.datetime.combine(
+            self.graphstart, datetime.time.min
+        ).replace(tzinfo=pytz.UTC)
+
+    def subset_ts_df(self, first: str, last=None):
+        """subsets inplace ts.df to selected interval
+
+        Note:
+            The `object` attribute is a TS or Portfolio object and it must have
+            a df attribute.
+
+        Args:
+            first (str): first date of interval, as string in d-m-Y format
+            last (_type_, optional):  last date of interval, as string in d-m-Y format.
+                Defaults to None.
+        """
+        if last is None:
+            self.object.df = self.object.df.loc[first:]
+        else:
+            self.object.df = self.object.df.loc[first:last]
 
     def save(self, path):
         """
@@ -66,48 +92,20 @@ class BaseFigure:
         """
         return self.f.savefig(path)
 
-    def subset_series(self):
-        pass
-
-    def center_series(self, ax, on="Close"):
-        """
-        centers the active series in the graph.
-        This is useful when dealing only with "zoomed-in" views.
-        
-        Arguments:
-            ax (:obj:`matplotlib.axes.Axes`) object is
-            on (str): `Close` or TA indicator name
-        """
-        xlim = mdates.num2date(ax.get_xlim())
-        if on.lower() == "close":
-            max = self.object.df.loc[xlim[0] : xlim[1], "Close"].max()
-            min = self.object.df.loc[xlim[0] : xlim[1], "Close"].min()
-        elif on.lower() == "macd":
-            pass
-        else:
-            raise ValueError("Error: `on` parameter not known.")
-        ax.set_ylim((min - 0.1 * min, max + 0.1 * max))
-
     def set_axes(self):
         """
         set axes look.
         set axes to the specified xlims.
         """
-        xlims = (
-            self.graphstart,
-            self.object.df.index[-1] + datetime.timedelta(days=5),
-        )
         if hasattr(self, "axes"):
             for iax in self.axes:
                 iax.grid(which="major", axis="x", linewidth=0.1)
                 iax.grid(which="major", axis="y", linewidth=0.05)
-                iax.set_xlim(xlims)
                 iax.yaxis.set_label_position("left")
                 iax.yaxis.tick_left()
         elif hasattr(self, "ax"):
             self.ax.grid(which="major", axis="x", linewidth=0.1)
             self.ax.grid(which="major", axis="y", linewidth=0.05)
-            self.ax.set_xlim(xlims)
             self.ax.yaxis.set_label_position("left")
             self.ax.yaxis.tick_left()
         else:
@@ -150,7 +148,6 @@ class SimplePlot(BaseFigure):
         self.axes[0].set_title(
             self.object.coin, fontsize=10, va="center", ha="center", pad=20
         )
-        self.center_series(self.axes[0], on="Close")
         # log
         print(f"{self.object.coin} plotted.")
 
@@ -180,6 +177,9 @@ class TaPlot(BaseFigure):
         """
         plotting function.
         """
+
+        if not hasattr(self.object, "ta_params"):
+            raise AttributeError("Object myust have `ta_params`")
         # figure
         self.f, self.axes = plt.subplots(
             5,
@@ -189,8 +189,6 @@ class TaPlot(BaseFigure):
             dpi=200,
             figsize=(7.5, 7.5),
         )
-        # ta indicators
-        self.object.ta_indicators()
         # plots
         scplot.candlesticks(
             self.object,
@@ -200,31 +198,16 @@ class TaPlot(BaseFigure):
             style="candlesticks",
         )
         scplot.plot_moving_averages(self.object, ax=self.axes[0])
-        scplot.plot_macd(self.object, self.axes[2], plot_lines=False)
+        # scplot.plot_macd(self.object, self.axes[2], plot_lines=False)
         scplot.candlesticks(self.object, self.axes[3], style="ohlc")
         scplot.plot_bb(self.object, self.axes[3])
         scplot.plot_RSI(self.object, self.axes[4])
 
-        # trendlines
-        if trendlines:
-            pass
-            # trend=trend_line(self,trendln_start="01-01-2021")
-            # trend.build(compute=True,
-            #     method="NCUBED",
-            #     window=125,
-            #     save_output=False
-            # )
-            # trend.plot_trend(ax=self.axes[0],
-            #     extend=False,
-            #     nbest=2,
-            #     show_min_maxs=False
-            #     )
         # axes look
         self.set_axes()
         self.axes[0].set_title(
             self.object.coin, fontsize=10, va="center", ha="center", pad=20
         )
-        self.center_series(self.axes[0], on="Close")
         # log
         print(f"{self.object.coin} plotted.")
 
@@ -254,25 +237,23 @@ class ATHPlot(BaseFigure):
         # figure
         self.f, self.ax = plt.subplots(dpi=200,)
         # compute distance
-        self.object.distance_from_ath()
 
         # normalizzato su tutto intervallo
         vmin = self.object.df["distance_ATH"].min()
         vmax = self.object.df["distance_ATH"].max()
-
-        # cmap normalized and mappable
         norm = Normalize(vmin=vmin, vmax=vmax)
+
         cmap = LinearSegmentedColormap.from_list(
-            "colorbar", ["green", "orange", "red", "magenta"]
+            "colorbar", ["green", "orange", "red", "magenta",]
         )
-        colors = [
-            mpl.colors.rgb2hex(x) for x in cmap(norm(self.object.df["distance_ATH"]))
-        ]
-        cmappable = ScalarMappable(norm, cmap=cmap)
+        colors = [cmap(norm(x)) for x in self.object.df["distance_ATH"]]
 
         # points
-        self.ax.scatter(self.object.df.index, self.object.df.Close, c=colors, s=2)
+        self.ax.scatter(
+            self.object.df.index, self.object.df.Close, c=colors, s=2
+        )
         # colorbar
+        cmappable = ScalarMappable(norm=norm, cmap=cmap)
         self.f.colorbar(cmappable)
 
         # axes look
@@ -305,7 +286,12 @@ class PortfolioPlot(BaseFigure):
     """
 
     def __init__(
-        self, variables: list, by_symbol=False, zero_line=False, *args, **kwargs,
+        self,
+        variables: list,
+        by_symbol=False,
+        zero_line=False,
+        *args,
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.plot(variables, by_symbol, zero_line)
@@ -314,7 +300,7 @@ class PortfolioPlot(BaseFigure):
         # figure
         self.f, self.ax = plt.subplots(dpi=200,)
         df = self.object.tracker.daily_grouped_metrics(variables, by_symbol=by_symbol)
-        df = df.loc[self.graphstart :].dropna(axis=1, how="all")
+        df = df.loc[self.graphstart.date() :].dropna(axis=1, how="all")
         df.plot(ax=self.ax)
         if zero_line:
             self.ax.axhline(0, color="r")
@@ -351,5 +337,7 @@ class CalendarPlot:
             ),
             midpoint=norm(0),
         )
-        self.calplot = calplot.calplot(values["Stock Gain / (Loss)"], cmap=cmap)
+        self.calplot = calplot.calplot(
+            values["Stock Gain / (Loss)"], cmap=cmap
+        )
         pass

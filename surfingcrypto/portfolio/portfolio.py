@@ -28,9 +28,9 @@ class Portfolio:
 
     Attributes:
         portfolio_type (string): type of portfolio
-        df (:obj:`pandas.DataFrame`): coinbase transaction
-            history as from the `surfingcrypto.coinbase.MyCoinbase` output
-        std_df (:obj:`pandas.DataFrame`): standardized transaction history,
+        coinbase (_type_):_descr_
+        errors (_type_):_descr_
+        df (:obj:`pandas.DataFrame`): standardized transaction history,
              contains only `buy` or `sell`
     """
 
@@ -57,46 +57,46 @@ class Portfolio:
             or `withdrawal` transactions
 
         """
-        self.std_df = self.coinbase.history.df.copy()
+        self.df = self.coinbase.history.df.copy()
 
         # exclude fiat deposit and withdrawals
-        self.std_df = self.std_df[
-            self.std_df["type"].isin(["buy", "sell", "trade", "send"])
+        self.df = self.df[
+            self.df["type"].isin(["buy", "sell", "trade", "send"])
         ]
 
         # get unique transaction-ids for trades
 
-        trades_trans_id = self.std_df[self.std_df["type"] == "trade"][
+        trades_trans_id = self.df[self.df["type"] == "trade"][
             "transaction_type_id"
         ].unique()
 
         # set trades as buy or sell transactions
-        m = (self.std_df["type"] == "trade") & (self.std_df["amount"] < 0)
-        self.std_df.loc[m, "type"] = "sell"
-        m = (self.std_df["type"] == "trade") & (self.std_df["amount"] > 0)
-        self.std_df.loc[m, "type"] = "buy"
+        m = (self.df["type"] == "trade") & (self.df["amount"] < 0)
+        self.df.loc[m, "type"] = "sell"
+        m = (self.df["type"] == "trade") & (self.df["amount"] > 0)
+        self.df.loc[m, "type"] = "buy"
 
         # set sends as buy and sells
-        m = (self.std_df["type"] == "send") & (self.std_df["amount"] < 0)
-        self.std_df.loc[m, "type"] = "sell"
-        m = (self.std_df["type"] == "send") & (self.std_df["amount"] > 0)
-        self.std_df.loc[m, "type"] = "buy"
+        m = (self.df["type"] == "send") & (self.df["amount"] < 0)
+        self.df.loc[m, "type"] = "sell"
+        m = (self.df["type"] == "send") & (self.df["amount"] > 0)
+        self.df.loc[m, "type"] = "buy"
 
         # make all amounts positive
-        self.std_df["amount"] = self.std_df["amount"].abs()
-        self.std_df["native_amount"] = self.std_df["native_amount"].abs()
+        self.df["amount"] = self.df["amount"].abs()
+        self.df["native_amount"] = self.df["native_amount"].abs()
 
         # exclude double transactions coin-fiat for the tracking purpose.
-        self.std_df = self.std_df[~(self.std_df["symbol"] == "EUR")]
+        self.df = self.df[~(self.df["symbol"] == "EUR")]
 
         # split trades fees among the two
         for trade in trades_trans_id:
             if trade is not None:
-                t = self.std_df[self.std_df["transaction_type_id"] == trade]
+                t = self.df[self.df["transaction_type_id"] == trade]
                 if len(t) == 2:
                     fee = t["native_amount"].diff()
-                    self.std_df.loc[
-                        (self.std_df["transaction_type_id"] == trade), "total_fee",
+                    self.df.loc[
+                        (self.df["transaction_type_id"] == trade), "total_fee",
                     ] = (fee[-1] / 2)
 
                 else:
@@ -114,7 +114,7 @@ class Portfolio:
             float: total fees paid for handled transactions.
 
         """
-        return self.std_df.total_fee.sum()
+        return self.df.total_fee.sum()
 
     def total_investment(self) -> pd.DataFrame:
         """get total investment
@@ -133,7 +133,7 @@ class Portfolio:
 
     def start_tracker(self, stocks_start="1-1-2021", benchmark=None):
         self.tracker = Tracker(
-            self.std_df,
+            self.df,
             stocks_start=stocks_start,
             benchmark=benchmark,
             configuration=self.coinbase.configuration,
@@ -171,10 +171,10 @@ class Portfolio:
         """
         print("### PORTFOLIO ")
         print(self.coinbase)
-        if len(self.std_df) != len(self.coinbase.history.df):
-            n = len(self.coinbase.history.df) - len(self.std_df)
+        if len(self.df) != len(self.coinbase.history.df):
+            n = len(self.coinbase.history.df) - len(self.df)
             print(
-                f"Warning! There are {n} transactions" "that were EXCLUDED in std_df."
+                f"Warning! There are {n} transactions" "that were EXCLUDED in df."
             )
         if not self.coinbase.history.executed_without_errors():
             print("Warning! Errors while handling transactions:")

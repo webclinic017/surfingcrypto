@@ -60,16 +60,19 @@ class Tracker:
             )
 
         self.benchmark = benchmark
-
+        self.error_log = []
         self.portfolio_df = self._format_df(df)
         self.closedata = self._load_data()
-        self.active_positions = self._portfolio_start_balance()
-        daily_snapshots = self._time_fill(self.active_positions)
+        if not self.error_log:
+            self.active_positions = self._portfolio_start_balance()
+            daily_snapshots = self._time_fill(self.active_positions)
 
-        if self.benchmark is not None:
-            self._set_benchmark()
+            if self.benchmark is not None:
+                self._set_benchmark()
 
-        self.daily_calcs = self._per_day_portfolio_calcs(daily_snapshots)
+            self.daily_calcs = self._per_day_portfolio_calcs(daily_snapshots)
+        else:
+            print("Tracker didn't run because of errors.")
 
     def _format_df(
         self, df: pd.DataFrame,
@@ -118,7 +121,6 @@ class Tracker:
                 requested by transactions
 
         """
-        self.error_log = []
         dfs = []
 
         symbols = self.portfolio_df.Symbol.unique()
@@ -134,10 +136,19 @@ class Tracker:
                 if rebrandings:
                     ts.coin = rebrandings[0]
 
+                # quickfix for running scraper on a day in which 
+                # some trade has made and the coinbase requirement
+                # contains today's date, but the close has not been 
+                # realized yet
+                if pd.Timestamp(self.configuration.coinbase_req[ts.coin]["end_day"])==pd.Timestamp(datetime.datetime.now(datetime.timezone.utc).date(),tz="utc"):
+                    end_day = self.stocks_end
+                else:
+                    end_day = pd.Timestamp(self.configuration.coinbase_req[ts.coin]["end_day"])
+
                 df = self._check_data(
                     ts.df[["Close"]].copy(),
                     pd.Timestamp(self.configuration.coinbase_req[ts.coin]["start"]),
-                    pd.Timestamp(self.configuration.coinbase_req[ts.coin]["end_day"]),
+                    end_day,
                 )
                 df["symbol"] = symbol
                 dfs.append(df)

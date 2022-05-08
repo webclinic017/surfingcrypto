@@ -1,4 +1,4 @@
-matplotlib==3.0.3
+matplotlib
 mplfinance
 numpy
 pandas
