@@ -31,7 +31,7 @@ setup(
         "cryptocmd",
         "calplot",
         "backtrader",
-        "pyfolio @ git+ssh://git@github.com/giocaizzi/pyfolio.git"
+        "git+https://github.com/giocaizzi/pyfolio.git"
     ],
     extras_require={"dev": [],},
     classifiers=[

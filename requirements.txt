@@ -10,4 +10,4 @@ trendln
 cryptocmd
 calplot
 backtrader
-git+ssh://git@github.com/giocaizzi/pyfolio.git
+git+https://github.com/giocaizzi/pyfolio.git
