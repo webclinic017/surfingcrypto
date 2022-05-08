@@ -91,6 +91,19 @@ class BinaryLaggedFeatures:
 
         return model_df
 
+    def get_future_x(self)->pd.Series:
+        last = self.model_df.loc[self.model_df.iloc[-1].name, self.x_cols_names]
+        future = []
+        for key in self.indicators:
+            iseries = last.loc[last.index.str.contains(key)].shift()
+            iseries.iloc[0] = self.model_df.loc[self.model_df.iloc[-1].name, key]
+            future.append(iseries)
+
+        future = pd.concat(future)
+        future.name = self.model_df.index[-1] + pd.Timedelta(days=1)
+
+        return future
+
     def __repr__(self) -> str:
         return f"BinaryLaggedFeatures(ts={self.ts.coin},lags={self.lags})"
 

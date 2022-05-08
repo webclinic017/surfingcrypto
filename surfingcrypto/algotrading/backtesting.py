@@ -3,6 +3,11 @@
 import backtrader as bt
 import pandas as pd
 import pyfolio as pf  # install with pip install git+ssh://git@github.com/giocaizzi/pyfolio.git
+import matplotlib.pyplot as plt
+
+plt.rcParams["figure.figsize"] = [15, 5]
+
+from surfingcrypto.algotrading.features import BinaryLaggedFeatures
 
 
 # class to define the columns we will provide
@@ -45,10 +50,17 @@ class BackTest:
     """backtest istance"""
 
     def __init__(
-        self, data: pd.DataFrame, name: str, verbose=False,
+        self, f: BinaryLaggedFeatures, start: str, algo: str, verbose=False,
     ):
+        self.feature = f
+        self.start = start
+        self.name = self.feature.ts.coin
+        self.algo = algo
         self.verbose = verbose
-        self.name = name
+
+        # backtrader data
+        data = self._fmt_dataframe()
+
         # instantiate Cerebro, add strategy, data, initial cash, commission and pyfolio for performance analysis
         self.cerebro = bt.Cerebro(stdstats=True, cheat_on_open=False)
         # cerebro.broker = bt.brokers.BackBroker(slip_open=True)  # consider market slippage
@@ -62,6 +74,33 @@ class BackTest:
         self.cerebro.addanalyzer(
             bt.analyzers.PyFolio, _name="pyfolio"
         )  # analyizer
+
+    def _fmt_dataframe(self) -> pd.DataFrame:
+        prices = self.feature.df[["Open", "High", "Low", "Close", "Volume"]]
+        prices = prices.loc[self.start :]
+        prices.rename(
+            columns={
+                "Open": "open",
+                "High": "high",
+                "Low": "low",
+                "Close": "close",
+                "Volume": "volume",
+            },
+            inplace=True,
+        )
+        # add the predicted column to prices dataframe.
+        # right joining them so to start from backtesting startdate.
+        # predictions = stock[["strategy_" + key]]
+        predictions = self.feature.model_df[["pos_" + self.algo]]
+
+        # predictions.rename(columns={"strategy_" + key: "predicted"}, inplace=True)
+
+        predictions.rename(
+            columns={"pos_" + self.algo: "predicted"}, inplace=True
+        )
+        backtestdata = predictions.join(prices, how="right").dropna()
+
+        return backtestdata
 
     def run(self):
         # run the backtest
@@ -97,6 +136,49 @@ class BackTest:
             print(self.backtest_result[0].log_text)
         else:
             raise NotImplementedError
+
+    def plot_timeline(self):
+        figs = self.cerebro.plot(
+            style="candlesticks",
+            barup="darkgreen",
+            bardown="darkred",
+            numfigs=2,
+            iplot=False,
+            fmt_x_ticks="%Y-%b-%d",
+        )
+        return figs
+
+    def plot_performance(self):
+        # get benchmark returns # just buy and hold
+        benchmark_rets = self.feature.model_df["returns"]
+        benchmark_rets = benchmark_rets.filter(self.returns.index)
+        benchmark_rets.name = "Buy&Hold"
+        benchmark_rets.tail()
+
+        fig, ax = plt.subplots(
+            nrows=2, ncols=2, figsize=(16, 9), constrained_layout=True
+        )
+        axes = ax.flatten()
+
+        pf.plot_drawdown_periods(returns=self.returns, ax=axes[0])
+        axes[0].grid(True)
+        pf.plot_rolling_returns(
+            returns=self.returns,
+            factor_returns=benchmark_rets,
+            ax=axes[1],
+            title="Strategy vs Buy&Hold",
+        )
+        axes[1].grid(True)
+        pf.plot_drawdown_underwater(returns=self.returns, ax=axes[2])
+        axes[2].grid(True)
+        pf.plot_rolling_sharpe(returns=self.returns, ax=axes[3])
+        axes[3].grid(True)
+
+        plt.grid(True)
+        plt.legend()
+        plt.tight_layout()
+
+        return fig
 
 
 class CryptoSizer(bt.Sizer):
@@ -183,7 +265,7 @@ class MLStrategy(bt.Strategy):
         # report executed order
         if order.status in [order.Completed]:
             if order.isbuy():
-                cost=order.executed.size * order.executed.price
+                cost = order.executed.size * order.executed.price
                 self.log(
                     "    "
                     f"BUY EXECUTED --- Size: {order.executed.size:.3f}, "
@@ -193,7 +275,7 @@ class MLStrategy(bt.Strategy):
                 self.price = order.executed.price
                 self.comm = order.executed.comm
             else:
-                cost=order.executed.size * order.executed.price
+                cost = order.executed.size * order.executed.price
                 self.log(
                     "    "
                     f"SELL EXECUTED --- Size: {order.executed.size:.3f}, "
@@ -201,11 +283,11 @@ class MLStrategy(bt.Strategy):
                     f"Cost: {cost:.3f}, Commission: {order.executed.comm:.3f}"
                 )
         elif order.status in [order.Canceled]:
-            self.log("    "f"Order Canceled")
+            self.log("    " f"Order Canceled")
         elif order.status in [order.Rejected]:
-            self.log("    "f"Order Rejected")
+            self.log("    " f"Order Rejected")
         elif order.status in [order.Margin]:
-            self.log("    "f"Order Failed: Margin")
+            self.log("    " f"Order Failed: Margin")
 
         # set no pending order
         self.order = None
