@@ -9,3 +9,5 @@ pytrends
 trendln
 cryptocmd
 calplot
+backtrader
+git+ssh://git@github.com/giocaizzi/pyfolio.git

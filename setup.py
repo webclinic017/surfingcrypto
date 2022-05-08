@@ -30,12 +30,12 @@ setup(
         "trendln",
         "cryptocmd",
         "calplot",
+        "backtrader",
+        "pyfolio @ git+ssh://git@github.com/giocaizzi/pyfolio.git"
     ],
     extras_require={"dev": [],},
     classifiers=[
         "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
     ],
     project_urls={
         "Documentation": "https://giocaizzi.github.io/surfingcrypto/",
