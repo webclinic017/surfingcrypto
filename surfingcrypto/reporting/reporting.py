@@ -79,3 +79,9 @@ def report_coinbase_live_value(portfolio):
             tot += float(account.native_balance.amount)
     s = s + "---\n" + "Portfolio: EUR " + "{:.2f}".format(tot)
     return s
+
+def report_tomorrow_prediction(binary_prediction:int):
+    if binary_prediction > 0:
+        print("BUY!")
+    else:
+        print("SELL / STAY OUT OF MARKET")

@@ -37,20 +37,14 @@ class Model:
 
     def _fit_model(self):
         self.model.fit(
-            self.X, self.Y
+            self.X.values, self.Y
         )
 
     def _estimate(self)->pd.Series:
         return pd.DataFrame(self.model.predict(self.X),index=self.X.index,columns=["predicted"])
 
-    def make_tomorrow_prediction(self,verbose=True)->int:
-        prediction=self.model.predict(self.feature.get_future_x().to_numpy().reshape(1, -1))[0]
-        if verbose:
-            if prediction > 0:
-                print("BUY!")
-            else:
-                print("SELL / STAY OUT OF MARKET")
-        return prediction
+    def make_tomorrow_prediction(self)->int:
+        return self.model.predict(self.feature.get_future_x().to_numpy().reshape(1, -1))[0]
 
     def __repr__(self) -> str:
         return f"Model(name={self.name})"

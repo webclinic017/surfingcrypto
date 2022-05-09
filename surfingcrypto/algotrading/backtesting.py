@@ -5,8 +5,6 @@ import pandas as pd
 import pyfolio as pf  # install with pip install git+ssh://git@github.com/giocaizzi/pyfolio.git
 import matplotlib.pyplot as plt
 
-plt.rcParams["figure.figsize"] = [15, 5]
-
 from surfingcrypto.algotrading.model import Model
 
 
@@ -45,6 +43,7 @@ class CryptoComissionInfo(bt.CommissionInfo):
         """Returns fractional size for cash operation @price"""
         return self.p.leverage * (cash / price)
 
+
 class CryptoSizer(bt.Sizer):
     """sizer for getting proper sizing"""
 
@@ -70,7 +69,8 @@ class CryptoSizer(bt.Sizer):
 
         else:  # Selling
             return self.broker.getposition(data).size  # Clear the position
-            
+
+
 class BackTest:
     """backtest istance"""
 
@@ -81,6 +81,9 @@ class BackTest:
         self.start = start
         self.name = self.model.feature.ts.coin
         self.verbose = verbose
+
+        # benchmark buy&hold returns
+        self.benchmark_returns = self._get_benchmark_returns()
 
         # backtrader data
         data = self._fmt_dataframe()
@@ -100,7 +103,9 @@ class BackTest:
         )  # analyizer
 
     def _fmt_dataframe(self) -> pd.DataFrame:
-        prices = self.model.feature.df[["Open", "High", "Low", "Close", "Volume"]]
+        prices = self.model.feature.df[
+            ["Open", "High", "Low", "Close", "Volume"]
+        ]
         prices = prices.loc[self.start :]
         prices.rename(
             columns={
@@ -112,39 +117,44 @@ class BackTest:
             },
             inplace=True,
         )
-        # add the predicted column to prices dataframe.
-        # right joining them so to start from backtesting startdate.
-        # predictions = stock[["strategy_" + key]]
-        predictions = self.model.estimated
-        # predictions.rename(
-        #     columns={"pos_" + self.algo: "predicted"}, inplace=True
-        # )
-        backtestdata = predictions.join(prices, how="right").dropna()
+
+        backtestdata = self.model.estimated.join(prices, how="right").dropna()
 
         return backtestdata
 
     def run(self):
         # run the backtest
         self.start_value = self.cerebro.broker.getvalue()
-        self.backtest_result = self.cerebro.run()
-        self.end_value = self.cerebro.broker.getvalue()
         if self.verbose:
             print("Starting Portfolio Value: %.2f" % self.start_value)
+        self.backtest_result = self.cerebro.run()
+        self.returns = self._get_backtest_returns()
+        self.end_value = self.cerebro.broker.getvalue()
+        if self.verbose:
             print("Final Portfolio Value: %.2f" % self.end_value)
 
-    def performance_stats(self) -> pd.Series:
-        # Extract inputs for pyfolio
-        strat = self.backtest_result[0]
-        pyfoliozer = strat.analyzers.getbyname("pyfolio")
+    def _get_benchmark_returns(self) -> pd.Series:
+        # get benchmark returns # just buy and hold
+        benchmark_rets = self.model.feature.model_df.loc[
+            self.start :, "returns"
+        ]
+        benchmark_rets.name = "Buy&Hold"
+        return benchmark_rets
+
+    def _get_backtest_returns(self) -> pd.Series:
+        pyfoliozer = self.backtest_result[0].analyzers.getbyname("pyfolio")
         (
-            self.returns,
+            returns,
             positions,
             transactions,
             gross_lev,
         ) = pyfoliozer.get_pf_items()
+        returns.name = "Backtest returns"
 
-        self.returns.name = "Strategy"
+        return returns
 
+    def performance_stats(self) -> pd.Series:
+        # Extract inputs for pyfolio
         performance = pf.timeseries.perf_stats(self.returns)
         performance = performance.append(
             pd.Series([self.end_value], index=["End Value"])
@@ -159,7 +169,7 @@ class BackTest:
             raise NotImplementedError
 
     def plot_timeline(self):
-        figs= self.cerebro.plot(
+        figs = self.cerebro.plot(
             style="candlesticks",
             barup="darkgreen",
             bardown="darkred",
@@ -167,38 +177,7 @@ class BackTest:
             iplot=False,
             fmt_x_ticks="%Y-%b-%d",
         )
-        return figs
-
-    def plot_performance(self):
-        # get benchmark returns # just buy and hold
-        benchmark_rets = self.model.feature.model_df["returns"]
-        benchmark_rets = benchmark_rets.filter(self.returns.index)
-        benchmark_rets.name = "Buy&Hold"
-        benchmark_rets.tail()
-
-        fig, ax = plt.subplots(
-            nrows=2, ncols=2, figsize=(16, 9), constrained_layout=True
-        )
-        axes = ax.flatten()
-
-        pf.plot_drawdown_periods(returns=self.returns, ax=axes[0])
-        axes[0].grid(True)
-        pf.plot_rolling_returns(
-            returns=self.returns,
-            factor_returns=benchmark_rets,
-            ax=axes[1],
-            title="Strategy vs Buy&Hold",
-        )
-        axes[1].grid(True)
-        pf.plot_drawdown_underwater(returns=self.returns, ax=axes[2])
-        axes[2].grid(True)
-        pf.plot_rolling_sharpe(returns=self.returns, ax=axes[3])
-        axes[3].grid(True)
-
-        plt.grid(True)
-        plt.legend()
-
-        return fig
+        return figs[0]
 
 
 # define backtesting strategy class

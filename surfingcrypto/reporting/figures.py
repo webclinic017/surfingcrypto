@@ -11,7 +11,7 @@ import matplotlib.cm as cm
 import pandas as pd
 import copy
 import calplot
-
+import pyfolio as pf
 import dateutil
 import datetime
 import pytz
@@ -19,6 +19,9 @@ from dateutil.relativedelta import relativedelta
 
 from surfingcrypto.ts import TS
 from surfingcrypto.portfolio import Portfolio
+from surfingcrypto.algotrading.backtesting import BackTest
+
+
 import surfingcrypto.reporting.plotting as scplot
 from surfingcrypto.reporting.plotting import shiftedColorMap
 
@@ -26,6 +29,8 @@ from surfingcrypto.reporting.plotting import shiftedColorMap
 # GLOBAL VARIABLES (?!?) TO SET PLOT STYLE
 plt.style.use("dark_background")
 mpl.rcParams["font.size"] = 4
+plt.rcParams["figure.figsize"] = [15, 5]
+
 
 
 class BaseFigure:
@@ -47,7 +52,7 @@ class BaseFigure:
         self.object = copy.copy(object)  # copy so can be sliced for purpose
 
         self._set_graphstart(graphstart)
-        if isinstance(object,TS):
+        if isinstance(object, TS):
             self.subset_ts_df(self.graphstart)
 
     def _set_graphstart(self, graphstart):
@@ -299,7 +304,9 @@ class PortfolioPlot(BaseFigure):
     def plot(self, variables: list, by_symbol: bool, zero_line: bool):
         # figure
         self.f, self.ax = plt.subplots(dpi=200,)
-        df = self.object.tracker.daily_grouped_metrics(variables, by_symbol=by_symbol)
+        df = self.object.tracker.daily_grouped_metrics(
+            variables, by_symbol=by_symbol
+        )
         df = df.loc[self.graphstart.date() :].dropna(axis=1, how="all")
         df.plot(ax=self.ax)
         if zero_line:
@@ -340,4 +347,32 @@ class CalendarPlot:
         self.calplot = calplot.calplot(
             values["Stock Gain / (Loss)"], cmap=cmap
         )
-        pass
+
+
+class BacktestPerformancePlot:
+    def __init__(self, bt: BackTest):
+        self.bt = bt
+        self.plot()
+
+    def plot(self):
+        fig, ax = plt.subplots(
+            nrows=2, ncols=2, figsize=(16, 9), constrained_layout=True
+        )
+        axes = ax.flatten()
+
+        pf.plot_drawdown_periods(returns=self.bt.returns, ax=axes[0])
+        axes[0].grid(True)
+        pf.plot_rolling_returns(
+            returns=self.bt.returns,
+            factor_returns=self.bt.benchmark_returns,
+            ax=axes[1],
+            title="Strategy vs Buy&Hold",
+        )
+        axes[1].grid(True)
+        pf.plot_drawdown_underwater(returns=self.bt.returns, ax=axes[2])
+        axes[2].grid(True)
+        pf.plot_rolling_sharpe(returns=self.bt.returns, ax=axes[3])
+        axes[3].grid(True)
+
+        # plt.grid(True)
+        # plt.legend()
