@@ -355,24 +355,25 @@ class BacktestPerformancePlot:
         self.plot()
 
     def plot(self):
-        fig, ax = plt.subplots(
+        self.fig, axes = plt.subplots(
             nrows=2, ncols=2, figsize=(16, 9), constrained_layout=True
         )
-        axes = ax.flatten()
+        self.axes = axes.flatten()
 
-        pf.plot_drawdown_periods(returns=self.bt.returns, ax=axes[0])
-        axes[0].grid(True)
+        pf.plot_drawdown_periods(returns=self.bt.returns, ax=self.axes[0])
+        self.axes[0].grid(True)
         pf.plot_rolling_returns(
             returns=self.bt.returns,
             factor_returns=self.bt.benchmark_returns,
-            ax=axes[1],
+            ax=self.axes[1],
             title="Strategy vs Buy&Hold",
         )
-        axes[1].grid(True)
-        pf.plot_drawdown_underwater(returns=self.bt.returns, ax=axes[2])
-        axes[2].grid(True)
-        pf.plot_rolling_sharpe(returns=self.bt.returns, ax=axes[3])
-        axes[3].grid(True)
+        self.axes[1].grid(True)
+        pf.plot_drawdown_underwater(returns=self.bt.returns, ax=self.axes[2])
+        self.axes[2].grid(True)
+        pf.plot_rolling_sharpe(returns=self.bt.returns, ax=self.axes[3])
+        self.axes[3].grid(True)
 
+        plt.show()
         # plt.grid(True)
         # plt.legend()
