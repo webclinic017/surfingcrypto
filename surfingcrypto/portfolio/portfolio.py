@@ -60,9 +60,7 @@ class Portfolio:
         self.df = self.coinbase.history.df.copy()
 
         # exclude fiat deposit and withdrawals
-        self.df = self.df[
-            self.df["type"].isin(["buy", "sell", "trade", "send"])
-        ]
+        self.df = self.df[self.df["type"].isin(["buy", "sell", "trade", "send"])]
 
         # get unique transaction-ids for trades
 
@@ -96,8 +94,11 @@ class Portfolio:
                 if len(t) == 2:
                     fee = t["native_amount"].diff()
                     self.df.loc[
-                        (self.df["transaction_type_id"] == trade), "total_fee",
-                    ] = (fee[-1] / 2)
+                        (self.df["transaction_type_id"] == trade),
+                        "total_fee",
+                    ] = (
+                        fee[-1] / 2
+                    )
 
                 else:
                     self.errors.append(
@@ -173,9 +174,7 @@ class Portfolio:
         print(self.coinbase)
         if len(self.df) != len(self.coinbase.history.df):
             n = len(self.coinbase.history.df) - len(self.df)
-            print(
-                f"Warning! There are {n} transactions" "that were EXCLUDED in df."
-            )
+            print(f"Warning! There are {n} transactions" "that were EXCLUDED in df.")
         if not self.coinbase.history.executed_without_errors():
             print("Warning! Errors while handling transactions:")
             print(self.coinbase.history)

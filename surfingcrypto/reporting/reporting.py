@@ -80,7 +80,8 @@ def report_coinbase_live_value(portfolio):
     s = s + "---\n" + "Portfolio: EUR " + "{:.2f}".format(tot)
     return s
 
-def report_tomorrow_prediction(binary_prediction:int):
+
+def report_tomorrow_prediction(binary_prediction: int):
     if binary_prediction > 0:
         print("BUY!")
     else:

@@ -47,9 +47,7 @@ def candlesticks(ts: TS, ax, volume=False, vol_ax=None, style="candlesticks"):
                 show_nontrading=True,
             )
     elif style == "ohlc":
-        mplf.plot(
-            ts.df, ax=ax, type="ohlc", style="mike", show_nontrading=True
-        )
+        mplf.plot(ts.df, ax=ax, type="ohlc", style="mike", show_nontrading=True)
     else:
         raise ValueError("Must specify style.")
     return
@@ -78,7 +76,7 @@ def plot_moving_averages(ts: TS, ax):
                 alpha=0.3,
                 linewidth=1,
             )
-        l = ax.legend(loc="upper left", prop={"size": 3})
+        l = ax.legend(prop={"size": 3})
         l.get_frame().set_linewidth(0.5)
 
 
@@ -104,6 +102,7 @@ def plot_macd(ts: TS, ax, plot_lines=True):
     signal_colname = "MACDs_" + fast + "_" + slow + "_" + sign
 
     prices = ts.df[["Close", h_colname, macd_colname, signal_colname]].copy()
+    prices.index = prices.index.date
 
     prices["colors"] = prices[h_colname]
     prices["colors"].loc[prices[h_colname] <= 0] = -1
@@ -112,21 +111,13 @@ def plot_macd(ts: TS, ax, plot_lines=True):
 
     prices.dropna(inplace=True)
 
-    prices.plot.bar( y=[h_colname,], ax=ax, color="pink", zorder=2)
+    for i in range(len(prices)):
+        ax.bar(prices.index[i], prices[h_colname][i], color=prices["colors"][i])
 
     if plot_lines:
         prices.plot(y=[macd_colname, signal_colname], ax=ax, zorder=3)
-
-    
-    l = ax.legend(loc="lower left", prop={"size": 3})
-    l.get_frame().set_linewidth(0.5)
-
-    ax.annotate(
-        "MACD(" + fast + "-" + slow + ")-S(" + sign + ")",
-        xy=(0.99, 0.1),
-        xycoords="axes fraction",
-        ha="right",
-    )
+        l = ax.legend(loc="lower left", prop={"size": 3})
+        l.get_frame().set_linewidth(0.5)
     ax.set_ylabel("MACD")
 
 

@@ -38,9 +38,7 @@ class BinaryLaggedFeatures:
         df["PREV_STOCK"] = df["Close"].shift(1)
         df["PREV_LOWERBB"] = df["BBL_20_2.0"].shift(1)
         df["PREV_UPPERBB"] = df["BBU_20_2.0"].shift(1)
-        df["BBL_20_2_Signal"] = df.apply(
-            surf_signals.bb_signal, args=(0,), axis=1
-        )
+        df["BBL_20_2_Signal"] = df.apply(surf_signals.bb_signal, args=(0,), axis=1)
         df["BBL_20_2_Signal"] = df["BBL_20_2_Signal"].fillna(method="bfill")
         df["BBL_20_2_Signal"] = df["BBL_20_2_Signal"].fillna(method="ffill")
 
@@ -82,15 +80,11 @@ class BinaryLaggedFeatures:
         return model_df
 
     def get_future_x(self) -> pd.Series:
-        last = self.model_df.loc[
-            self.model_df.iloc[-1].name, self.x_cols_names
-        ]
+        last = self.model_df.loc[self.model_df.iloc[-1].name, self.x_cols_names]
         future = []
         for key in self.indicators:
             iseries = last.loc[last.index.str.contains(key)].shift()
-            iseries.iloc[0] = self.model_df.loc[
-                self.model_df.iloc[-1].name, key
-            ]
+            iseries.iloc[0] = self.model_df.loc[self.model_df.iloc[-1].name, key]
             future.append(iseries)
 
         future = pd.concat(future)

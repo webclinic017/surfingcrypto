@@ -22,10 +22,9 @@ import surfingcrypto.reporting.plotting as scplot
 from surfingcrypto.reporting.plotting import shiftedColorMap
 
 
-# GLOBAL VARIABLES (?!?) TO SET PLOT STYLE
+# # GLOBAL VARIABLES (?!?) TO SET PLOT STYLE
 plt.style.use("dark_background")
 mpl.rcParams["font.size"] = 4
-plt.rcParams["figure.figsize"] = [15, 5]
 
 
 class BaseFigure:
@@ -41,7 +40,9 @@ class BaseFigure:
     """
 
     def __init__(
-        self, object: TS or Portfolio, graphstart="1-1-2021",
+        self,
+        object: TS or Portfolio,
+        graphstart="1-1-2021",
     ):
 
         self.object = copy.copy(object)  # copy so can be sliced for purpose
@@ -119,7 +120,7 @@ class SimplePlot(BaseFigure):
 
     Arguments:
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
-        graphstart (str) : date string in d-m-Y format 
+        graphstart (str) : date string in d-m-Y format
             (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
     """
 
@@ -133,7 +134,12 @@ class SimplePlot(BaseFigure):
         """
         # figure
         self.f, self.axes = plt.subplots(
-            2, 1, sharex=True, gridspec_kw={"height_ratios": [4, 1]}, dpi=200,
+            2,
+            1,
+            sharex=True,
+            gridspec_kw={"height_ratios": [4, 1]},
+            dpi=200,
+            figsize=(9, 3),
         )
         # plot
         scplot.candlesticks(
@@ -160,13 +166,13 @@ class TaPlot(BaseFigure):
     Can be easily modified to fit other and/or more indicators.
 
     Arguments:
-        trendlines (bool) : UNDER DEVELOPEMENT! - plot also trendlines 
+        trendlines (bool) : UNDER DEVELOPEMENT! - plot also trendlines
             calculated with `src.trend_line` class.
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
-        graphstart (str) : date string in d-m-Y format 
+        graphstart (str) : date string in d-m-Y format
             (or relative from today eg. 1 month: `1m`,3 month: `3m`) from
             which to start the graph.
- 
+
     """
 
     def __init__(self, trendlines=False, *args, **kwargs):
@@ -205,7 +211,7 @@ class TaPlot(BaseFigure):
             style="candlesticks",
         )
         scplot.plot_moving_averages(self.object, ax=self.axes[0])
-        # scplot.plot_macd(self.object, self.axes[2], plot_lines=False)
+        scplot.plot_macd(self.object, self.axes[2], plot_lines=False)
         scplot.candlesticks(self.object, self.axes[3], style="ohlc")
         scplot.plot_bb(self.object, self.axes[3])
         scplot.plot_RSI(self.object, self.axes[4])
@@ -225,7 +231,7 @@ class ATHPlot(BaseFigure):
 
     Arguments:
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
-        graphstart (str) : date string in d-m-Y format 
+        graphstart (str) : date string in d-m-Y format
             (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
 
     """
@@ -242,7 +248,7 @@ class ATHPlot(BaseFigure):
             ATM it its a zoomed-in view.
         """
         # figure
-        self.f, self.ax = plt.subplots(dpi=200,)
+        self.f, self.ax = plt.subplots(dpi=200, figsize=(9, 3))
         # compute distance
 
         # normalizzato su tutto intervallo
@@ -251,14 +257,18 @@ class ATHPlot(BaseFigure):
         norm = Normalize(vmin=vmin, vmax=vmax)
 
         cmap = LinearSegmentedColormap.from_list(
-            "colorbar", ["green", "orange", "red", "magenta",]
+            "colorbar",
+            [
+                "green",
+                "orange",
+                "red",
+                "magenta",
+            ],
         )
         colors = [cmap(norm(x)) for x in self.object.df["distance_ATH"]]
 
         # points
-        self.ax.scatter(
-            self.object.df.index, self.object.df.Close, c=colors, s=2
-        )
+        self.ax.scatter(self.object.df.index, self.object.df.Close, c=colors, s=2)
         # colorbar
         cmappable = ScalarMappable(norm=norm, cmap=cmap)
         self.f.colorbar(cmappable)
@@ -305,10 +315,10 @@ class PortfolioPlot(BaseFigure):
 
     def plot(self, variables: list, by_symbol: bool, zero_line: bool):
         # figure
-        self.f, self.ax = plt.subplots(dpi=200,)
-        df = self.object.tracker.daily_grouped_metrics(
-            variables, by_symbol=by_symbol
+        self.f, self.ax = plt.subplots(
+            dpi=200,
         )
+        df = self.object.tracker.daily_grouped_metrics(variables, by_symbol=by_symbol)
         df = df.loc[self.graphstart.date() :].dropna(axis=1, how="all")
         df.plot(ax=self.ax)
         if zero_line:
@@ -346,9 +356,7 @@ class CalendarPlot:
             ),
             midpoint=norm(0),
         )
-        self.calplot = calplot.calplot(
-            values["Stock Gain / (Loss)"], cmap=cmap
-        )
+        self.calplot = calplot.calplot(values["Stock Gain / (Loss)"], cmap=cmap)
 
 
 class BacktestPerformancePlot:

@@ -73,9 +73,7 @@ class Config:
                     for key in dictionary:
                         setattr(self, key, dictionary[key])
             else:
-                raise FileNotFoundError(
-                    "Configuration file `config.json` not found."
-                )
+                raise FileNotFoundError("Configuration file `config.json` not found.")
         else:
             raise FileNotFoundError("Configuration folder not found.")
 
@@ -97,9 +95,7 @@ class Config:
                 self.data_folder = data_folder
                 self._make_data_directories()
             else:
-                raise FileNotFoundError(
-                    f"Data folder not found. \n {data_folder}"
-                )
+                raise FileNotFoundError(f"Data folder not found. \n {data_folder}")
 
     def _make_data_directories(self):
         """
@@ -130,9 +126,7 @@ class Config:
         gets the requirements for coinbase portfolio tracking.
         """
         if os.path.isfile(self.config_folder + "/coinbase_accounts.json"):
-            with open(
-                self.config_folder + "/coinbase_accounts.json", "rb"
-            ) as f:
+            with open(self.config_folder + "/coinbase_accounts.json", "rb") as f:
                 self.coinbase_req = json.load(f)
         else:
             self.coinbase_req = None
@@ -158,23 +152,17 @@ class Config:
                             "end_day": (
                                 datetime.datetime.now(datetime.timezone.utc)
                                 + datetime.timedelta(-1)
-                            ).replace(
-                                hour=0, minute=0, second=0, microsecond=0
-                            ),
+                            ).replace(hour=0, minute=0, second=0, microsecond=0),
                         }
                     # historic account
                     else:
                         req[account["currency"]] = {
                             "start": dateutil.parser.parse(
                                 account["timerange"]["1"]
-                            ).replace(
-                                hour=0, minute=0, second=0, microsecond=0
-                            ),
+                            ).replace(hour=0, minute=0, second=0, microsecond=0),
                             "end_day": dateutil.parser.parse(
                                 account["timerange"]["0"]
-                            ).replace(
-                                hour=0, minute=0, second=0, microsecond=0
-                            ),
+                            ).replace(hour=0, minute=0, second=0, microsecond=0),
                         }
             # store coinbase requirements paresed correctly
             # for portfolio tracker features
@@ -193,13 +181,11 @@ class Config:
             params[coin] = {
                 # first date from BTC history to be "relevant", if other coin means first
                 # available
-                "start": datetime.datetime(
-                    2017, 10, 1, tzinfo=datetime.timezone.utc
-                ),
+                "start": datetime.datetime(2017, 10, 1, tzinfo=datetime.timezone.utc),
                 # timedelta is because today's close isnt yet realized
-                "end_day": datetime.datetime.now(
-                    datetime.timezone.utc
-                ).replace(hour=0, minute=0, second=0, microsecond=0)
+                "end_day": datetime.datetime.now(datetime.timezone.utc).replace(
+                    hour=0, minute=0, second=0, microsecond=0
+                )
                 + datetime.timedelta(-1),
             }
 

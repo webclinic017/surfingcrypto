@@ -109,7 +109,7 @@ class CB:
     def _get_transactions(self, account, cache=None):
         """
         get transaction from specified account through pagination.
-        if provided with 
+        if provided with
 
         Arguments
             account (:obj:`coinbase.wallet.model.ApiObject`) : coinbase
@@ -223,7 +223,7 @@ class MyCoinbase(CB):
     Attributes:
         accounts (:obj:`list` of :obj:`coibase.model.ApiObject`):
             list of selected accounts.
-        transactions (:obj:`list` of :obj:`coibase.model.ApiObject`): 
+        transactions (:obj:`list` of :obj:`coibase.model.ApiObject`):
             list of transactions.
         active_accounts (list): list of string names of active accounts (balance>0.00)
         history (:obj:`surfingcrypto.portfolio.coinbase.TransactionsHistory`):
@@ -267,9 +267,11 @@ class MyCoinbase(CB):
             ):
                 cache, self.transactions = self._load_cache()
             # get data
-            (self.accounts, self.transactions, responses,) = self._get_full_history(
-                cache, self.transactions
-            )
+            (
+                self.accounts,
+                self.transactions,
+                responses,
+            ) = self._get_full_history(cache, self.transactions)
             self._dump_cache(responses)
 
     def _dump_cache(self, responses: dict):
@@ -306,7 +308,7 @@ class MyCoinbase(CB):
     def _set_active_accounts(self):
         """
         sets the currently active accounts, a.k.a. balance >0
-        this is required for the case when the module is loaded in historic mode, 
+        this is required for the case when the module is loaded in historic mode,
         so to distinguish active accounts from all known accounts.
         """
         active = []
@@ -353,7 +355,7 @@ class TransactionsHistory:
             of supported transaction types.
         unhandled_trans (:obj:`list` of :obj:`dict`): list informations of
             unhandled transactions.
-        errors (:obj:`list` of :obj:`coibase.model.ApiObject`): list of 
+        errors (:obj:`list` of :obj:`coibase.model.ApiObject`): list of
             transactions that resulted in an error
         error_log (:obj:`list` of :obj:`dict`): list informations of
             transactions that resulted in an error.
@@ -438,7 +440,11 @@ class TransactionsHistory:
                     "transaction_type": transaction["type"],
                     "account_id": account["id"],
                     "transaction_id": transaction["id"],
-                    "info": {"amount": amount, "symbol": symbol, "date": datetime,},
+                    "info": {
+                        "amount": amount,
+                        "symbol": symbol,
+                        "date": datetime,
+                    },
                     "error_log": e,
                 }
             )

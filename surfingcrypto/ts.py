@@ -55,11 +55,11 @@ class TS:
             raise FileNotFoundError(f"{self.coin}.csv not found.")
 
     # TA INDICATORS SAVED TO DF
-    def ta_indicators(self,params=None):
+    def ta_indicators(self, params=None):
         """computes the selected TA indicators and appends them to df attribute
 
         It supports:
-            - SMA 
+            - SMA
             - MACD
             - Bolinger bands
             - RSI
@@ -68,12 +68,12 @@ class TS:
 
         for key in self.ta_params:
             if key == "sma":
-                #all sma 
+                # all sma
                 for sma in self.ta_params["sma"]:
                     self.df.ta.sma(length=sma["slow"], append=True)
                     self.df.ta.sma(length=sma["fast"], append=True)
             elif key == "macd":
-                #macd
+                # macd
                 self.df.ta.macd(
                     window_slow=self.ta_params["macd"]["slow"],
                     window_fast=self.ta_params["macd"]["fast"],
@@ -81,37 +81,39 @@ class TS:
                     append=True,
                 )
             elif key == "bbands":
-                #bollinger bands
+                # bollinger bands
                 self.df.ta.bbands(
                     length=self.ta_params["bbands"]["length"],
                     std=self.ta_params["bbands"]["std"],
                     append=True,
                 )
             elif key == "rsi":
-                self.df.ta.rsi(timeperiod=self.ta_params["rsi"]["timeperiod"], append=True)
-            else: 
+                self.df.ta.rsi(
+                    timeperiod=self.ta_params["rsi"]["timeperiod"], append=True
+                )
+            else:
                 raise NotImplementedError
 
-    def _default_parametrization(self,params:dict or None):
+    def _default_parametrization(self, params: dict or None):
         """sets the default TA parameters
 
-        first sets package defaults, then overrides with condfiguration default 
+        first sets package defaults, then overrides with condfiguration default
         if present and finally ovverrides once again with method argument
-        
+
         """
 
         # default if empty or not specified in coins
         self.ta_params = {
-            "sma": [{"fast": 12, "slow": 26},{"fast":100,"slow":200}],
+            "sma": [{"fast": 12, "slow": 26}, {"fast": 100, "slow": 200}],
             "macd": {"fast": 12, "slow": 26, "signal": 9},
             "bbands": {"length": 20, "std": 2},
             "rsi": {"timeperiod": 14},
         }
-        #if provided in config, override default
+        # if provided in config, override default
         if isinstance(self.config.coins[self.coin], dict):
             self.ta_params = self.config.coins[self.coin]
-        #if provided via the method, overide previous
-        if  params is not None:
+        # if provided via the method, overide previous
+        if params is not None:
             self.ta_params = params
 
     def distance_from_ath(self):
@@ -119,4 +121,3 @@ class TS:
         for idx in self.df.index:
             d[idx] = abs(self.df.loc[idx, "Close"] - self.df[:idx]["Close"].max())
         self.df["distance_ATH"] = pd.Series(d)
-

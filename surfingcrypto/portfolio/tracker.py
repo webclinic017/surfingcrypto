@@ -75,7 +75,8 @@ class Tracker:
             print("Tracker didn't run because of errors.")
 
     def _format_df(
-        self, df: pd.DataFrame,
+        self,
+        df: pd.DataFrame,
     ):
         """
         sets dataframe to required format by traker module.
@@ -136,14 +137,20 @@ class Tracker:
                 if rebrandings:
                     ts.coin = rebrandings[0]
 
-                # quickfix for running scraper on a day in which 
+                # quickfix for running scraper on a day in which
                 # some trade has made and the coinbase requirement
-                # contains today's date, but the close has not been 
+                # contains today's date, but the close has not been
                 # realized yet
-                if pd.Timestamp(self.configuration.coinbase_req[ts.coin]["end_day"])==pd.Timestamp(datetime.datetime.now(datetime.timezone.utc).date(),tz="utc"):
+                if pd.Timestamp(
+                    self.configuration.coinbase_req[ts.coin]["end_day"]
+                ) == pd.Timestamp(
+                    datetime.datetime.now(datetime.timezone.utc).date(), tz="utc"
+                ):
                     end_day = self.stocks_end
                 else:
-                    end_day = pd.Timestamp(self.configuration.coinbase_req[ts.coin]["end_day"])
+                    end_day = pd.Timestamp(
+                        self.configuration.coinbase_req[ts.coin]["end_day"]
+                    )
 
                 df = self._check_data(
                     ts.df[["Close"]].copy(),
@@ -161,14 +168,18 @@ class Tracker:
         return closedata
 
     def _set_benchmark(self) -> pd.DataFrame:
-        """sets benchmark
-        """
+        """sets benchmark"""
         ts = TS(configuration=self.configuration, coin=self.benchmark)
         self.benchmark_df = self._check_data(
             ts.df[["Close"]].copy(), self.stocks_start, self.stocks_end
         )
 
-    def _check_data(self, df, i: pd.Timestamp, o: pd.Timestamp,) -> pd.DataFrame:
+    def _check_data(
+        self,
+        df,
+        i: pd.Timestamp,
+        o: pd.Timestamp,
+    ) -> pd.DataFrame:
         """_summary_
 
         Args:
@@ -364,7 +375,7 @@ class Tracker:
             - Returns
 
         Args:
-            daily_snapshots (pandas.DataFrame): portfolio 
+            daily_snapshots (pandas.DataFrame): portfolio
                 daily snapshots
 
         Returns:
@@ -484,7 +495,11 @@ class Tracker:
         # )
         return portfolio
 
-    def daily_grouped_metrics(self, cols: list, by_symbol=False,) -> pd.DataFrame:
+    def daily_grouped_metrics(
+        self,
+        cols: list,
+        by_symbol=False,
+    ) -> pd.DataFrame:
         """_summary_
 
         Args:
@@ -504,7 +519,11 @@ class Tracker:
 
         # group by day
         grouped_metrics = idf.groupby(by)[cols].sum().reset_index()
-        grouped_metrics = pd.melt(grouped_metrics, id_vars=by, value_vars=cols,)
+        grouped_metrics = pd.melt(
+            grouped_metrics,
+            id_vars=by,
+            value_vars=cols,
+        )
         grouped_metrics = (
             grouped_metrics.set_index(by + ["variable"])
             .unstack([x for x in by if x != "Date Snapshot"] + ["variable"])
@@ -513,7 +532,9 @@ class Tracker:
         # eventually fill gaps
         grouped_metrics.reindex(
             pd.date_range(
-                grouped_metrics.index.min(), grouped_metrics.index.max(), freq="D",
+                grouped_metrics.index.min(),
+                grouped_metrics.index.max(),
+                freq="D",
             )
         )
         # drop first "value" level, unrequired
@@ -525,7 +546,7 @@ class Tracker:
         """_summary_
 
         Args:
-            day (str): date as string in "Y-m-d" format, or "last" to 
+            day (str): date as string in "Y-m-d" format, or "last" to
                 get last date available
 
         Returns:

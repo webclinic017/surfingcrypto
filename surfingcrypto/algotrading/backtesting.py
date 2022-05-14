@@ -24,7 +24,7 @@ class CryptoPandasData(bt.feeds.PandasData):
 
 
 class CryptoComissionInfo(bt.CommissionInfo):
-    """ commission info for crypto"""
+    """commission info for crypto"""
 
     params = (
         ("commission", 1),  # percentage
@@ -57,9 +57,7 @@ class CryptoSizer(bt.Sizer):
                 self.broker.getvalue() * self.params.prop
             )  # Ideal total value of the position
             price = data.close[0]
-            size_net = (
-                target / price
-            )  # How many shares are needed to get target
+            size_net = target / price  # How many shares are needed to get target
             size = size_net * 0.99
 
             if size * price > cash:
@@ -75,7 +73,10 @@ class BackTest:
     """backtest istance"""
 
     def __init__(
-        self, m: Model, start: str, verbose=False,
+        self,
+        m: Model,
+        start: str,
+        verbose=False,
     ):
         self.model = m
         self.start = start
@@ -98,14 +99,10 @@ class BackTest:
         self.cerebro.broker.addcommissioninfo(
             CryptoComissionInfo(),
         )  # fractional prices and commissions scheme
-        self.cerebro.addanalyzer(
-            bt.analyzers.PyFolio, _name="pyfolio"
-        )  # analyizer
+        self.cerebro.addanalyzer(bt.analyzers.PyFolio, _name="pyfolio")  # analyizer
 
     def _fmt_dataframe(self) -> pd.DataFrame:
-        prices = self.model.feature.df[
-            ["Open", "High", "Low", "Close", "Volume"]
-        ]
+        prices = self.model.feature.df[["Open", "High", "Low", "Close", "Volume"]]
         prices = prices.loc[self.start :]
         prices.rename(
             columns={
@@ -135,9 +132,7 @@ class BackTest:
 
     def _get_benchmark_returns(self) -> pd.Series:
         # get benchmark returns # just buy and hold
-        benchmark_rets = self.model.feature.model_df.loc[
-            self.start :, "returns"
-        ]
+        benchmark_rets = self.model.feature.model_df.loc[self.start :, "returns"]
         benchmark_rets.name = "Buy&Hold"
         return benchmark_rets
 

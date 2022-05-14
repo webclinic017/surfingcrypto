@@ -4,9 +4,7 @@ import pandas as pd
 import numpy as np
 
 
-def sma_signal(
-    serie: pd.Series, colnames=["SMA_12", "SMA_26"]
-) -> int or np.nan:
+def sma_signal(serie: pd.Series, colnames=["SMA_12", "SMA_26"]) -> int or np.nan:
     """Simple Moving Average signal
 
     Args:
@@ -61,17 +59,13 @@ def bb_signal(serie: pd.Series, buffer=0.1) -> int or np.nan:
         and not pd.isna(serie["PREV_UPPERBB"])
     ):
         if (
-            serie["PREV_STOCK"]
-            > serie["PREV_LOWERBB"] + serie["PREV_LOWERBB"] * buffer
-            and serie["Close"]
-            < serie["BBL_20_2.0"] + serie["BBL_20_2.0"] * buffer
+            serie["PREV_STOCK"] > serie["PREV_LOWERBB"] + serie["PREV_LOWERBB"] * buffer
+            and serie["Close"] < serie["BBL_20_2.0"] + serie["BBL_20_2.0"] * buffer
         ):
             return 1
         elif (
-            serie["PREV_STOCK"]
-            < serie["PREV_UPPERBB"] - serie["PREV_UPPERBB"] * buffer
-            and serie["Close"]
-            > serie["BBU_20_2.0"] - serie["BBU_20_2.0"] * buffer
+            serie["PREV_STOCK"] < serie["PREV_UPPERBB"] - serie["PREV_UPPERBB"] * buffer
+            and serie["Close"] > serie["BBU_20_2.0"] - serie["BBU_20_2.0"] * buffer
         ):
             return 0
     else:
