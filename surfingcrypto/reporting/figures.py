@@ -4,9 +4,7 @@ figures built for crypto prices.
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.colors import LinearSegmentedColormap, Normalize
-import matplotlib.dates as mdates
 from matplotlib.cm import ScalarMappable
-import matplotlib.cm as cm
 
 import pandas as pd
 import copy
@@ -20,8 +18,6 @@ from dateutil.relativedelta import relativedelta
 from surfingcrypto.ts import TS
 from surfingcrypto.portfolio import Portfolio
 from surfingcrypto.algotrading.backtesting import BackTest
-
-
 import surfingcrypto.reporting.plotting as scplot
 from surfingcrypto.reporting.plotting import shiftedColorMap
 
@@ -30,7 +26,6 @@ from surfingcrypto.reporting.plotting import shiftedColorMap
 plt.style.use("dark_background")
 mpl.rcParams["font.size"] = 4
 plt.rcParams["figure.figsize"] = [15, 5]
-
 
 
 class BaseFigure:
@@ -185,6 +180,13 @@ class TaPlot(BaseFigure):
 
         if not hasattr(self.object, "ta_params"):
             raise AttributeError("Object myust have `ta_params`")
+        if not all(
+            elem in list(self.object.ta_params.keys())
+            for elem in ["macd", "sma", "bbands", "rsi"]
+        ):
+            raise AttributeError(
+                "Object myust have `sma`,`macd`,`bbands` and `rsi` in `ta_params` attribute."
+            )
         # figure
         self.f, self.axes = plt.subplots(
             5,

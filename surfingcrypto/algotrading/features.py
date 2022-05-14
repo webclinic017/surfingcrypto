@@ -9,19 +9,18 @@ import surfingcrypto.algotrading.signals as surf_signals
 
 
 class BinaryLaggedFeatures:
-    def __init__(self, ts: TS, indicators:list,lags: list):
+    def __init__(self, ts: TS, indicators: list, lags: list):
         self.ts = ts
-        self.indicators= self._fmt_indicators(indicators)
+        self.indicators = self._fmt_indicators(indicators)
         self.lags = lags
         self.df = self._compute_signals()
         self.model_df = self.get_model_dataframe(self.indicators)
 
-    def _fmt_indicators(self,indicators:list)-> dict:
+    def _fmt_indicators(self, indicators: list) -> dict:
         dicts = {}
         for i in range(len(indicators)):
             dicts["i_" + "{}".format(str(i + 1).zfill(2))] = indicators[i]
         return dicts
-
 
     def _compute_signals(self) -> pd.DataFrame:
         df = self.ts.df
@@ -82,12 +81,16 @@ class BinaryLaggedFeatures:
 
         return model_df
 
-    def get_future_x(self)->pd.Series:
-        last = self.model_df.loc[self.model_df.iloc[-1].name, self.x_cols_names]
+    def get_future_x(self) -> pd.Series:
+        last = self.model_df.loc[
+            self.model_df.iloc[-1].name, self.x_cols_names
+        ]
         future = []
         for key in self.indicators:
             iseries = last.loc[last.index.str.contains(key)].shift()
-            iseries.iloc[0] = self.model_df.loc[self.model_df.iloc[-1].name, key]
+            iseries.iloc[0] = self.model_df.loc[
+                self.model_df.iloc[-1].name, key
+            ]
             future.append(iseries)
 
         future = pd.concat(future)

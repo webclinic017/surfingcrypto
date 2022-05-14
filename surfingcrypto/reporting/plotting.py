@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from surfingcrypto.ts import TS
 
 
-def candlesticks(ts:TS, ax, volume=False, vol_ax=None, style="candlesticks"):
+def candlesticks(ts: TS, ax, volume=False, vol_ax=None, style="candlesticks"):
     """
     plotting candlesticks into a matplotlib.axes.Axes object.
 
@@ -55,7 +55,7 @@ def candlesticks(ts:TS, ax, volume=False, vol_ax=None, style="candlesticks"):
     return
 
 
-def plot_moving_averages(ts:TS, ax):
+def plot_moving_averages(ts: TS, ax):
     """
     Plot two simple moving averages.
     Default windows are 12 and 26 days. Can be customized by using
@@ -103,7 +103,7 @@ def plot_macd(ts: TS, ax, plot_lines=True):
     macd_colname = "MACD_" + fast + "_" + slow + "_" + sign
     signal_colname = "MACDs_" + fast + "_" + slow + "_" + sign
 
-    prices = ts.df[["Close", h_colname,macd_colname, signal_colname]]
+    prices = ts.df[["Close", h_colname, macd_colname, signal_colname]].copy()
 
     prices["colors"] = prices[h_colname]
     prices["colors"].loc[prices[h_colname] <= 0] = -1
@@ -112,12 +112,14 @@ def plot_macd(ts: TS, ax, plot_lines=True):
 
     prices.dropna(inplace=True)
 
-    prices.plot(kind="bar",y=[h_colname],ax=ax,color="pink",zorder=2)
+    prices.plot.bar( y=[h_colname,], ax=ax, color="pink", zorder=2)
 
     if plot_lines:
-        prices.plot(y=[macd_colname, signal_colname], ax=ax,zorder=3)
-        l = ax.legend(loc="lower left", prop={"size": 3})
-        l.get_frame().set_linewidth(0.5)
+        prices.plot(y=[macd_colname, signal_colname], ax=ax, zorder=3)
+
+    
+    l = ax.legend(loc="lower left", prop={"size": 3})
+    l.get_frame().set_linewidth(0.5)
 
     ax.annotate(
         "MACD(" + fast + "-" + slow + ")-S(" + sign + ")",

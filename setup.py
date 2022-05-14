@@ -27,7 +27,6 @@ setup(
         "pandas_ta",
         "python_dateutil",
         "pytrends",
-        "trendln",
         "cryptocmd",
         "calplot",
         "git+https://github.com/giocaizzi/pyfolio.git",
