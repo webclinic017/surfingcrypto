@@ -72,7 +72,8 @@ def test_load_data_and_custom_params(temp_test_env):
     assert ts.ta_params["sma"]["fast"] == 14
     assert ts.ta_params["sma"]["slow"] == 28
 
-@pytest.mark.skip # skiped instead of deleted because a check of params could be convinient
+
+@pytest.mark.skip  # skiped instead of deleted because a check of params could be convinient
 @pytest.mark.parametrize(
     "temp_test_env",
     [(("config_ta_error.json",), ("BTC.csv",))],

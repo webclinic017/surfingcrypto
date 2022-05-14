@@ -1,6 +1,5 @@
 import pytest
 from pathlib import Path
-import pytest_asyncio
 import shutil
 import os
 import re
@@ -28,7 +27,7 @@ def temp_test_env(request, tmp_path):
 
     Arguments:
         request (pytest.fixture): x-tuple of strings, or 2-tuple (config-data) of x-tuple of
-            files to copy in the config and data folder 
+            files to copy in the config and data folder
     """
     config_folder = tmp_path / "config"
     config_folder.mkdir()
@@ -80,7 +79,8 @@ def handle_config_json(path, p):
         if pattern.match(p):
             # rename to requested format
             os.rename(
-                path / "config" / p, path / "config" / "config.json",
+                path / "config" / p,
+                path / "config" / "config.json",
             )
             # set private api keys for testing
             # reading from testing environment variable
