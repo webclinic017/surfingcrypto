@@ -8,11 +8,11 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
-from surfingcrypto.algotrading.features import BinaryLaggedFeatures
+from surfingcrypto.algotrading.features import Features
 
 
 class Model:
-    def __init__(self, name: str, f: BinaryLaggedFeatures):
+    def __init__(self, name: str, f: Features):
         self.name = name
         self.feature = copy.copy(f)
         self.model = self._set_model()
@@ -36,7 +36,7 @@ class Model:
             raise NotImplementedError
 
     def _fit_model(self):
-        self.model.fit(self.X.values, self.Y)
+        self.model.fit(self.X, self.Y)
 
     def _estimate(self) -> pd.Series:
         return pd.DataFrame(

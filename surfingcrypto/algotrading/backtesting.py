@@ -163,17 +163,6 @@ class BackTest:
         else:
             raise NotImplementedError
 
-    def plot_timeline(self):
-        figs = self.cerebro.plot(
-            style="candlesticks",
-            barup="darkgreen",
-            bardown="darkred",
-            numfigs=2,
-            iplot=False,
-            fmt_x_ticks="%Y-%b-%d",
-        )
-        return figs[0]
-
 
 # define backtesting strategy class
 class MLStrategy(bt.Strategy):

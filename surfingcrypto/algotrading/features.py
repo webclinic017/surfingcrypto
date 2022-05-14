@@ -8,13 +8,13 @@ from surfingcrypto.ts import TS
 import surfingcrypto.algotrading.signals as surf_signals
 
 
-class BinaryLaggedFeatures:
-    def __init__(self, ts: TS, indicators: list, lags: list):
+class Features:
+    def __init__(self, ts: TS, indicators: list):
         self.ts = ts
         self.indicators = self._fmt_indicators(indicators)
-        self.lags = lags
-        self.df = self._compute_signals()
-        self.model_df = self.get_model_dataframe(self.indicators)
+        self.x_cols_names = []
+        self.df = pd.DataFrame()  # dataframe with  indicators and signals
+        self.model_df = pd.DataFrame()  # dataframe with Y and X
 
     def _fmt_indicators(self, indicators: list) -> dict:
         dicts = {}
@@ -22,35 +22,34 @@ class BinaryLaggedFeatures:
             dicts["i_" + "{}".format(str(i + 1).zfill(2))] = indicators[i]
         return dicts
 
+
+class BinaryLaggedLogReturns(Features):
+    def __init__(self, lags: list, *args, **kwargs):
+        self.lags = lags
+        super().__init__(*args, **kwargs)
+        self.df = self._compute_signals()
+        self.model_df = self._set_binary_lagged_features(self.indicators)
+
     def _compute_signals(self) -> pd.DataFrame:
         df = self.ts.df
 
         # SMA
-        df["SMA_12_26_Signal"] = df.apply(surf_signals.sma_signal, axis=1)
-        df["SMA_100_200_Signal"] = df.apply(
-            surf_signals.sma_signal, args=(["SMA_100", "SMA_200"],), axis=1
+        df["SMA_12_26_Signal"] = surf_signals.sma_signal(df)
+        df["SMA_100_200_Signal"] = surf_signals.sma_signal(
+            df, colnames=["SMA_100", "SMA_200"]
         )
-
         # MACD
-        df["MACD_12_26_9_Signal"] = df.apply(surf_signals.macd_signal, axis=1)
+        df["MACD_12_26_9_Signal"] = surf_signals.macd_signal(df)
 
         ## BB
-        df["PREV_STOCK"] = df["Close"].shift(1)
-        df["PREV_LOWERBB"] = df["BBL_20_2.0"].shift(1)
-        df["PREV_UPPERBB"] = df["BBU_20_2.0"].shift(1)
-        df["BBL_20_2_Signal"] = df.apply(surf_signals.bb_signal, args=(0,), axis=1)
-        df["BBL_20_2_Signal"] = df["BBL_20_2_Signal"].fillna(method="bfill")
-        df["BBL_20_2_Signal"] = df["BBL_20_2_Signal"].fillna(method="ffill")
+        df["BB_20_2_Signal"] = surf_signals.bb_signal(df)
 
         # RSI
-        df["PREV_RSI"] = df["RSI_14"].shift(1)
-        df["RSI_14_Signal"] = df.apply(surf_signals.rsi_signal, axis=1)
-        df["RSI_14_Signal"] = df["RSI_14_Signal"].fillna(method="bfill")
-        df["RSI_14_Signal"] = df["RSI_14_Signal"].fillna(method="ffill")
+        df["RSI_14_Signal"] = surf_signals.rsi_signal(df)
 
         return df
 
-    def get_model_dataframe(self, indicatori: dict) -> pd.DataFrame:
+    def _set_binary_lagged_features(self, indicatori: dict) -> pd.DataFrame:
         model_df = self.df[["Close"] + list(indicatori.values())].copy()
 
         model_df.rename(columns={"Close": self.ts.coin}, inplace=True)
@@ -80,11 +79,15 @@ class BinaryLaggedFeatures:
         return model_df
 
     def get_future_x(self) -> pd.Series:
-        last = self.model_df.loc[self.model_df.iloc[-1].name, self.x_cols_names]
+        last = self.model_df.loc[
+            self.model_df.iloc[-1].name, self.x_cols_names
+        ]
         future = []
         for key in self.indicators:
             iseries = last.loc[last.index.str.contains(key)].shift()
-            iseries.iloc[0] = self.model_df.loc[self.model_df.iloc[-1].name, key]
+            iseries.iloc[0] = self.model_df.loc[
+                self.model_df.iloc[-1].name, key
+            ]
             future.append(iseries)
 
         future = pd.concat(future)
@@ -93,7 +96,7 @@ class BinaryLaggedFeatures:
         return future
 
     def __repr__(self) -> str:
-        return f"BinaryLaggedFeatures(ts={self.ts.coin},lags={self.lags})"
+        return f"BinaryLaggedLogReturns(ts={self.ts.coin},lags={self.lags})"
 
     def __str__(self) -> str:
-        return f"BinaryLaggedFeatures(ts={self.ts.coin}),lags={self.lags})"
+        return f"BinaryLaggedLogReturns(ts={self.ts.coin}),lags={self.lags})"

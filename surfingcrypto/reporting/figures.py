@@ -384,6 +384,3 @@ class BacktestPerformancePlot:
         pf.plot_rolling_sharpe(returns=self.bt.returns, ax=self.axes[3])
         self.axes[3].grid(True)
 
-        plt.show()
-        # plt.grid(True)
-        # plt.legend()
