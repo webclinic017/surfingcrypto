@@ -39,3 +39,5 @@ dependencies:
     - git+https://github.com/giocaizzi/pyfolio.git
     #docs
     - sphinxemoji
+    # deployment
+    - TelegramBotNotifications

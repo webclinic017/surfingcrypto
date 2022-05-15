@@ -64,7 +64,7 @@ class TS:
             - Bolinger bands
             - RSI
         """
-        self._default_parametrization(params)
+        self._parametrize(params)
 
         for key in self.ta_params:
             if key == "sma":
@@ -94,8 +94,8 @@ class TS:
             else:
                 raise NotImplementedError
 
-    def _default_parametrization(self, params: dict or None):
-        """sets the default TA parameters
+    def _parametrize(self, params: dict or None):
+        """sets the TA parameters
 
         first sets package defaults, then overrides with condfiguration default
         if present and finally ovverrides once again with method argument

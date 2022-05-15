@@ -554,4 +554,4 @@ class Tracker:
         """
         if day == "last":
             day = self.daily_calcs["Date Snapshot"].unique()[-1]
-        return self.daily_calcs.set_index("Date Snapshot").loc[day]
+        return self.daily_calcs.set_index("Date Snapshot").loc[[day]]

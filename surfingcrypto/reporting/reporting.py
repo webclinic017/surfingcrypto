@@ -83,6 +83,6 @@ def report_coinbase_live_value(portfolio):
 
 def report_tomorrow_prediction(binary_prediction: int):
     if binary_prediction > 0:
-        print("BUY!")
+        return "BUY!"
     else:
-        print("SELL / STAY OUT OF MARKET")
+        return "SELL / STAY OUT OF MARKET"

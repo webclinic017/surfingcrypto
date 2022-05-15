@@ -166,8 +166,6 @@ class TaPlot(BaseFigure):
     Can be easily modified to fit other and/or more indicators.
 
     Arguments:
-        trendlines (bool) : UNDER DEVELOPEMENT! - plot also trendlines
-            calculated with `src.trend_line` class.
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         graphstart (str) : date string in d-m-Y format
             (or relative from today eg. 1 month: `1m`,3 month: `3m`) from
@@ -175,11 +173,11 @@ class TaPlot(BaseFigure):
 
     """
 
-    def __init__(self, trendlines=False, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.ta_plot(trendlines)
+        self.ta_plot()
 
-    def ta_plot(self, trendlines):
+    def ta_plot(self):
         """
         plotting function.
         """
