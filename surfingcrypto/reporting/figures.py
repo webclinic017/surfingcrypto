@@ -219,6 +219,11 @@ class TaPlot(BaseFigure):
         self.axes[0].set_title(
             self.object.coin, fontsize=10, va="center", ha="center", pad=20
         )
+
+        ymin= self.object.df["Low"].min() - 0.1*self.object.df["Low"].min()
+        ymax= self.object.df["High"].max() + 0.1*self.object.df["High"].max()
+        self.axes[0].set_ylim([ymin,ymax])
+        
         # log
         print(f"{self.object.coin} plotted.")
 
