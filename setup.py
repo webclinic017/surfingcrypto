@@ -29,8 +29,8 @@ setup(
         "pytrends",
         "cryptocmd",
         "calplot",
-        "pyfolio @ git+https://github.com/giocaizzi/pyfolio.git",
-        "backtrader @ git+https://github.com/mementum/backtrader.git@0fa63ef4a35dc53cc7320813f8b15480c8f85517#egg=backtrader",
+        # "pyfolio @ git+https://github.com/giocaizzi/pyfolio.git",
+        # "backtrader @ git+https://github.com/mementum/backtrader.git@0fa63ef4a35dc53cc7320813f8b15480c8f85517#egg=backtrader",
         "scikit-learn"
     ],
     extras_require={"dev": [],},
