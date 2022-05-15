@@ -103,4 +103,5 @@ f = BinaryLaggedLogReturns(
 )
 
 model=Model("svm",f)
+tg.send_message_to_user("ALGOTRADING - "+ticker+" :", "admin")
 tg.send_message_to_user(report_tomorrow_prediction(model.make_tomorrow_prediction()), "admin")
