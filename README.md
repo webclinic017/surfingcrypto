@@ -15,7 +15,13 @@ python package to surf crypto-waves.
 
 ## Installation
 
-Install with `pip`
+1. First, install direct requirements
+   ```shell
+   pip install git+https://github.com/giocaizzi/pyfolio.git
+   pip install git+https://github.com/mementum/backtrader.git@0fa63ef4a35dc53cc7320813f8b15480c8f85517#egg=backtrader
+
+
+2. Install with `pip`
    ```shell
    pip install surfingcrypto
    ```
