@@ -111,10 +111,11 @@ class CB:
         get transaction from specified account through pagination.
         if provided with
 
-        Arguments
+        Arguments:
             account (:obj:`coinbase.wallet.model.ApiObject`) : coinbase
                 account object.
             cache (_type_) : _descr_
+
         """
         return self._filter_paginated_items(
             account.get_transactions, account["currency"], cache, limit=5
