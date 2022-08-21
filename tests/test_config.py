@@ -7,12 +7,9 @@ import datetime
 
 from surfingcrypto import Config
 
-scenarios = [
-    (("config.json",), dict, type(None)),
-    (("config.json", "coinbase_accounts.json"), dict, dict),
-]
 
-COINS = {"BTC": "", "ETH": "", "MATIC": "", "ADA": "", "SOL": ""}
+
+COINS = {"BTC": ""}
 
 
 @pytest.mark.parametrize(

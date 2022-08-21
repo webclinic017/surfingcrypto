@@ -12,7 +12,7 @@ DEFAULT_TA = {
     "rsi": {"timeperiod": 14},
 }
 
-COINS = {"BTC": ""}
+COINS = {"BTC": "", "ETH": "",}
 
 
 @pytest.mark.parametrize(
