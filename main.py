@@ -21,6 +21,12 @@ from surfingcrypto.algotrading.features import BinaryLaggedLogReturns
 from surfingcrypto.algotrading.model import Model
 from surfingcrypto.reporting.reporting import report_tomorrow_prediction
 
+import decouple
+
+TELEGRAM_TOKEN = decouple.config("TELEGRAM_TOKEN")
+COINBASE_KEY = decouple.config("COINBASE_KEY")
+COINBASE_SCRT = decouple.config("COINBASE_SCRT")
+
 # get cwd
 cwd = Path(__file__).resolve().parent
 
@@ -29,11 +35,15 @@ now = dt.datetime.today()
 timestr = now.strftime("%Y%m%d-%H%M%S")
 
 # config
-coins={
-    "BTC":"",
-    "ETH":"",
+coins = {
+    "BTC": "",
+    "ETH": "",
 }
-c = Config(coins,str(cwd) + "/config")
+secrets = {
+    "telegram": {"token": TELEGRAM_TOKEN},
+    "coinbase": {"key": COINBASE_KEY, "scrt": COINBASE_SCRT},
+}
+c = Config(coins)
 
 # coinbase portfolio
 p = Portfolio("coinbase", configuration=c)
@@ -52,15 +62,20 @@ tg = TelegramBot(
 print("### Scraper")
 s = Scraper(c)
 s.run()
-tg.send_message_to_all(message=s.output_description)  # send scraper log to telegram
+tg.send_message_to_all(
+    message=s.output_description
+)  # send scraper log to telegram
 
 # start tracker AFTER having scraped required data
 p.start_tracker(
-    stocks_start="1-1-2021", benchmark="ETH",
+    stocks_start="1-1-2021",
+    benchmark="ETH",
 )
 
 coins_to_plot = [
-    x for x in set(p.coinbase.active_accounts + list(c.coins.keys())) if x != "USDC"
+    x
+    for x in set(p.coinbase.active_accounts + list(c.coins.keys()))
+    if x != "USDC"
 ]
 
 # produce reports for each coin in configuration
@@ -83,7 +98,9 @@ for coin in coins_to_plot:
 
 # PORTFOLIO INFO
 tg.send_message_to_user(report_coinbase_live_value(p), "admin")
-tg.send_message_to_user(report_stock_gain(p.tracker.daily_snaphost("last")), "admin")
+tg.send_message_to_user(
+    report_stock_gain(p.tracker.daily_snaphost("last")), "admin"
+)
 
 # ALGOTRADING
 
@@ -102,6 +119,8 @@ f = BinaryLaggedLogReturns(
     ],
 )
 
-model=Model("svm",f)
-tg.send_message_to_user("ALGOTRADING - "+ticker+" :", "admin")
-tg.send_message_to_user(report_tomorrow_prediction(model.make_tomorrow_prediction()), "admin")
+model = Model("svm", f)
+tg.send_message_to_user("ALGOTRADING - " + ticker + " :", "admin")
+tg.send_message_to_user(
+    report_tomorrow_prediction(model.make_tomorrow_prediction()), "admin"
+)
