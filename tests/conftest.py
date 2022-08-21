@@ -67,7 +67,7 @@ def populate_test_env(request, tmp_path):
             os.makedirs(tmp_path / "data" / "ts")
             shutil.copy(TEST_DATA / d, tmp_path / "data" / "ts" / d)
     else:
-        raise ValueError("Incorrect format. Pass x-tuple or 2-tuple of x-uple.")
+        raise ValueError("Incorrect format. Pass x-tuple or 2-tuple.")
 
 
 def handle_config_json(path, p):
