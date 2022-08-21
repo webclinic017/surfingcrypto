@@ -206,11 +206,11 @@ class Tracker:
         Given a sale, it adjusts the daily_poisitions dataframe accordingly
 
         For every buy in buys:
-        - If quantity of the oldest buy amount is ≤ the sold quantity
-            subtract the amount of the buy position from the sell,
-            then set the buy quantity to 0.
-        - Else, subtract the sales quantity from the buy position
-            subtract that same amount from the sales position
+            - If quantity of the oldest buy amount is ≤ the sold quantity
+                subtract the amount of the buy position from the sell,
+                then set the buy quantity to 0.
+            - Else, subtract the sales quantity from the buy position
+                subtract that same amount from the sales position
 
         Args:
             daily_positions (pd.DataFrame): dataframe of positions
