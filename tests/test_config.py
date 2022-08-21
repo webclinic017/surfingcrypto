@@ -7,79 +7,34 @@ import datetime
 
 from surfingcrypto import Config
 
+scenarios = [
+    (("config.json",), dict, type(None)),
+    (("config.json", "coinbase_accounts.json"), dict, dict),
+]
 
+COINS = {"BTC": "", "ETH": ""}
 
-COINS = {"BTC": ""}
-
-
-@pytest.mark.parametrize(
-    "temp_test_env,scrp_req,cb_req", scenarios, indirect=["temp_test_env"]
-)
-def test_init_with_datafolder(temp_test_env, scrp_req, cb_req):
+def test_init_without_datafolder(temp_test_env):
     """
     test initialization of config class without specifying a data folder
     """
     root = temp_test_env
-    os.mkdir(root / "data")
-    c = Config(COINS, str(root / "config"), str(root / "data"))
+    c = Config(COINS, str(root / "data"))
     assert hasattr(c, "coins")
     assert isinstance(c.data_folder, str)
     assert os.path.isdir(root / "data" / "ts")
     assert os.path.isdir(root / "data" / "temp")
-    print(scrp_req, cb_req)
-    assert isinstance(c.scraping_req, scrp_req)
     assert "BTC" in c.scraping_req.keys()
-    assert isinstance(c.coinbase_req, cb_req)
-    if isinstance(cb_req, dict):
-        assert "SOL" in c.coinbase_req.keys()
-        assert isinstance(c.coinbase_req["start"], datetime)
-        assert isinstance(c.coinbase_req["end_day"], datetime)
-        assert c.coinbase_req["end_day"] > c.coinbase_req["start"]
 
-
-@pytest.mark.parametrize(
-    "temp_test_env,scrp_req,cb_req", scenarios, indirect=["temp_test_env"]
-)
-def test_init_without_datafolder(temp_test_env, scrp_req, cb_req):
-    """
-    test initialization of config class without specifying a data folder
-    """
-    root = temp_test_env
-    c = Config(COINS, str(root / "config"))
-    assert hasattr(c, "coins")
-    assert isinstance(c.data_folder, str)
-    assert os.path.isdir(root / "data" / "ts")
-    assert os.path.isdir(root / "data" / "temp")
-    print(scrp_req, cb_req)
-    assert isinstance(c.scraping_req, scrp_req)
-    assert "BTC" in c.scraping_req.keys()
-    assert isinstance(c.coinbase_req, cb_req)
-    if isinstance(cb_req, dict):
-        assert "SOL" in c.coinbase_req.keys()
-        assert isinstance(c.coinbase_req["start"], datetime)
-        assert isinstance(c.coinbase_req["end_day"], datetime)
-        assert c.coinbase_req["end_day"] > c.coinbase_req["start"]
-
-
-@pytest.mark.parametrize("temp_test_env", [()], indirect=["temp_test_env"])
-def test_fail_init(temp_test_env):
-    root = temp_test_env
-    with pytest.raises(FileNotFoundError):
-        c = Config(COINS, str(root / "config"))
-
-
-@pytest.mark.parametrize(
-    "temp_test_env", [("config.json",)], indirect=["temp_test_env"]
-)
-def test_temp_folder(temp_test_env):
+def test_empty_folder(temp_test_env):
     root = temp_test_env
     # first run to create folder struct
-    c = Config(COINS, str(root / "config"))
+    c = Config(COINS, str(root / "data"))
     # create file
     with open(root / "data" / "temp" / "test.txt", "wb") as f:
         f.close()
     # calling again the init should empty the temp dir
-    c = Config(COINS, str(root / "config"))
+    c = Config(COINS, str(root / "data"))
     # directory exits
     assert os.path.isdir(root / "data" / "temp")
     # but all temp files from previous run are removed with init

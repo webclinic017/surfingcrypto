@@ -31,7 +31,7 @@ def temp_test_env(request, tmp_path):
     """
     config_folder = tmp_path / "config"
     config_folder.mkdir()
-    populate_test_env(request, tmp_path)
+    # populate_test_env(request, tmp_path)
 
     yield tmp_path
 

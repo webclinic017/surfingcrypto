@@ -15,38 +15,37 @@ class Config:
 
     Arguments:
         coins (dict): coins
+        data_folder (str) : ABSOLUTE path to data folder
         secrets (dist): dictionary of secrets (such as API keys)
 
     Attributes:
         coins (dict): coins
-        secrets (dict): dictionary of secrets (such as API keys)
+        data_folder (str) : ABSOLUTE path to data folder
 
         coinbase (dict): coinbase user configuration
+        telegram (dict): telegram user configuration
+
         coinbase_req (:obj:`dict` of :obj:`dict`) dictionary
             containing coinbase requirements
         coins (dict): coins user configuration
-        config_folder (str): ABSOLUTE path to config folder.
         data_folder (str) : ABSOLUTE path to data folder
+
         error_log (:obj:`list`): list of errors
         rebrandings (dict): dictionary of known rebrandings
         scraping_req (:obj:`dict` of :obj:`dict`)
             dictionary containing scraping params
-        telegram (dict): telegram user configuration
-        temp_folder (str,optional) : ABSOLUTE path to data folder
     """
 
-    def __init__(self, coins: dict, secrets=None):
+    def __init__(self, coins: dict, data_folder: str, secrets=None):
         self.coins = coins
         if secrets:
             for key in secrets:
                 setattr(self, key, secrets[key])
 
-        self._set_data_folder(data_folder)
-        self._temp_dir()
+        self.data_folder = data_folder
+        self._make_subdirs()
 
         self.rebrandings = {"CGLD": "CELO"}
-
-        # ERROR LOG
         self.error_log = []
         # DATA REQUIREMENTS
         self._set_requirements()
@@ -59,30 +58,7 @@ class Config:
         self._format_coinbase_req()
         self._set_scraping_parameters()
 
-
-    def _set_data_folder(self, data_folder):
-        """
-        sets the directory to the data folder.
-
-        Arguments:
-            data_folder (str): path
-        """
-        # HANDLING DATA FOLDER
-        if data_folder is None:
-            self.data_folder = str(
-                (pathlib.Path(self.config_folder).parent).joinpath("data")
-            )
-            self._make_data_directories()
-        else:
-            if os.path.isdir(data_folder):
-                self.data_folder = data_folder
-                self._make_data_directories()
-            else:
-                raise FileNotFoundError(
-                    f"Data folder not found. \n {data_folder}"
-                )
-
-    def _make_data_directories(self):
+    def _make_subdirs(self):
         """
         create data subdirectory structure.
         """
@@ -92,27 +68,24 @@ class Config:
         # data/ts subfolder
         if not os.path.isdir(self.data_folder + "/ts"):
             os.mkdir(self.data_folder + "/ts")
-
-    def _temp_dir(self):
-        """
-        Create temp directory for temporary storing plots to be sent.
-        If alreay exist, empty folder.
-        """
-        # data/temp
-        self.temp_folder = self.data_folder + "/temp"
-        if not os.path.isdir(self.temp_folder):
-            os.mkdir(self.temp_folder)
+        # data/temp subfolder
+        if not os.path.isdir(self.data_folder + "/temp"):
+            os.mkdir(self.data_folder + "/temp")
         else:
-            for f in os.listdir(self.temp_folder):
-                os.remove(self.temp_folder + "/" + f)
+        # clears temp folder
+            for f in os.listdir(self.data_folder + "/temp"):
+                os.remove(self.data_folder + "/temp" + "/" + f)
+        # data/cache subfolder
+        if not os.path.isdir(self.data_folder + "/cache"):
+            os.mkdir(self.data_folder + "/cache")
 
     def _read_coinbase_requirements(self):
         """
         gets the requirements for coinbase portfolio tracking.
         """
-        if os.path.isfile(self.config_folder + "/coinbase_accounts.json"):
+        if os.path.isfile(self.data_folder + "/cache/coinbase_accounts.json"):
             with open(
-                self.config_folder + "/coinbase_accounts.json", "rb"
+                self.data_folder + "/cache/coinbase_accounts.json", "rb"
             ) as f:
                 self.coinbase_req = json.load(f)
         else:
