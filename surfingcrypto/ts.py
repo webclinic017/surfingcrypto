@@ -21,6 +21,10 @@ class TS:
             eg. BTC,ETH
 
     Attributes:
+        config (:obj:`surfingcrypto.config.config`): package
+            configuration object
+        coin (str): string representing the crypto coin of choice,
+            eg. BTC,ETH
         df (:obj:`pandas.DataFrame`): dataframe with datetime index
             of ohlc data. Could store also TA indicators if these are
             computed invoking the relative method.
