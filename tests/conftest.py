@@ -29,17 +29,34 @@ def temp_test_env(request, tmp_path):
         request (pytest.fixture): x-tuple of strings, or 2-tuple (config-data) of x-tuple of
             files to copy in the config and data folder
     """
-    if hasattr(request,"param"):
-        if len(request.param) == 1:
-            for p in request.param:
-                shutil.copy(TEST_DATA / p, request.params[0][0] / "data" / "ts" / p)
-                handle_config_json(tmp_path, p)
+    populate_test_env(request, tmp_path)
 
     yield tmp_path
 
+def populate_test_env(request, tmp_path):
+    if hasattr(request,"param"):
+        # if first element is string then...
+        if isinstance(request.param[0],tuple) and len(request.param[0])==1:
+            for p in request.param[0]:
+                print("###########################")
+                if os.path.isfile(TEST_DATA / p):
+                    if os.path.isfile(tmp_path/ "data" / "ts" / p):
+                        shutil.copy(TEST_DATA / p, tmp_path/ "data" / "ts" / p)
+                    else:
+                        print(tmp_path/ "data" / "ts" / p)
+                        raise AttributeError
+                else:
+                    print(TEST_DATA / p)
+                    raise AttributeError
+                # handle_config_json(tmp_path, p)
+        else:
+            # print(request.param[0])
+            # print(type(request.param[0]))
+            raise AttributeError("params fixture error")
+
 
 # @pytest.fixture
-# def populate_test_env(request):
+# def populate_test_env_old(request):
 #     """
 #     populate with fixture files the requestend test environment.
 #     """
