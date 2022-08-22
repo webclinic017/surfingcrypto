@@ -29,45 +29,45 @@ def temp_test_env(request, tmp_path):
         request (pytest.fixture): x-tuple of strings, or 2-tuple (config-data) of x-tuple of
             files to copy in the config and data folder
     """
-    config_folder = tmp_path / "config"
-    config_folder.mkdir()
-    # populate_test_env(request, tmp_path)
+    if hasattr(request,"param"):
+        if len(request.param) == 1:
+            for p in request.param:
+                shutil.copy(TEST_DATA / p, request.params[0][0] / "data" / "ts" / p)
+                handle_config_json(tmp_path, p)
 
     yield tmp_path
 
-    def clean():
-        shutil.rmtree(tmp_path)
 
-    request.addfinalizer(clean)
-
-
-def populate_test_env(request, tmp_path):
-    """
-    populate with fixture files the requestend test environment.
-    """
-    # param: empty tuple, do nothing
-    if not request.param:
-        pass
-    # param: x-tuple of string names of files to be copied in config folder
-    elif isinstance(request.param[0], str):
-        # all are config files
-        for p in request.param:
-            shutil.copy(TEST_DATA / p, tmp_path / "config" / p)
-            # rename test config file to correct format
-            handle_config_json(tmp_path, p)
-    # param:c 2-tuple of x-tuples of files to be copied in config,data/ts folders
-    elif isinstance(request.param[0], tuple) and len(request.param) == 2:
-        # config files
-        for c in request.param[0]:
-            shutil.copy(TEST_DATA / c, tmp_path / "config" / c)
-            # rename test config file to correct format
-            handle_config_json(tmp_path, c)
-        # data/ts files
-        for d in request.param[1]:
-            os.makedirs(tmp_path / "data" / "ts")
-            shutil.copy(TEST_DATA / d, tmp_path / "data" / "ts" / d)
-    else:
-        raise ValueError("Incorrect format. Pass x-tuple or 2-tuple.")
+# @pytest.fixture
+# def populate_test_env(request):
+#     """
+#     populate with fixture files the requestend test environment.
+#     """
+#     # param: empty tuple, do nothing
+#     # if not hasattr(request,"param"):
+#     #     pass
+#     # param: x-tuple of string names of files to be copied in config folder
+#     if len(request.param) == 1:
+#         # all are config files
+#         for p in request.param:
+#             shutil.copy(TEST_DATA / p, request.params[0][0] / "data" / "ts" / p)
+#             # rename test config file to correct format
+#             handle_config_json(tmp_path, p)
+#     # param:c 2-tuple of x-tuples of files to be copied in config,data/ts folders
+#     # elif isinstance(request.param[0], tuple) and len(request.param) == 2:
+#         # config files
+#         # for c in request.param[0]:
+#         #     shutil.copy(TEST_DATA / c, tmp_path / "config" / c)
+#         #     # rename test config file to correct format
+#         #     handle_config_json(tmp_path, c)
+#         # # data/ts files
+#         # for d in request.param[1]:
+#         #     os.makedirs(tmp_path / "data" / "ts")
+#         #     shutil.copy(TEST_DATA / d, tmp_path / "data" / "ts" / d)
+#     else:
+#         print(isinstance(request.param,tuple))
+#         print(len(request.param))
+#         raise ValueError("Incorrect format. Pass a 1-tuple.")
 
 
 def handle_config_json(path, p):

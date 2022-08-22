@@ -33,20 +33,19 @@ def test_failed_load_data(temp_test_env):
 
 
 # @pytest.mark.parametrize(
-#     "temp_test_env",
-#     [(("config.json",), ("BTC.csv",))],
-#     indirect=["temp_test_env"],
+#     "populate_test_env",
+#     [("BTC.csv",)],
+#     indirect=True,
 # )
 # def test_load_data_and_default_parametrization(temp_test_env):
 #     """test loading pandas df and setting default ta params"""
 #     root = temp_test_env
-#     c = Config(COINS, str(root / "config"))
+#     c = Config(COINS, str(root / "data"))
 #     ts = TS(c, coin="BTC")
 #     # load dataframe
 #     assert isinstance(ts.df, pd.DataFrame)
 #     ts._parametrize(None)
 #     assert hasattr(ts, "ta_params")
-#     #
 #     assert ts.ta_params == DEFAULT_TA
 
 
