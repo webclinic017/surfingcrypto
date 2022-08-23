@@ -27,7 +27,6 @@ class Config:
 
         coinbase_req (:obj:`dict` of :obj:`dict`) dictionary
             containing coinbase requirements
-        coins (dict): coins user configuration
         data_folder (str) : ABSOLUTE path to data folder
 
         error_log (:obj:`list`): list of errors
