@@ -9,6 +9,12 @@ data/ts/**
 # tools
 tools/
 #######
+# sphinx docs
+docsrc/build
+#######
+# temp files, if present
+temp/
+#######
 #ignore all kind of images in home directory
 ./*.pdf
 ./*.png
@@ -24,12 +30,6 @@ config/*
 #######
 # log files 
 *.log
-#######
-# temp files, if present
-temp/
-#######
-# sphinx docs
-docsrc/build
 ######
 # package files
 *.egg-info/
@@ -48,7 +48,4 @@ coverage.xml
 *.patch
 # plotly
 ./*.html
-####
-# others
-tools/vm.sh
 *.session
