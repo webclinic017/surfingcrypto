@@ -13,16 +13,13 @@ class Scraper:
     gets all data required by module configuration.
 
     Arguments:
-        configuration (:obj:`surfingcrypto.config.config`): package
+        config (:obj:`surfingcrypto.config.config`): package
             configuration object
-        fiat (str): prices will be restituted in the selected fiat,
-            defaults is `EUR`
         verbose (bool): wether to log at the end of execution
 
     Attributes:
         config (:obj:`surfingcrypto.config.config`): package
             configuration object
-        fiat (str): fiat symbol
         verbose (bool): wether to print log
         runs (:obj:`list` of :obj:`surfincrypto.scraper.CoinScraper`): list
             of `CoinScraper` objects
@@ -35,9 +32,8 @@ class Scraper:
 
     """
 
-    def __init__(self, configuration, fiat="EUR", verbose=True):
-        self.config = configuration
-        self.fiat = fiat
+    def __init__(self, config, verbose=True):
+        self.config = config
         self.verbose = verbose
 
     def run(self):
@@ -52,8 +48,12 @@ class Scraper:
             if key in self.config.rebrandings:
                 key = self.config.rebrandings[key]
 
-            path = self.config.data_folder / "ts" / (key + ".csv")
-            c = CoinScraper(key, self.fiat, start, end_day, path)
+            path = (
+                self.config.data_folder
+                / "ts"
+                / (key + "_" + self.config.fiat + ".csv")
+            )
+            c = CoinScraper(key, self.config.fiat, start, end_day, path)
             self.runs.append(c)
 
         self._log()
@@ -73,7 +73,8 @@ class Scraper:
             self.output = True
         else:
             self.output_description = (
-                "Update failed." f" There are ({len(self.errors)}/{length}) errors."
+                "Update failed."
+                f" There are ({len(self.errors)}/{length}) errors."
             )
             self.output = False
 
@@ -134,24 +135,34 @@ class CoinScraper:
             last = last.date()
 
             if first == self.start and last == self.end_day:
-                self.description = f"DF: {self.coin} already up to date."
+                self.description = (
+                    f"DF: {self.coin} in {self.fiat}, already up to date."
+                )
                 self.result = True
             else:
                 try:
                     self._scrape_missing_data(first, last, df)
-                    self.description = f"DF: {self.coin} successfully updated."
+                    self.description = f"DF: {self.coin} in {self.fiat},"
+                    " successfully updated."
                     self.result = True
                 except:
-                    self.description = f"DF: {self.coin} update failed."
+                    self.description = (
+                        f"DF: {self.coin} in {self.fiat},"
+                        " update failed."
+                    )
                     self.result = False
                     self.error = traceback.format_exc()
         else:
             try:
                 self._scrape_alltime_data()
-                self.description = f"DF: {self.coin} successfully downloaded."
+                self.description = f"DF: {self.coin} in {self.fiat},"
+                "  successfully downloaded."
                 self.result = True
             except:
-                self.description = f"DF: {self.coin} download failed."
+                self.description = (
+                    f"DF: {self.coin} in {self.fiat} in {self.fiat},"
+                    "  download failed."
+                )
                 self.result = False
                 self.error = traceback.format_exc()
 
@@ -229,14 +240,18 @@ class CoinScraper:
     def _append_to_front(self, first: datetime) -> CmcScraper:
         start = self.start.strftime("%d-%m-%Y")
         day_before_first = (first - datetime.timedelta(1)).strftime("%d-%m-%Y")
-        scraper = CmcScraper(self.coin, start, day_before_first, fiat=self.fiat)
+        scraper = CmcScraper(
+            self.coin, start, day_before_first, fiat=self.fiat
+        )
 
         return scraper
 
     def _append_to_end(self, last: datetime) -> CmcScraper:
         day_after_last = (last + datetime.timedelta(1)).strftime("%d-%m-%Y")
         end_day = self.end_day.strftime("%d-%m-%Y")
-        scraper = CmcScraper(self.coin, day_after_last, end_day, fiat=self.fiat)
+        scraper = CmcScraper(
+            self.coin, day_after_last, end_day, fiat=self.fiat
+        )
         return scraper
 
     def _load_csv(self):

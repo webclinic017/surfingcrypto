@@ -14,10 +14,10 @@ scenarios = [
     # load config without running
     (None, False, []),
     # load config and run
-    (None, True, ["BTC.csv"]),
+    (None, True, ["BTC_EUR.csv"]),
     # load config, data to be updated and run.
     # one is updated and the other is downloaded entirely
-    (("BTC.csv",), True, ["SOL.csv", "BTC.csv"]),
+    (("BTC_EUR.csv",), True, ["SOL_EUR.csv", "BTC_EUR.csv"]),
 ]
 
 COINS = {"BTC": "","SOL":""}
@@ -41,7 +41,7 @@ def test_scraping_without_coinbase(temp_test_env, run, check_files):
             assert os.path.isfile(root / "data" / "ts" / file)
             df = pd.read_csv(root / "data" / "ts" / file)
             df["Date"] = pd.to_datetime(df["Date"])
-            if file[:-4] == "BTC":
+            if file == "BTC_EUR.csv":
                 # check price is downloaded in EUR by checking known values
                 assert (
                     df.set_index("Date").loc["2021-12-31", "Close"] == 40712.7200439697

@@ -16,11 +16,14 @@ class Config:
     Arguments:
         coins (dict): coins
         data_folder (:obj:`pathlib.Path`) : path to datafolder
-        secrets (dist): dictionary of secrets (such as API keys)
+        secrets (dist): dictionary of secrets (such as API keys),
+            defaults to None
+        fiat (str): preferred fiat, defaults is `EUR`
 
     Attributes:
         coins (dict): coins
         data_folder (str) : ABSOLUTE path to data folder
+        fiat (str): preferred fiat, defaults is `EUR`
 
         coinbase (dict): coinbase user configuration
         telegram (dict): telegram user configuration
@@ -35,8 +38,11 @@ class Config:
             dictionary containing scraping params
     """
 
-    def __init__(self, coins: dict, data_folder: Path, secrets=None):
+    def __init__(
+        self, coins: dict, data_folder: Path, secrets=None, fiat="EUR"
+    ):
         self.coins = coins
+        self.fiat = fiat
         if secrets:
             for key in secrets:
                 setattr(self, key, secrets[key])
