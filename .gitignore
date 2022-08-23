@@ -6,6 +6,9 @@ __pycache__/
 data/
 data/ts/**
 #######
+# tools
+tools/
+#######
 #ignore all kind of images in home directory
 ./*.pdf
 ./*.png
