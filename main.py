@@ -39,11 +39,12 @@ coins = {
     "BTC": "",
     "ETH": "",
 }
+
 secrets = {
     "telegram": {"token": TELEGRAM_TOKEN},
     "coinbase": {"key": COINBASE_KEY, "scrt": COINBASE_SCRT},
 }
-c = Config(coins)
+c = Config(coins, data_folder=cwd / "data", secrets=secrets)
 
 # coinbase portfolio
 p = Portfolio("coinbase", configuration=c)
@@ -55,7 +56,7 @@ c.add_coins(p.coinbase.active_accounts)
 tg = TelegramBot(
     c.telegram["token"],
     channel_mode=True,
-    users_path=str(cwd) + "/config/telegram_users.csv",
+    users_path=str(cwd / "data" / "telegram_users.csv"),
 )
 
 # scrape required data
@@ -84,7 +85,7 @@ for coin in coins_to_plot:
     ts = TS(c, coin=coin)
     ts.ta_indicators()
     fig = TaPlot(object=ts, graphstart="6m")
-    tmpname = c.temp_folder + "/" + coin + "_" + timestr + ".jpeg"
+    tmpname = c.data_folder / "temp" / (coin + "_" + timestr + ".jpeg")
     fig.save(tmpname)
     tg.send_message_to_all(report_percentage_diff(ts.df, ts.coin))
     tg.send_photo_to_all(tmpname)
@@ -92,7 +93,7 @@ for coin in coins_to_plot:
     # ATH(BTC) plot every monday
     if coin == "BTC" and now.weekday() == 0:
         ath = ATHPlot(ts, graphstart="1-1-2020")
-        tmpname = c.temp_folder + "/" + coin + "_ATH_" + timestr + ".jpeg"
+        tmpname = c.data_folder / "temp" / (coin + "_ATH_" + timestr + ".jpeg")
         ath.save(tmpname)
         tg.send_photo_to_all(tmpname)
 
