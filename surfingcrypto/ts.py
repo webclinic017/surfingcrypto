@@ -15,7 +15,7 @@ class TS:
         object.
 
     Arguments:
-        configuration (:obj:`surfingcrypto.config.config`): configuration
+        config (:obj:`surfingcrypto.config.config`): configuration
             object
         coin (str): string representing the crypto coin of choice,
             eg. BTC,ETH
@@ -25,6 +25,7 @@ class TS:
             configuration object
         coin (str): string representing the crypto coin of choice,
             eg. BTC,ETH
+        fiat (str): fiat currency in which the prices are represented
         df (:obj:`pandas.DataFrame`): dataframe with datetime index
             of ohlc data. Could store also TA indicators if these are
             computed invoking the relative method.
@@ -34,6 +35,7 @@ class TS:
     def __init__(self, configuration, coin=None):
 
         self.config = configuration
+        self.fiat = self.config.fiat
 
         if coin is None:
             raise ValueError("Must specify coin.")
@@ -49,9 +51,15 @@ class TS:
         reads the data from data stored locally in `data/ts/` and
         saved in .csv format.
         """
-        if os.path.isfile(self.config.data_folder / "ts" / (self.coin + ".csv")):
+        if os.path.isfile(
+            self.config.data_folder
+            / "ts"
+            / (self.coin + "_" + self.fiat + ".csv")
+        ):
             self.df = pd.read_csv(
-                self.config.data_folder / "ts" / (self.coin + ".csv")
+                self.config.data_folder
+                / "ts"
+                / (self.coin + "_" + self.fiat + ".csv")
             )
             self.df["Date"] = pd.to_datetime(self.df["Date"], utc=True)
             self.df.set_index("Date", inplace=True)
