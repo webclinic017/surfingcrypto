@@ -26,7 +26,7 @@ config/*
 *.log
 #######
 # temp files, if present
-temp/*
+temp/
 #######
 # sphinx docs
 docsrc/build
