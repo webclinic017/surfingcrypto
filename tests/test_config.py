@@ -77,3 +77,14 @@ def test_init_with_coinbase_req(temp_test_env):
     assert c.coinbase_req["SOL"]["end_day"].replace(hour=0, minute=0, second=0, microsecond=0) == datetime.datetime(
                     2022, 9, 21, tzinfo=datetime.timezone.utc
                 )
+
+def test_storage_of_secrets(temp_test_env):
+    root = temp_test_env
+    secrets={
+        "foo":{},
+        "baz":"baz"
+    }
+    c = Config(COINS, root / "data",secrets)
+
+    assert hasattr(c,"foo")
+    assert hasattr(c,"baz")
