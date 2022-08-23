@@ -16,6 +16,9 @@ COINS = {"BTC": "", "ETH": ""}
 def test_default_init(temp_test_env):
     """
     test initialization of config class
+
+    must have data from the first day posssible or at least 2017-10-1 
+    until last available price
     """
     root = temp_test_env
     c = Config(COINS, root / "data")
@@ -88,3 +91,21 @@ def test_storage_of_secrets(temp_test_env):
 
     assert hasattr(c,"foo")
     assert hasattr(c,"baz")
+
+@freeze_time("2022-09-22")
+def test_add_coin(temp_test_env):
+    # test adding a coin that is not already in c.coins
+    # no coinbase req
+    root = temp_test_env
+    c = Config(COINS, root / "data")
+    c.add_coins(["SOL"])
+
+    # default scraping parameters, as datetime UTC AWARE
+    assert c.scraping_req["SOL"]["start"] == datetime.datetime(
+                    2017, 10, 1, tzinfo=datetime.timezone.utc
+                )
+    # end_day must be one day before today, UTC
+    assert c.scraping_req["SOL"]["end_day"] == datetime.datetime(
+                    2022, 9, 21, tzinfo=datetime.timezone.utc
+                )
+ 
