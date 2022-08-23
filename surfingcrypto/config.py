@@ -3,8 +3,8 @@ package configuration
 """
 import json
 import os
-import pathlib
-import datetime, pytz
+from pathlib import Path
+import datetime
 import dateutil
 
 
@@ -15,7 +15,7 @@ class Config:
 
     Arguments:
         coins (dict): coins
-        data_folder (str) : ABSOLUTE path to data folder
+        data_folder (:obj:`pathlib.Path`) : path to datafolder
         secrets (dist): dictionary of secrets (such as API keys)
 
     Attributes:
@@ -36,7 +36,7 @@ class Config:
             dictionary containing scraping params
     """
 
-    def __init__(self, coins: dict, data_folder: str, secrets=None):
+    def __init__(self, coins: dict, data_folder: Path, secrets=None):
         self.coins = coins
         if secrets:
             for key in secrets:
@@ -66,26 +66,28 @@ class Config:
         if not os.path.isdir(self.data_folder):
             os.mkdir(self.data_folder)
         # data/ts subfolder
-        if not os.path.isdir(self.data_folder + "/ts"):
-            os.mkdir(self.data_folder + "/ts")
+        if not os.path.isdir(self.data_folder / "ts"):
+            os.mkdir(self.data_folder / "ts")
         # data/temp subfolder
-        if not os.path.isdir(self.data_folder + "/temp"):
-            os.mkdir(self.data_folder + "/temp")
+        if not os.path.isdir(self.data_folder / "temp"):
+            os.mkdir(self.data_folder / "temp")
         else:
-        # clears temp folder
-            for f in os.listdir(self.data_folder + "/temp"):
-                os.remove(self.data_folder + "/temp" + "/" + f)
+            # clears temp folder
+            for f in os.listdir(self.data_folder / "temp"):
+                os.remove(self.data_folder / "temp" / f)
         # data/cache subfolder
-        if not os.path.isdir(self.data_folder + "/cache"):
-            os.mkdir(self.data_folder + "/cache")
+        if not os.path.isdir(self.data_folder / "cache"):
+            os.mkdir(self.data_folder / "cache")
 
     def _read_coinbase_requirements(self):
         """
         gets the requirements for coinbase portfolio tracking.
         """
-        if os.path.isfile(self.data_folder + "/cache/coinbase_accounts.json"):
+        if os.path.isfile(
+            self.data_folder / "cache" / "coinbase_accounts.json"
+        ):
             with open(
-                self.data_folder + "/cache/coinbase_accounts.json", "rb"
+                self.data_folder / "cache" / "coinbase_accounts.json", "rb"
             ) as f:
                 self.coinbase_req = json.load(f)
         else:

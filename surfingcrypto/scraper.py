@@ -52,7 +52,7 @@ class Scraper:
             if key in self.config.rebrandings:
                 key = self.config.rebrandings[key]
 
-            path = self.config.data_folder + "/ts/" + key + ".csv"
+            path = self.config.data_folder / "ts" / (key + ".csv")
             c = CoinScraper(key, self.fiat, start, end_day, path)
             self.runs.append(c)
 

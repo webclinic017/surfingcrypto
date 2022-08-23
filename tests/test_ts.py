@@ -19,7 +19,7 @@ COINS = {"BTC": "", "ETH": "",}
 def test_valuerror(temp_test_env):
     """test ValueError when no coin is specified"""
     root = temp_test_env
-    c = Config(COINS, str(root / "data"))
+    c = Config(COINS, root / "data")
     with pytest.raises(ValueError):
         TS(c, coin=None)
 
@@ -28,7 +28,7 @@ def test_valuerror(temp_test_env):
 def test_failed_load_data(temp_test_env):
     """test FileNotFoundError"""
     root = temp_test_env
-    c = Config(COINS, str(root / "data"))
+    c = Config(COINS, root / "data")
     with pytest.raises(FileNotFoundError):
         TS(c, coin="BTC")
 
@@ -36,7 +36,7 @@ def test_failed_load_data(temp_test_env):
 @pytest.mark.parametrize(
     "temp_test_env",     
     [
-        (("BTC.csv",),)
+        ("BTC.csv",),
     ],
     indirect=["temp_test_env"]
 )
@@ -44,7 +44,7 @@ def test_failed_load_data(temp_test_env):
 def test_load_data_and_default_parametrization(temp_test_env):
     """test loading pandas df and setting default ta params"""
     root = temp_test_env
-    c = Config(COINS, str(root / "data"))
+    c = Config(COINS, root / "data")
     ts = TS(c, coin="BTC")
     # load dataframe
     assert isinstance(ts.df, pd.DataFrame)

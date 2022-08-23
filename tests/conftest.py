@@ -39,22 +39,23 @@ def temp_test_env(request, tmp_path):
     request.addfinalizer(clean)
 
 
-
 def populate_test_env(request, tmp_path):
-    if hasattr(request,"param"):
+    if hasattr(request, "param") and request.param is not None:
         # make necessary folders
         os.makedirs(tmp_path / "data" / "ts")
         # if first element is string then...
-        if isinstance(request.param[0],tuple) and len(request.param[0])==1:
-            for p in request.param[0]:
-                print("###########################")
+        if isinstance(request.param, tuple) and isinstance(
+            request.param[0], str
+        ):
+            for p in request.param:
                 if os.path.isfile(TEST_DATA / p):
-                    shutil.copy(TEST_DATA / p, tmp_path/ "data" / "ts" / p)
+                    shutil.copy(TEST_DATA / p, tmp_path / "data" / "ts" / p)
                 else:
                     raise AttributeError("Missing fixture data.")
                 # handle_config_json(tmp_path, p)
         else:
-            raise AttributeError("params fixture not matches type")
+            print(request.param)
+            raise NotImplementedError("params fixture not matches type")
 
 
 def handle_config_json(path, p):
