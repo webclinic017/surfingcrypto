@@ -46,22 +46,14 @@ class Config:
         if secrets:
             for key in secrets:
                 setattr(self, key, secrets[key])
-
-        self.data_folder = data_folder
-        self._make_subdirs()
-
         self.rebrandings = {"CGLD": "CELO"}
+        self.data_folder = data_folder
         self.error_log = []
+
+        # make subdirectory structure
+        self._make_subdirs()
         # DATA REQUIREMENTS
         self._set_requirements()
-
-    def _set_requirements(self):
-        """
-        sets data requirements for scraping module.
-        """
-        self._read_coinbase_requirements()
-        self._format_coinbase_req()
-        self._set_scraping_parameters()
 
     def _make_subdirs(self):
         """
@@ -84,6 +76,14 @@ class Config:
         if not os.path.isdir(self.data_folder / "cache"):
             os.mkdir(self.data_folder / "cache")
 
+    def _set_requirements(self):
+        """
+        sets data requirements for scraping module.
+        """
+        self._read_coinbase_requirements()
+        self._format_coinbase_req()
+        self._set_scraping_parameters()
+
     def _read_coinbase_requirements(self):
         """
         gets the requirements for coinbase portfolio tracking.
@@ -100,7 +100,7 @@ class Config:
 
     def _format_coinbase_req(self):
         """
-        formats coinbase requirements parameteters to datetime
+        formats coinbase requirements parameteters from str to datetime
         """
         req = {}
         # first get - if possible - coinbase requirements
@@ -165,6 +165,7 @@ class Config:
             }
 
         self.scraping_req = params
+
 
     def add_coins(self, coins: list) -> None:
         """add coins to `coins` attribute

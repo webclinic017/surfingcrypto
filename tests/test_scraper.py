@@ -10,6 +10,7 @@ import pytz
 from surfingcrypto.scraper import Scraper
 from surfingcrypto import Config
 
+
 scenarios = [
     # load config without running
     (None, False, []),
@@ -17,7 +18,7 @@ scenarios = [
     (None, True, ["BTC_EUR.csv"]),
     # load config, data to be updated and run.
     # one is updated and the other is downloaded entirely
-    (("BTC_EUR.csv",), True, ["SOL_EUR.csv", "BTC_EUR.csv"]),
+    ({"ts" : ("BTC_EUR.csv",),}, True, ["SOL_EUR.csv", "BTC_EUR.csv"]),
 ]
 
 COINS = {"BTC": "","SOL":""}

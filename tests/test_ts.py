@@ -36,7 +36,9 @@ def test_failed_load_data(temp_test_env):
 @pytest.mark.parametrize(
     "temp_test_env",     
     [
-        ("BTC_EUR.csv",),
+        {
+            "ts" : ("BTC_EUR.csv",),
+        },
     ],
     indirect=["temp_test_env"]
 )
