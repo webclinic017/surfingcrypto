@@ -90,13 +90,6 @@ for coin in coins_to_plot:
     tg.send_message_to_all(report_percentage_diff(ts.df, ts.coin))
     tg.send_photo_to_all(tmpname)
 
-    # ATH(BTC) plot every monday
-    if coin == "BTC" and now.weekday() == 0:
-        ath = ATHPlot(ts, graphstart="1-1-2020")
-        tmpname = c.data_folder / "temp" / (coin + "_ATH_" + timestr + ".jpeg")
-        ath.save(tmpname)
-        tg.send_photo_to_all(tmpname)
-
 # PORTFOLIO INFO
 tg.send_message_to_user(report_coinbase_live_value(p), "admin")
 tg.send_message_to_user(
