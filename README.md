@@ -1,7 +1,7 @@
 
 # surfingcrypto
 
-![img](docsrc/source/images/logo.png)
+![img]([docsrc/source/images/logo.png](https://github.com/giocaizzi/surfingcrypto/blob/gh-pages/docsrc/source/images/logo.png))
 
 ![Python](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20-blue)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/giocaizzi/surfingcrypto/ci)
