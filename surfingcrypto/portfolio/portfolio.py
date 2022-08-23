@@ -10,6 +10,8 @@ class Portfolio:
     """
     User portfolio.
 
+    TEMPORARILY IMPLEMENTED ONLY FOR EUROS
+
     At the moment the only supported :obj:`portfolio_type` is Coinbase, via
     the :obj:`surfingcrypto.portfolio.coinbase` submodule.
 
@@ -25,6 +27,7 @@ class Portfolio:
     of the portfolio value, at each given instant in time.
 
     Arguments:
+        portfolio_type (string): type of portfolio
 
     Attributes:
         portfolio_type (string): type of portfolio
@@ -48,7 +51,8 @@ class Portfolio:
     def _standardize(self):
         """
         creates a dataframe of only `buy` and `sell` orders,
-        for easier portfolio analysis.
+        for being able to assess the portfolio in a 
+        standardize format.
 
         It calculates missing fee information of `trade` transactions.
 
