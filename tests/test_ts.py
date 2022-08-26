@@ -23,6 +23,7 @@ def test_failed_load_data(temp_test_env):
     with pytest.raises(FileNotFoundError):
         TS(c, coin="BTC")
 
+#########
 
 @pytest.mark.parametrize(
     "temp_test_env",     
@@ -44,27 +45,76 @@ def test_load_data_and_default_parametrization(temp_test_env):
     assert hasattr(ts, "ta_params")
     assert ts.ta_params == DEFAULT_TA
 
-# @pytest.mark.parametrize(
-#     "temp_test_env",     
-#     [
-#         {
-#             "ts" : ("CELO_EUR.csv",),
-#         },
-#     ],
-#     indirect=["temp_test_env"]
-# )
+###########
 
-# def test_load_data_rebranded_coin(temp_test_env):
-#     """
-#     test loading the pandas df of a rebranded 
-#     coin, by calling its old name, and setting default ta params
-#     CGLD->CELO
-#     """
-#     root = temp_test_env
-#     c = Config(COINS, root / "data")
-#     ts = TS(c, coin="CGLD")
-#     # load dataframe
-#     assert isinstance(ts.df, pd.DataFrame)
-#     ts._parametrize(None)
-#     assert hasattr(ts, "ta_params")
-#     assert ts.ta_params == DEFAULT_TA
+@pytest.mark.parametrize(
+    "temp_test_env",     
+    [
+        {
+            "ts" : ("CELO_EUR.csv",),
+        },
+    ],
+    indirect=["temp_test_env"]
+)
+
+def test_load_data_rebranded_coin(temp_test_env):
+    """
+    test loading the pandas df of a rebranded 
+    coin, by calling its old name, and setting default ta params
+    CGLD->CELO
+    """
+    root = temp_test_env
+    c = Config(COINS, root / "data")
+    ts = TS(c, coin="CGLD")
+    # load dataframe
+    assert isinstance(ts.df, pd.DataFrame)
+    assert hasattr(ts, "ta_params")
+    assert ts.ta_params == DEFAULT_TA
+
+##########
+
+@pytest.mark.parametrize(
+    "temp_test_env",     
+    [
+        {"ts" : ("BTC_EUR.csv",),},
+    ],
+    indirect=["temp_test_env"]
+)
+
+def test_set_ta_params(temp_test_env):
+    """
+    test set new ta params with a dict,
+    overriding defaults or adding new if not present
+    """
+    root = temp_test_env
+    c = Config(COINS, root / "data")
+    ts = TS(c, coin="BTC")
+    ts.set_ta_params(
+        {
+            "macd":{"fast": 7, "slow": 12, "signal": 9},
+            "foo": {"bar":1}
+        })
+    assert ts.ta_params["macd"]["fast"]== 7
+    assert ts.ta_params["foo"]["bar"]== 1
+
+##########
+
+@pytest.mark.parametrize(
+    "temp_test_env",     
+    [
+        {
+            "ts" : ("BTC_EUR.csv",),
+        },
+    ],
+    indirect=["temp_test_env"]
+)
+
+def test_set_ta_indicators(temp_test_env):
+    """
+
+    """
+    root = temp_test_env
+    c = Config(COINS, root / "data")
+    ts = TS(c, coin="BTC")
+    ts.compute_ta_indicators()
+

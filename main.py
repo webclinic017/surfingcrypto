@@ -83,7 +83,7 @@ coins_to_plot = [
 for coin in coins_to_plot:
     # daily TA plots
     ts = TS(c, coin=coin)
-    ts.ta_indicators()
+    ts.compute_ta_indicators()
     fig = TaPlot(object=ts, graphstart="6m")
     tmpname = c.data_folder / "temp" / (coin + "_" + timestr + ".jpeg")
     fig.save(tmpname)
@@ -100,7 +100,7 @@ tg.send_message_to_user(
 
 ticker = "ETH"
 ts = TS(c, coin=ticker)
-ts.ta_indicators()
+ts.compute_ta_indicators()
 f = BinaryLaggedLogReturns(
     [1, 2, 3, 7, 14],
     ts,

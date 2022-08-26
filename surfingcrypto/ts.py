@@ -33,7 +33,7 @@ class TS:
         ta_params (dict): dictionary containing TA parametrization
     """
 
-    def __init__(self, configuration: Config , coin:str):
+    def __init__(self, configuration: Config, coin: str):
 
         self.config = configuration
         self.fiat = self.config.fiat
@@ -70,18 +70,34 @@ class TS:
             )
             self.df["Date"] = pd.to_datetime(self.df["Date"], utc=True)
             self.df.set_index("Date", inplace=True)
-            # validity check
-            if any(self.df.index.duplicated()):
-                raise ValueError("Data has duplicates.")
+            self._validity_checks()
         else:
             raise FileNotFoundError(f"{self.coin}.csv not found.")
+
+    def _validity_checks(self):
+        # validity check, first columns
+        if not set(
+                [
+                    "Open",
+                    "High",
+                    "Low",
+                    "Close",
+                ]
+            ).issubset(self.df.columns):
+            raise AttributeError(
+                    "df must have at least columns named "
+                    "Date, Open, High, Low, Close"
+                )
+                # duplicates
+        if any(self.df.index.duplicated()):
+            raise ValueError("Data has duplicates.")
 
     def set_ta_params(self, params: dict):
         """sets new TA parameters
         ```
         self.ta_params = {
             "sma": [
-                {"fast": 12, "slow": 26}, 
+                {"fast": 12, "slow": 26},
                 {"fast": 100, "slow": 200}
                 ],
             "macd": {"fast": 12, "slow": 26, "signal": 9},
@@ -92,13 +108,13 @@ class TS:
         """
         for param in params:
             # dictionary
-            self.ta_params[param]=params[param]
+            self.ta_params[param] = params[param]
 
+    ########## COLUMNS FOR INDICATORS SAVED TO THE DF INPLACE
 
-########## COLUMNS FOR INDICATORS SAVED TO THE DF INPLACE 
-
-    def ta_indicators(self, params=None):
+    def compute_ta_indicators(self):
         """computes the selected TA indicators and appends them to df attribute
+        using `pandas_ta` module.
 
         It supports:
             - SMA
@@ -107,6 +123,7 @@ class TS:
             - RSI
         """
         for key in self.ta_params:
+            # sma can also be a list,
             if key == "sma":
                 # all sma
                 for sma in self.ta_params["sma"]:
