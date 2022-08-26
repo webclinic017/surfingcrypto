@@ -109,12 +109,44 @@ def test_set_ta_params(temp_test_env):
     indirect=["temp_test_env"]
 )
 
-def test_set_ta_indicators(temp_test_env):
+def test_compute_ta_indicators(temp_test_env):
     """
-
+    test compute_ta_indicators with default parametrization
     """
     root = temp_test_env
     c = Config(COINS, root / "data")
     ts = TS(c, coin="BTC")
     ts.compute_ta_indicators()
+    assert set(["MACD_12_26_9","RSI_14","BBU_20_2.0"]).issubset(list(ts.df.columns))
 
+@pytest.mark.wip
+@pytest.mark.parametrize(
+    "temp_test_env",     
+    [
+        {
+            "ts" : ("BTC_EUR.csv",),
+        },
+    ],
+    indirect=["temp_test_env"]
+)
+
+def test_compute_custom_ta_indicators(temp_test_env):
+    """
+    test compute_ta_indicators with custom parametrization
+    """
+    root = temp_test_env
+    c = Config(COINS, root / "data")
+    ts = TS(c, coin="BTC")
+    ts.set_ta_params(
+        {
+            "sma":[{"fast": 3, "slow": 7},],
+        })
+    ts.compute_ta_indicators()
+    print(ts.df.columns)
+    print(ts.ta_params)
+    assert ("SMA_3" in ts.df.columns)
+
+
+
+    # with pytest.raises(NotImplementedError):
+    #     ts.compute_ta_indicators()

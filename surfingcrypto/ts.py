@@ -75,7 +75,14 @@ class TS:
             raise FileNotFoundError(f"{self.coin}.csv not found.")
 
     def _validity_checks(self):
-        # validity check, first columns
+        """
+        validity check to avoid errors later on
+
+        Raises:
+            AttributeError: _description_
+            ValueError: _description_
+        """
+        # minimum columns
         if not set(
                 [
                     "Open",
@@ -85,10 +92,10 @@ class TS:
                 ]
             ).issubset(self.df.columns):
             raise AttributeError(
-                    "df must have at least columns named "
-                    "Date, Open, High, Low, Close"
+                    "df must have at least columns named: "
+                    "Open, High, Low, Close"
                 )
-                # duplicates
+        # duplicates
         if any(self.df.index.duplicated()):
             raise ValueError("Data has duplicates.")
 
