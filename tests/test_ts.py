@@ -146,7 +146,27 @@ def test_compute_custom_ta_indicators(temp_test_env):
     print(ts.ta_params)
     assert ("SMA_3" in ts.df.columns)
 
+@pytest.mark.wip
+@pytest.mark.parametrize(
+    "temp_test_env",     
+    [
+        {
+            "ts" : ("BTC_EUR.csv",),
+        },
+    ],
+    indirect=["temp_test_env"]
+)
 
-
-    # with pytest.raises(NotImplementedError):
-    #     ts.compute_ta_indicators()
+def test_compute_custom_invalid_ta_indicators(temp_test_env):
+    """
+    test compute_ta_indicators with custom invalid parametrization
+    """
+    root = temp_test_env
+    c = Config(COINS, root / "data")
+    ts = TS(c, coin="BTC")
+    ts.set_ta_params(
+        {
+            "foo": {"bar":1}
+        })
+    with pytest.raises(NotImplementedError):
+        ts.compute_ta_indicators()
