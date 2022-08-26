@@ -4,6 +4,7 @@ time-series objects for cryptocurrencies.
 import pandas as pd
 import os
 import pandas_ta as ta
+from surfingcrypto.config import Config
 
 
 class TS:
@@ -32,19 +33,25 @@ class TS:
         ta_params (dict): dictionary containing TA parametrization
     """
 
-    def __init__(self, configuration, coin=None):
+    def __init__(self, configuration: Config , coin:str):
 
         self.config = configuration
         self.fiat = self.config.fiat
 
-        if coin is None:
-            raise ValueError("Must specify coin.")
-        else:
-            # rebrandings
-            if coin in self.config.rebrandings:
-                coin = self.config.rebrandings[coin]
-            self.coin = coin
-            self._build_ts()
+        # default ta params
+        self.ta_params = {
+            "sma": [{"fast": 12, "slow": 26}, {"fast": 100, "slow": 200}],
+            "macd": {"fast": 12, "slow": 26, "signal": 9},
+            "bbands": {"length": 20, "std": 2},
+            "rsi": {"timeperiod": 14},
+        }
+        # rebrandings
+        if coin in self.config.rebrandings:
+            coin = self.config.rebrandings[coin]
+
+        self.coin = coin
+
+        self._build_ts()
 
     def _build_ts(self):
         """
@@ -63,12 +70,33 @@ class TS:
             )
             self.df["Date"] = pd.to_datetime(self.df["Date"], utc=True)
             self.df.set_index("Date", inplace=True)
+            # validity check
             if any(self.df.index.duplicated()):
                 raise ValueError("Data has duplicates.")
         else:
             raise FileNotFoundError(f"{self.coin}.csv not found.")
 
-    # TA INDICATORS SAVED TO DF
+    def set_ta_params(self, params: dict):
+        """sets new TA parameters
+        ```
+        self.ta_params = {
+            "sma": [
+                {"fast": 12, "slow": 26}, 
+                {"fast": 100, "slow": 200}
+                ],
+            "macd": {"fast": 12, "slow": 26, "signal": 9},
+            "bbands": {"length": 20, "std": 2},
+            "rsi": {"timeperiod": 14},
+        }
+        ````
+        """
+        for param in params:
+            # dictionary
+            self.ta_params[param]=params[param]
+
+
+########## COLUMNS FOR INDICATORS SAVED TO THE DF INPLACE 
+
     def ta_indicators(self, params=None):
         """computes the selected TA indicators and appends them to df attribute
 
@@ -78,8 +106,6 @@ class TS:
             - Bolinger bands
             - RSI
         """
-        self._parametrize(params)
-
         for key in self.ta_params:
             if key == "sma":
                 # all sma
@@ -107,28 +133,6 @@ class TS:
                 )
             else:
                 raise NotImplementedError
-
-    def _parametrize(self, params: dict or None):
-        """sets the TA parameters
-
-        first sets package defaults, then overrides with condfiguration default
-        if present and finally ovverrides once again with method argument
-
-        """
-
-        # default if empty or not specified in coins
-        self.ta_params = {
-            "sma": [{"fast": 12, "slow": 26}, {"fast": 100, "slow": 200}],
-            "macd": {"fast": 12, "slow": 26, "signal": 9},
-            "bbands": {"length": 20, "std": 2},
-            "rsi": {"timeperiod": 14},
-        }
-        # if provided in config, override default
-        if isinstance(self.config.coins[self.coin], dict):
-            self.ta_params = self.config.coins[self.coin]
-        # if provided via the method, overide previous
-        if params is not None:
-            self.ta_params = params
 
     def distance_from_ath(self):
         d = {}

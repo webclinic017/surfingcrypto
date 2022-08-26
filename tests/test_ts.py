@@ -1,7 +1,6 @@
 """
 test ts class
 """
-from xml.dom import InvalidCharacterErr
 import pytest
 import pandas as pd
 from surfingcrypto import Config, TS
@@ -16,17 +15,9 @@ DEFAULT_TA = {
 COINS = {"BTC": "", "ETH": "",}
 
 
-def test_valuerror(temp_test_env):
-    """test ValueError when no coin is specified"""
-    root = temp_test_env
-    c = Config(COINS, root / "data")
-    with pytest.raises(ValueError):
-        TS(c, coin=None)
-
-
 
 def test_failed_load_data(temp_test_env):
-    """test FileNotFoundError"""
+    """test FileNotFoundError when no local data is found"""
     root = temp_test_env
     c = Config(COINS, root / "data")
     with pytest.raises(FileNotFoundError):
@@ -50,6 +41,30 @@ def test_load_data_and_default_parametrization(temp_test_env):
     ts = TS(c, coin="BTC")
     # load dataframe
     assert isinstance(ts.df, pd.DataFrame)
-    ts._parametrize(None)
     assert hasattr(ts, "ta_params")
     assert ts.ta_params == DEFAULT_TA
+
+# @pytest.mark.parametrize(
+#     "temp_test_env",     
+#     [
+#         {
+#             "ts" : ("CELO_EUR.csv",),
+#         },
+#     ],
+#     indirect=["temp_test_env"]
+# )
+
+# def test_load_data_rebranded_coin(temp_test_env):
+#     """
+#     test loading the pandas df of a rebranded 
+#     coin, by calling its old name, and setting default ta params
+#     CGLD->CELO
+#     """
+#     root = temp_test_env
+#     c = Config(COINS, root / "data")
+#     ts = TS(c, coin="CGLD")
+#     # load dataframe
+#     assert isinstance(ts.df, pd.DataFrame)
+#     ts._parametrize(None)
+#     assert hasattr(ts, "ta_params")
+#     assert ts.ta_params == DEFAULT_TA
