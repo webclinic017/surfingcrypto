@@ -50,7 +50,9 @@ class Scraper:
                 key = self.config.rebrandings[key]
 
             path = (
-                self.config.data_folder / "ts" / (key + "_" + self.config.fiat + ".csv")
+                self.config.data_folder
+                / "ts"
+                / (key + "_" + self.config.fiat + ".csv")
             )
 
             c = UpdateHandler(key, self.config.fiat, start, end_day, path)
@@ -74,7 +76,8 @@ class Scraper:
             self.output = True
         else:
             self.output_description = (
-                "Update failed." f" There are ({len(self.errors)}/{length}) errors."
+                "Update failed."
+                f" There are ({len(self.errors)}/{length}) errors."
             )
             self.output = False
 
@@ -137,6 +140,11 @@ class UpdateHandler:
 
         self.path = path
 
+        #
+        self.description=None
+        self.result=None
+        self.error=None
+
         if apiwrapper == "cmc":
             self.apiwrapper = CMCutility
         else:
@@ -144,7 +152,7 @@ class UpdateHandler:
 
         self._handle_update()
 
-    def _handle_update(self):
+    def _handle_update(self) -> None:
         """
         gets the bounds of the dataframes to be downloaded
         to fullfill update.
@@ -164,7 +172,9 @@ class UpdateHandler:
                 self.result = True
             else:
                 try:
-                    self.left, self.right = self._get_required_bounds(first, last)
+                    self.left, self.right = self._get_required_bounds(
+                        first, last
+                    )
                     self.df = self._get_updates(df)
                     self.description = f"DF: {self.coin} in {self.fiat},"
                     " successfully updated."
@@ -190,7 +200,7 @@ class UpdateHandler:
                 self.result = False
                 self.error = traceback.format_exc()
 
-    def _load_csv(self):
+    def _load_csv(self) -> tuple:
         """
         load local csv data from directory specified as `data_folder`
         in package config
@@ -207,7 +217,9 @@ class UpdateHandler:
         last = pd.to_datetime(df.index.values[-1])
         return df, first, last
 
-    def _get_required_bounds(self, first, last):
+    def _get_required_bounds(
+        self, first: datetime.datetime, last: datetime.datetime
+    ) -> tuple:
         """
         finds info for the missing data in the local dataframe - represented
         by the `first` and `last` arguments - with respect to the
@@ -234,7 +246,9 @@ class UpdateHandler:
             left, right = self.start, (first - datetime.timedelta(1))
 
         # only to the end
-        elif (first == self.start or first < self.start) and last < self.end_day:
+        elif (
+            first == self.start or first < self.start
+        ) and last < self.end_day:
             left, right = last + datetime.timedelta(1), self.end_day
 
         # both sides
@@ -257,7 +271,7 @@ class UpdateHandler:
 
         return left, right
 
-    def _get_updates(self, df: pd.DataFrame or None):
+    def _get_updates(self, df: pd.DataFrame or None) -> pd.DataFrame:
         updates = [
             df,
         ]
@@ -265,7 +279,11 @@ class UpdateHandler:
         if isinstance(self.left, datetime.datetime) and isinstance(
             self.right, datetime.datetime
         ):
-            updates.append(self.apiwrapper(self.coin, l, r, self.fiat).get_data())
+            updates.append(
+                self.apiwrapper(
+                    self.coin, self.left, self.right, self.fiat
+                ).get_data()
+            )
         # two side update
         elif (
             isinstance(self.left, list)
@@ -274,7 +292,9 @@ class UpdateHandler:
             and len(self.right) == 2
         ):
             for l, r in zip(self.left, self.right):
-                updates.append(self.apiwrapper(self.coin, l, r, self.fiat).get_data())
+                updates.append(
+                    self.apiwrapper(self.coin, l, r, self.fiat).get_data()
+                )
         else:
             raise NotImplementedError
 
@@ -282,16 +302,16 @@ class UpdateHandler:
         df.sort_index(inplace=True)
         return df
 
-    def __str__(self):
+    def __str__(self) -> str:
         errors = hasattr(self, "error")
         return f"UpdateHandler({self.coin}" f", result={self.result}" ")"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         errors = hasattr(self, "error")
         return f"UpdateHandler({self.coin}" f", result={self.result}" ")"
 
 
-class CMCutility:
+class CMCutility(CmcScraper):
     """
     wrapper of GitHub repo `cryptocmd`.
 
@@ -309,21 +329,32 @@ class CMCutility:
         self.left = left.strftime("%d-%m-%Y")
         self.right = right.strftime("%d-%m-%Y")
         self.fiat = fiat
+        self.empty_response = None
+        super().__init__(self.coin, self.left, self.right, fiat=self.fiat)
 
-    def get_data(self) -> pd.DataFrame:
-        cmc = CmcScraper(self.coin, self.left, self.right, fiat=self.fiat)
-        if cmc.rows:
-            scraped = cmc.get_dataframe()
+    def scrape_data(self) -> pd.DataFrame:
+        scraped = self.get_dataframe()
+        if len(scraped)>0:
+            self.empty_response = False
         else:
             scraped = pd.DataFrame(columns=["Date"])
+            self.empty_response = True
         return scraped
 
     def __str__(self):
         return (
-            f"CmcScraper({self.coin}" f", left={self.left}" f", right={self.right}" ")"
+            f"CmcScraper({self.coin}"
+            f", left={self.left}"
+            f", right={self.right}"
+            f", empty_response={self.empty_response}"
+            ")"
         )
 
     def __repr__(self):
         return (
-            f"CmcScraper({self.coin}" f", left={self.left}" f", right={self.right}" ")"
+            f"CmcScraper({self.coin}"
+            f", left={self.left}"
+            f", right={self.right}"
+            f", empty_response={self.empty_response}"
+            ")"
         )
