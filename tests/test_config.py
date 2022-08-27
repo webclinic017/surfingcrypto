@@ -8,7 +8,7 @@ from pathlib import Path
 import datetime
 from freezegun import freeze_time
 
-from surfingcrypto import Config
+from surfingcrypto.config import Config
 
 COINS = {"BTC": "", "ETH": ""}
 

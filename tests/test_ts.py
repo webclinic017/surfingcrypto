@@ -3,7 +3,8 @@ test ts class
 """
 import pytest
 import pandas as pd
-from surfingcrypto import Config, TS
+from surfingcrypto.config import Config
+from surfingcrypto.ts import  TS
 
 DEFAULT_TA = {
     "sma": [{"fast": 12, "slow": 26}, {"fast": 100, "slow": 200}],
@@ -119,7 +120,6 @@ def test_compute_ta_indicators(temp_test_env):
     ts.compute_ta_indicators()
     assert set(["MACD_12_26_9","RSI_14","BBU_20_2.0"]).issubset(list(ts.df.columns))
 
-@pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env",     
     [
@@ -146,7 +146,6 @@ def test_compute_custom_ta_indicators(temp_test_env):
     print(ts.ta_params)
     assert ("SMA_3" in ts.df.columns)
 
-@pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env",     
     [

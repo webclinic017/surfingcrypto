@@ -1,7 +1,6 @@
 """
 scraping price data from the internet.
 """
-from turtle import up
 from cryptocmd import CmcScraper
 import datetime
 import pandas as pd
@@ -121,7 +120,15 @@ class UpdateHandler:
         error (:obj:`Excection`): generic error
     """
 
-    def __init__(self, coin, fiat, start, end_day, path, apiwrapper="cmc"):
+    def __init__(
+        self,
+        coin: str,
+        fiat: str,
+        start: datetime.datetime,
+        end_day: datetime.datetime,
+        path,
+        apiwrapper="cmc",
+    ):
         self.coin = coin
         self.fiat = fiat
         self.apiwrapper = apiwrapper
@@ -139,24 +146,32 @@ class UpdateHandler:
 
         self._handle_update()
 
-    def _get_updates(self,df:pd.DataFrame or None):
-        updates=[df,]
-        if isinstance(self.left,datetime.datetime) and isinstance(self.right,datetime.datetime):
-            updates.append(self.apiwrapper(self.coin,l,r,self.fiat).get_data())
+    def _get_updates(self, df: pd.DataFrame or None):
+        updates = [
+            df,
+        ]
+        if isinstance(self.left, datetime.datetime) and isinstance(
+            self.right, datetime.datetime
+        ):
+            updates.append(
+                self.apiwrapper(self.coin, l, r, self.fiat).get_data()
+            )
 
-        elif isinstance(self.left,list) and isinstance(self.right,list):
-            for l,r in zip(self.left,self.right):
-                    updates.append(self.apiwrapper(self.coin,l,r,self.fiat).get_data())
+        elif isinstance(self.left, list) and isinstance(self.right, list):
+            for l, r in zip(self.left, self.right):
+                updates.append(
+                    self.apiwrapper(self.coin, l, r, self.fiat).get_data()
+                )
         else:
             raise NotImplementedError
-        
+
         df = pd.concat(updates)
         df.sort_index(inplace=True)
         return df
 
     def _handle_update(self):
         """
-        gets the bounds of the dataframes to be downloaded 
+        gets the bounds of the dataframes to be downloaded
         to fullfill update.
         """
         # check if exists
