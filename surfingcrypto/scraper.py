@@ -316,16 +316,16 @@ class CMCutility:
 
     def __str__(self):
         return (
-            f"CmcScraper({self.coin},"
-            f" start={self.start},"
-            f" end_day={self.end_day},"
+            f"CmcScraper({self.coin}"
+            f", left={self.left}"
+            f", right={self.right}"
             ")"
         )
 
     def __repr__(self):
         return (
-            f"CmcScraper({self.coin},"
-            f" start={self.start},"
-            f" end_day={self.end_day},"
+            f"CmcScraper({self.coin}"
+            f", left={self.left}"
+            f", right={self.right}"
             ")"
         )
