@@ -329,16 +329,16 @@ class CMCutility(CmcScraper):
         self.left = left.strftime("%d-%m-%Y")
         self.right = right.strftime("%d-%m-%Y")
         self.fiat = fiat
-        self.empty_response = None
+        self.response = None
         super().__init__(self.coin, self.left, self.right, fiat=self.fiat)
 
     def scrape_data(self) -> pd.DataFrame:
-        scraped = self.get_dataframe()
-        if len(scraped)>0:
-            self.empty_response = False
-        else:
+        try:
+            scraped = self.get_dataframe()
+            self.response = True
+        except:
             scraped = pd.DataFrame(columns=["Date"])
-            self.empty_response = True
+            self.response = False
         return scraped
 
     def __str__(self):
@@ -346,7 +346,7 @@ class CMCutility(CmcScraper):
             f"CmcScraper({self.coin}"
             f", left={self.left}"
             f", right={self.right}"
-            f", empty_response={self.empty_response}"
+            f", response={self.response}"
             ")"
         )
 
@@ -355,6 +355,6 @@ class CMCutility(CmcScraper):
             f"CmcScraper({self.coin}"
             f", left={self.left}"
             f", right={self.right}"
-            f", empty_response={self.empty_response}"
+            f", response={self.response}"
             ")"
         )
