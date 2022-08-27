@@ -1,6 +1,7 @@
 """
 scraping price data from the internet.
 """
+from turtle import up
 from cryptocmd import CmcScraper
 import datetime
 import pandas as pd
@@ -10,7 +11,7 @@ import traceback
 
 class Scraper:
     """
-    gets all data required by module configuration.
+    gets all data required by configuration.
 
     Arguments:
         config (:obj:`surfingcrypto.config.config`): package
@@ -37,14 +38,14 @@ class Scraper:
         self.verbose = verbose
 
     def run(self):
-        """runs the scraping process."""
+        """runs the scraping process for all coins."""
         self.runs = []
         for key in self.config.scraping_req:
-
             # dates are utc unaware
             start = self.config.scraping_req[key]["start"].date()
             end_day = self.config.scraping_req[key]["end_day"].date()
 
+            # rebrandings
             if key in self.config.rebrandings:
                 key = self.config.rebrandings[key]
 
@@ -53,7 +54,9 @@ class Scraper:
                 / "ts"
                 / (key + "_" + self.config.fiat + ".csv")
             )
-            c = CoinScraper(key, self.config.fiat, start, end_day, path)
+
+            c = UpdateHandler(key, self.config.fiat, start, end_day, path)
+
             self.runs.append(c)
 
         self._log()
@@ -82,41 +85,46 @@ class Scraper:
             print(self.output_description)
 
 
-class CoinScraper:
+class UpdateHandler:
     """
-    wrapper of GitHub repo `cryptocmd`.
-
-    Scrapes data from coinmarketcap.com.
-
-    It scrapes data for the crypto coin specified.
-    Saves data in a `*.csv` file
-    stored at the provided path.
-    Checks if the file exists, if not it is downloaded.
-    If it exists, it check last element of datetime index and compares it
-    with today's date. If required, it updates the `*.csv` file
+    Checks if the file exists, if not it sets the date boundaries
+    for the price API wrappers exactly as passed with the
+    `start` and `end_day` arguments.
+    If local data already exists, it checks first and last element of datetime index
+    and compares it with today's date. If required, it updates the `*.csv` file
     to today\'s date.
 
     Arguments:
         coin (str): symbol of crypto
         fiat (str): fiat of prices
         start (:obj:`datetime.datetime`):  start day
-        end_day (:obj:`datetime.datetime`): end day
+            from which is requested to scrape data
+        end_day (:obj:`datetime.datetime`): end day of
+            data requested, included
         path (str): path to csv file
 
     Attributes:
         coin (str): symbol of crypto
         fiat (str): fiat of prices
         start (:obj:`datetime.datetime`):  start day
-        end_day (:obj:`datetime.datetime`): end day
+            from which is requested to scrape data
+        end_day (:obj:`datetime.datetime`): end day of
+            data requested, included
         path (str): path to csv file
+        left (:obj:`datetime.datetime` or :obj:`list` of `datetime.datetime`):
+            left boundary (or boundaries, in case updating both sides of ts)
+        right (:obj:`datetime.datetime` or :obj:`list` of `datetime.datetime`):
+            right boundary (or boundaries, in case updating both sides of ts)
+        df (:obj:`pandas.DataFrame`) : scraped df
         description (str): verbose description of result
         result (bool): outcome of scraping run
         error (:obj:`Excection`): generic error
     """
 
-    def __init__(self, coin, fiat, start, end_day, path):
+    def __init__(self, coin, fiat, start, end_day, path, apiwrapper="cmc"):
         self.coin = coin
         self.fiat = fiat
+        self.apiwrapper = apiwrapper
 
         # dates are utc unaware
         self.start = start
@@ -124,10 +132,34 @@ class CoinScraper:
 
         self.path = path
 
-        self._run()
+        if apiwrapper == "cmc":
+            self.apiwrapper = CMCutility
+        else:
+            raise NotImplementedError
 
-    def _run(self):
+        self._handle_update()
 
+    def _get_updates(self,df:pd.DataFrame or None):
+        updates=[df,]
+        if isinstance(self.left,datetime.datetime) and isinstance(self.right,datetime.datetime):
+            updates.append(self.apiwrapper(self.coin,l,r,self.fiat).get_data())
+
+        elif isinstance(self.left,list) and isinstance(self.right,list):
+            for l,r in zip(self.left,self.right):
+                    updates.append(self.apiwrapper(self.coin,l,r,self.fiat).get_data())
+        else:
+            raise NotImplementedError
+        
+        df = pd.concat(updates)
+        df.sort_index(inplace=True)
+        return df
+
+    def _handle_update(self):
+        """
+        gets the bounds of the dataframes to be downloaded 
+        to fullfill update.
+        """
+        # check if exists
         if os.path.isfile(self.path):
             df, first, last = self._load_csv()
 
@@ -135,26 +167,30 @@ class CoinScraper:
             last = last.date()
 
             if first == self.start and last == self.end_day:
+                self.df = df
                 self.description = (
                     f"DF: {self.coin} in {self.fiat}, already up to date."
                 )
                 self.result = True
             else:
                 try:
-                    self._scrape_missing_data(first, last, df)
+                    self.left, self.right = self._get_required_bounds(
+                        first, last
+                    )
+                    self.df = self._get_updates(df)
                     self.description = f"DF: {self.coin} in {self.fiat},"
                     " successfully updated."
                     self.result = True
                 except:
                     self.description = (
-                        f"DF: {self.coin} in {self.fiat},"
-                        " update failed."
+                        f"DF: {self.coin} in {self.fiat}," " update failed."
                     )
                     self.result = False
                     self.error = traceback.format_exc()
         else:
             try:
-                self._scrape_alltime_data()
+                self.left, self.right = self.start, self.end_day
+                self.df = self._get_updates(None)
                 self.description = f"DF: {self.coin} in {self.fiat},"
                 "  successfully downloaded."
                 self.result = True
@@ -166,103 +202,15 @@ class CoinScraper:
                 self.result = False
                 self.error = traceback.format_exc()
 
-    def _scrape_alltime_data(self):
-        """
-        scrape all time data.
-        """
-        start = self.start.strftime("%d-%m-%Y")
-        end_day = self.end_day.strftime("%d-%m-%Y")
-        scraper = CmcScraper(self.coin, start, end_day, fiat=self.fiat)
-        scraped = scraper.get_dataframe()
-        scraped.set_index("Date", inplace=True)
-        scraped.sort_index(inplace=True)
-        scraped.to_csv(self.path)
-
-    def _scrape_missing_data(self, first, last, df):
-        """
-        scrapes the missing data and concatenates it to existing df.
-
-        Arguments:
-            first (:obj:`datetime.datetime`): date parsed as string
-                with d-m-Y format of first known price
-            last (:obj:`datetime.datetime`): date parsed as string
-                with d-m-Y format of last known price
-            df (:obj:`pandas.DataFrame`): dataframe of
-                locally stored data
-        """
-        # appending to front can cause exceptions because
-        # coin data is available from a date that is later
-        # than the start parameter
-
-        if (first == self.start or first < self.start) and last < self.end_day:
-            # only to the end
-            scraper = self._append_to_end(last)
-            scraped = scraper.get_dataframe()
-
-        elif self.start < first and last == self.end_day:
-            # only to the front
-            scraper = self._append_to_front(first)
-            if scraper.rows:
-                scraped = scraper.get_dataframe()
-            else:
-                scraped = pd.DataFrame(columns=["Date"])
-
-        elif self.start < first and last < self.end_day:
-            # end
-            scraper = self._append_to_end(last)
-            scraped_last = scraper.get_dataframe()
-
-            # front
-            scraper = self._append_to_front(first)
-            if scraper.rows:
-                scraped_first = scraper.get_dataframe()
-            else:
-                scraped_first = pd.DataFrame(columns=["Date"])
-
-            # concat
-            scraped = pd.concat([scraped_last, scraped_first])
-
-        elif (first == self.start or first < self.start) and (
-            self.end_day == last or self.end_day < last
-        ):
-            # i have what is needed
-            # i add nothing
-            scraped = pd.DataFrame(columns=["Date"])
-
-        else:
-            raise NotImplementedError
-
-        scraped.set_index("Date", inplace=True)
-        df = pd.concat([df, scraped])
-        df.sort_index(inplace=True)
-        df.to_csv(self.path)
-
-    def _append_to_front(self, first: datetime) -> CmcScraper:
-        start = self.start.strftime("%d-%m-%Y")
-        day_before_first = (first - datetime.timedelta(1)).strftime("%d-%m-%Y")
-        scraper = CmcScraper(
-            self.coin, start, day_before_first, fiat=self.fiat
-        )
-
-        return scraper
-
-    def _append_to_end(self, last: datetime) -> CmcScraper:
-        day_after_last = (last + datetime.timedelta(1)).strftime("%d-%m-%Y")
-        end_day = self.end_day.strftime("%d-%m-%Y")
-        scraper = CmcScraper(
-            self.coin, day_after_last, end_day, fiat=self.fiat
-        )
-        return scraper
-
     def _load_csv(self):
         """
-        load csv data from directory specified as `data_folder`
+        load local csv data from directory specified as `data_folder`
         in package config
 
         Return:
             df (:obj:`pandas.DataFrame`): dataframe of locally stored data
-            first (_type_): date parsed as d-m-Y of first known price
-            last (_type_): date parsed as d-m-Y of last known price
+            first (:obj:`datetime.datetime`): first known price
+            last (:obj:`datetime.datetime`): last known price
         """
         df = pd.read_csv(self.path)
         df["Date"] = pd.to_datetime(df["Date"])
@@ -271,26 +219,113 @@ class CoinScraper:
         last = pd.to_datetime(df.index.values[-1])
         return df, first, last
 
+    def _get_required_bounds(self, first, last):
+        """
+        finds info for the missing data in the local dataframe - represented
+        by the `first` and `last` arguments - with respect to the
+        request stored in `start` and `end_day` attribute
+
+        Arguments:
+            first (:obj:`datetime.datetime`): first known price
+            last (:obj:`datetime.datetime`): last known price
+
+        Raises:
+            NotImplementedError: _description_
+
+        Returns:
+            tuple : 2-tuple of datetime or 2 lists of datetime,
+                in case an update of both the front end and
+                the last end is required.
+        """
+        # appending to front can cause exceptions because
+        # coin data is available from a date that is later
+        # than the start parameter
+
+        if (first == self.start or first < self.start) and last < self.end_day:
+            # only to the end
+            left, right = self.start, (first - datetime.timedelta(1))
+
+        elif self.start < first and last == self.end_day:
+            # only to the front
+            left, right = self.start, (first - datetime.timedelta(1))
+
+        elif self.start < first and last < self.end_day:
+            left = [], right = []
+            # end part
+            left.append(last + datetime.timedelta(1))
+            right.append(self.end_day)
+
+            # front part
+            left.append(self.start)
+            right.append(first - datetime.timedelta(1))
+
+        elif (first == self.start or first < self.start) and (
+            self.end_day == last or self.end_day < last
+        ):
+            left, right = None, None
+        else:
+            raise NotImplementedError
+
+        return left, right
+
     def __str__(self):
-        start = self.start.strftime("%d-%m-%Y")
-        endday = self.end_day.strftime("%d-%m-%Y")
-        error = hasattr(self, "error")
+        errors = hasattr(self, "error")
         return (
-            f"CoinScraper({self.coin},"
-            f" start={start},"
-            f" end_day={endday},"
-            f" error={error},"
+            f"UpdateHandler({self.coin},"
+            f" result={self.result},"
+            f" error={errors},"
             ")"
         )
 
     def __repr__(self):
-        start = self.start.strftime("%d-%m-%Y")
-        endday = self.end_day.strftime("%d-%m-%Y")
-        error = hasattr(self, "error")
+        errors = hasattr(self, "error")
         return (
-            f"CoinScraper({self.coin},"
-            f" start={start},"
-            f" end_day={endday},"
-            f" error={error},"
+            f"UpdateHandler({self.coin},"
+            f" result={self.result},"
+            f" error={errors},"
+            ")"
+        )
+
+
+class CMCutility:
+    """
+    wrapper of GitHub repo `cryptocmd`.
+
+    Scrapes data from coinmarketcap.com.
+    """
+
+    def __init__(
+        self,
+        coin: str,
+        left: datetime.datetime,
+        right: datetime.datetime,
+        fiat: str,
+    ):
+        self.coin = coin
+        self.left = left.strftime("%d-%m-%Y")
+        self.right = right.strftime("%d-%m-%Y")
+        self.fiat = fiat
+
+    def get_data(self) -> pd.DataFrame:
+        cmc = CmcScraper(self.coin, self.left, self.right, fiat=self.fiat)
+        if cmc.rows:
+            scraped = cmc.get_dataframe()
+        else:
+            scraped = pd.DataFrame(columns=["Date"])
+        return scraped
+
+    def __str__(self):
+        return (
+            f"CmcScraper({self.coin},"
+            f" start={self.start},"
+            f" end_day={self.end_day},"
+            ")"
+        )
+
+    def __repr__(self):
+        return (
+            f"CmcScraper({self.coin},"
+            f" start={self.start},"
+            f" end_day={self.end_day},"
             ")"
         )
