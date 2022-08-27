@@ -6,6 +6,7 @@ import datetime
 import pandas as pd
 import os
 import traceback
+import pathlib
 
 
 class Scraper:
@@ -49,9 +50,7 @@ class Scraper:
                 key = self.config.rebrandings[key]
 
             path = (
-                self.config.data_folder
-                / "ts"
-                / (key + "_" + self.config.fiat + ".csv")
+                self.config.data_folder / "ts" / (key + "_" + self.config.fiat + ".csv")
             )
 
             c = UpdateHandler(key, self.config.fiat, start, end_day, path)
@@ -75,8 +74,7 @@ class Scraper:
             self.output = True
         else:
             self.output_description = (
-                "Update failed."
-                f" There are ({len(self.errors)}/{length}) errors."
+                "Update failed." f" There are ({len(self.errors)}/{length}) errors."
             )
             self.output = False
 
@@ -100,7 +98,7 @@ class UpdateHandler:
             from which is requested to scrape data
         end_day (:obj:`datetime.datetime`): end day of
             data requested, included
-        path (str): path to csv file
+        path (:obj:`pathlib.Path`): path to csv file
 
     Attributes:
         coin (str): symbol of crypto
@@ -109,7 +107,7 @@ class UpdateHandler:
             from which is requested to scrape data
         end_day (:obj:`datetime.datetime`): end day of
             data requested, included
-        path (str): path to csv file
+        path (:obj:`pathlib.Path`): path to csv file
         left (:obj:`datetime.datetime` or :obj:`list` of `datetime.datetime`):
             left boundary (or boundaries, in case updating both sides of ts)
         right (:obj:`datetime.datetime` or :obj:`list` of `datetime.datetime`):
@@ -126,7 +124,7 @@ class UpdateHandler:
         fiat: str,
         start: datetime.datetime,
         end_day: datetime.datetime,
-        path,
+        path: pathlib.Path,
         apiwrapper="cmc",
     ):
         self.coin = coin
@@ -166,9 +164,7 @@ class UpdateHandler:
                 self.result = True
             else:
                 try:
-                    self.left, self.right = self._get_required_bounds(
-                        first, last
-                    )
+                    self.left, self.right = self._get_required_bounds(first, last)
                     self.df = self._get_updates(df)
                     self.description = f"DF: {self.coin} in {self.fiat},"
                     " successfully updated."
@@ -193,30 +189,6 @@ class UpdateHandler:
                 )
                 self.result = False
                 self.error = traceback.format_exc()
-
-    def _get_updates(self, df: pd.DataFrame or None):
-        updates = [
-            df,
-        ]
-        if isinstance(self.left, datetime.datetime) and isinstance(
-            self.right, datetime.datetime
-        ):
-            updates.append(
-                self.apiwrapper(self.coin, l, r, self.fiat).get_data()
-            )
-
-        elif isinstance(self.left, list) and isinstance(self.right, list):
-            for l, r in zip(self.left, self.right):
-                updates.append(
-                    self.apiwrapper(self.coin, l, r, self.fiat).get_data()
-                )
-        else:
-            raise NotImplementedError
-
-        df = pd.concat(updates)
-        df.sort_index(inplace=True)
-        return df
-
 
     def _load_csv(self):
         """
@@ -257,24 +229,25 @@ class UpdateHandler:
         # coin data is available from a date that is later
         # than the start parameter
 
-        if (first == self.start or first < self.start) and last < self.end_day:
-            # only to the end
+        # only to the front
+        if self.start < first and last == self.end_day:
             left, right = self.start, (first - datetime.timedelta(1))
 
-        elif self.start < first and last == self.end_day:
-            # only to the front
-            left, right = self.start, (first - datetime.timedelta(1))
+        # only to the end
+        elif (first == self.start or first < self.start) and last < self.end_day:
+            left, right = last + datetime.timedelta(1), self.end_day
 
+        # both sides
         elif self.start < first and last < self.end_day:
-            left = [], right = []
+            left, right = [], []
+            # front part
+            left.append(self.start)
+            right.append(first - datetime.timedelta(1))
             # end part
             left.append(last + datetime.timedelta(1))
             right.append(self.end_day)
 
-            # front part
-            left.append(self.start)
-            right.append(first - datetime.timedelta(1))
-
+        # within data I already have
         elif (first == self.start or first < self.start) and (
             self.end_day == last or self.end_day < last
         ):
@@ -284,23 +257,38 @@ class UpdateHandler:
 
         return left, right
 
+    def _get_updates(self, df: pd.DataFrame or None):
+        updates = [
+            df,
+        ]
+        # one side update
+        if isinstance(self.left, datetime.datetime) and isinstance(
+            self.right, datetime.datetime
+        ):
+            updates.append(self.apiwrapper(self.coin, l, r, self.fiat).get_data())
+        # two side update
+        elif (
+            isinstance(self.left, list)
+            and isinstance(self.right, list)
+            and len(self.left) == 2
+            and len(self.right) == 2
+        ):
+            for l, r in zip(self.left, self.right):
+                updates.append(self.apiwrapper(self.coin, l, r, self.fiat).get_data())
+        else:
+            raise NotImplementedError
+
+        df = pd.concat(updates)
+        df.sort_index(inplace=True)
+        return df
+
     def __str__(self):
         errors = hasattr(self, "error")
-        return (
-            f"UpdateHandler({self.coin},"
-            f" result={self.result},"
-            f" error={errors},"
-            ")"
-        )
+        return f"UpdateHandler({self.coin}" f", result={self.result}" ")"
 
     def __repr__(self):
         errors = hasattr(self, "error")
-        return (
-            f"UpdateHandler({self.coin},"
-            f" result={self.result},"
-            f" error={errors},"
-            ")"
-        )
+        return f"UpdateHandler({self.coin}" f", result={self.result}" ")"
 
 
 class CMCutility:
@@ -332,16 +320,10 @@ class CMCutility:
 
     def __str__(self):
         return (
-            f"CmcScraper({self.coin}"
-            f", left={self.left}"
-            f", right={self.right}"
-            ")"
+            f"CmcScraper({self.coin}" f", left={self.left}" f", right={self.right}" ")"
         )
 
     def __repr__(self):
         return (
-            f"CmcScraper({self.coin}"
-            f", left={self.left}"
-            f", right={self.right}"
-            ")"
+            f"CmcScraper({self.coin}" f", left={self.left}" f", right={self.right}" ")"
         )
