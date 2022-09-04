@@ -50,9 +50,7 @@ class Scraper:
                 key = self.config.rebrandings[key]
 
             path = (
-                self.config.data_folder
-                / "ts"
-                / (key + "_" + self.config.fiat + ".csv")
+                self.config.data_folder / "ts" / (key + "_" + self.config.fiat + ".csv")
             )
 
             c = UpdateHandler(key, self.config.fiat, start, end_day, path)
@@ -76,8 +74,7 @@ class Scraper:
             self.output = True
         else:
             self.output_description = (
-                "Update failed."
-                f" There are ({len(self.errors)}/{length}) errors."
+                "Update failed." f" There are ({len(self.errors)}/{length}) errors."
             )
             self.output = False
 
@@ -90,9 +87,8 @@ class UpdateHandler:
     Checks if the file exists, if not it sets the date boundaries
     for the price API wrappers exactly as passed with the
     `start` and `end_day` arguments.
-    If local data already exists, it checks first and last element of datetime index
-    and compares it with today's date. If required, it updates the `*.csv` file
-    to today\'s date.
+    If local data already exists, it checks first and last element of datetime column
+    "Date" and compares with update request.
 
     Arguments:
         coin (str): symbol of crypto
@@ -115,7 +111,7 @@ class UpdateHandler:
             left boundary (or boundaries, in case updating both sides of ts)
         right (:obj:`datetime.datetime` or :obj:`list` of `datetime.datetime`):
             right boundary (or boundaries, in case updating both sides of ts)
-        df (:obj:`pandas.DataFrame`) : scraped df
+        df (:obj:`pandas.DataFrame`) : scraped df, SORTED IN ? ORDER
         description (str): verbose description of result
         result (bool): outcome of scraping run
         error (:obj:`Excection`): generic error
@@ -140,10 +136,10 @@ class UpdateHandler:
 
         self.path = path
 
-        #
-        self.description=None
-        self.result=None
-        self.error=None
+        # log
+        self.description = None
+        self.result = None
+        self.error = None
 
         if apiwrapper == "cmc":
             self.apiwrapper = CMCutility
@@ -166,36 +162,31 @@ class UpdateHandler:
 
             if first == self.start and last == self.end_day:
                 self.df = df
-                self.description = (
-                    f"DF: {self.coin} in {self.fiat}, already up to date."
-                )
+                self.description = f"{self.coin} in {self.fiat}, already up to date."
                 self.result = True
             else:
                 try:
-                    self.left, self.right = self._get_required_bounds(
-                        first, last
-                    )
+                    self.left, self.right = self._get_required_bounds(first, last)
                     self.df = self._get_updates(df)
-                    self.description = f"DF: {self.coin} in {self.fiat},"
-                    " successfully updated."
+                    self.description = (
+                        f"{self.coin} in {self.fiat}, successfully updated."
+                    )
                     self.result = True
                 except:
-                    self.description = (
-                        f"DF: {self.coin} in {self.fiat}," " update failed."
-                    )
+                    self.description = f"{self.coin} in {self.fiat}," " update failed."
                     self.result = False
                     self.error = traceback.format_exc()
         else:
             try:
                 self.left, self.right = self.start, self.end_day
                 self.df = self._get_updates(None)
-                self.description = f"DF: {self.coin} in {self.fiat},"
-                "  successfully downloaded."
+                self.description = (
+                    f"{self.coin} in {self.fiat}, successfully downloaded."
+                )
                 self.result = True
             except:
                 self.description = (
-                    f"DF: {self.coin} in {self.fiat} in {self.fiat},"
-                    "  download failed."
+                    f"{self.coin} in {self.fiat} in {self.fiat}, download failed."
                 )
                 self.result = False
                 self.error = traceback.format_exc()
@@ -212,9 +203,8 @@ class UpdateHandler:
         """
         df = pd.read_csv(self.path)
         df["Date"] = pd.to_datetime(df["Date"])
-        df.set_index("Date", inplace=True)
-        first = pd.to_datetime(df.index.values[0])
-        last = pd.to_datetime(df.index.values[-1])
+        first = df["Date"].iloc[0]
+        last = df["Date"].iloc[-1]
         return df, first, last
 
     def _get_required_bounds(
@@ -246,9 +236,7 @@ class UpdateHandler:
             left, right = self.start, (first - datetime.timedelta(1))
 
         # only to the end
-        elif (
-            first == self.start or first < self.start
-        ) and last < self.end_day:
+        elif (first == self.start or first < self.start) and last < self.end_day:
             left, right = last + datetime.timedelta(1), self.end_day
 
         # both sides
@@ -282,7 +270,7 @@ class UpdateHandler:
             updates.append(
                 self.apiwrapper(
                     self.coin, self.left, self.right, self.fiat
-                ).get_data()
+                ).scrape_data()
             )
         # two side update
         elif (
@@ -293,22 +281,22 @@ class UpdateHandler:
         ):
             for l, r in zip(self.left, self.right):
                 updates.append(
-                    self.apiwrapper(self.coin, l, r, self.fiat).get_data()
+                    self.apiwrapper(self.coin, l, r, self.fiat).scrape_data()
                 )
         else:
             raise NotImplementedError
 
         df = pd.concat(updates)
-        df.sort_index(inplace=True)
+        df.sort_values(by="Date", inplace=True)
         return df
 
     def __str__(self) -> str:
         errors = hasattr(self, "error")
-        return f"UpdateHandler({self.coin}" f", result={self.result}" ")"
+        return f"UpdateHandler({self.coin}-{self.fiat}: {self.description})"
 
     def __repr__(self) -> str:
         errors = hasattr(self, "error")
-        return f"UpdateHandler({self.coin}" f", result={self.result}" ")"
+        return f"UpdateHandler({self.coin}-{self.fiat}: {self.description})"
 
 
 class CMCutility(CmcScraper):

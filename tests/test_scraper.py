@@ -2,10 +2,9 @@
 test scraper module.
 """
 import datetime
-import pathlib
 import pytest
 import pandas as pd
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 
 from surfingcrypto.scraper import CMCutility, UpdateHandler
@@ -23,9 +22,10 @@ def test_CMCutility():
     response = cmc.scrape_data()
     assert isinstance(response, pd.DataFrame)
     print(response)
-    assert len(response)>0
+    assert len(response) > 0
     assert str(response["Date"].iloc[-1]) == str(datetime.datetime(2021, 1, 1))
     assert str(response["Date"].iloc[-0]) == str(datetime.datetime(2022, 1, 1))
+
 
 def test_CMCutility_str_repr_before_scraping():
     cmc = CMCutility(
@@ -38,6 +38,7 @@ def test_CMCutility_str_repr_before_scraping():
     assert str(cmc) == expected
     assert repr(cmc) == expected
 
+
 def test_CMCutility_str_repr_with_god_response():
     cmc = CMCutility(
         "BTC",
@@ -49,6 +50,7 @@ def test_CMCutility_str_repr_with_god_response():
     expected = "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=True)"
     assert str(cmc) == expected
     assert repr(cmc) == expected
+
 
 def test_CMCutility_str_repr_with_bad_response():
     """there are no data for this range"""
@@ -81,6 +83,7 @@ def test_UpdateHandler(mock, temp_test_env):
     assert uh.coin == "BTC"
     assert not hasattr(uh, "df")
     assert hasattr(uh, "apiwrapper")
+    assert uh.apiwrapper == CMCutility
 
 
 @pytest.mark.parametrize(
@@ -247,13 +250,9 @@ def test_UpdateHandler_get_required_bounds_4(mock, temp_test_env):
     assert right == None
 
 
-@pytest.mark.skip
 @patch("surfingcrypto.scraper.UpdateHandler._handle_update")
-def test_UpdateHandler_get_updates(mock, temp_test_env):
-    """"""
-    cmc_mock = Mock(spec=CMCutility)
-    cmc_mock.ciao = 2
-    cmc_mock.get_data().return_value = pd.DataFrame()
+def test_UpdateHandler_get_updates_onesided(mock, temp_test_env):
+    """basic version"""
     root = temp_test_env
     uh = UpdateHandler(
         "BTC",
@@ -263,19 +262,61 @@ def test_UpdateHandler_get_updates(mock, temp_test_env):
         root / "data" / "ts" / "BTC_EUR.csv",
     )
     uh.left, uh.right = uh.start, uh.end_day
-
-    # uh.apiwrapper=cmc_mock()
-
-    # df = uh._get_updates(None)
-    # print()
-    # assert isinstance(df,pd.DataFrame)
-    # assert cmc_mock.getassert_called_once()
+    assert not hasattr(uh, "df")
+    uh.df = uh._get_updates(None)
+    assert hasattr(uh, "df")
+    assert len(uh.df) == 366
 
 
-
-@pytest.mark.skip
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [
+        {
+            "ts": ("BTC_EUR.csv",),
+        },
+    ],
+    indirect=["temp_test_env"],
+)
 @patch("surfingcrypto.scraper.UpdateHandler._handle_update")
-def test_UpdateHandler_handle_update(mock, temp_test_env):
+def test_UpdateHandler_get_updates_twosided(mock, temp_test_env):
+    """basic version"""
+    root = temp_test_env
+    uh = UpdateHandler(
+        "BTC",
+        "EUR",
+        datetime.datetime(2018, 1, 1),
+        datetime.datetime(2022, 5, 30),
+        root / "data" / "ts" / "BTC_EUR.csv",
+    )
+    df, left, right = uh._load_csv()
+    uh.left, uh.right = uh._get_required_bounds(left, right)
+    uh.df = uh._get_updates(df)
+    uh.df["Date"] = pd.to_datetime(uh.df["Date"])
+
+    assert not any(uh.df["Date"].duplicated())
+    assert str(uh.df["Date"].iloc[0]) == str(
+        datetime.datetime(2018, 1, 1),
+    )
+    assert str(uh.df["Date"].iloc[-1]) == str(
+        datetime.datetime(2022, 5, 30),
+    )
+
+
+@pytest.mark.wip
+@pytest.mark.parametrize(
+    "temp_test_env,descr",
+    [
+        (
+            {
+                "ts": ("BTC_EUR.csv",),
+            },
+            "BTC in EUR, already up to date.",
+        ),
+        (None, "BTC in EUR, successfully downloaded."),
+    ],
+    indirect=["temp_test_env"],
+)
+def test_UpdateHandler_str_repr(temp_test_env, descr):
     root = temp_test_env
     uh = UpdateHandler(
         "BTC",
@@ -284,32 +325,8 @@ def test_UpdateHandler_handle_update(mock, temp_test_env):
         datetime.datetime(2021, 10, 31),
         root / "data" / "ts" / "BTC_EUR.csv",
     )
-    uh._handle_update()
-
-
-@pytest.mark.skip
-@pytest.mark.parametrize(
-    "temp_test_env,result",
-    [
-        (None, "False"),
-        (
-            {
-                "ts": ("BTC_EUR.csv",),
-            },
-            "True",
-        ),
-    ],
-    indirect=["temp_test_env"],
-)
-def test_UpdateHandler_str_repr(temp_test_env, result):
-    root = temp_test_env
-    uh = UpdateHandler(
-        "BTC",
-        "EUR",
-        datetime.datetime(2021, 2, 1),
-        datetime.datetime(2021, 10, 31),
-        root / "ts" / "BTC_EUR.csv",
-    )
-    expected = f"UpdateHandler(BTC, result={result})"
+    expected = f"UpdateHandler(BTC-EUR: {descr})"
+    if hasattr(uh, "error"):
+        print(uh.error)
     assert str(uh) == expected
     assert repr(uh) == expected
