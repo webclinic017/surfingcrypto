@@ -165,6 +165,7 @@ class UpdateHandler:
                 try:
                     self.left, self.right = self._get_required_bounds(first, last)
                     self.df = self._get_updates(df)
+                    self.df.to_csv(self.path)
                     self.description = (
                         f"{self.coin} in {self.fiat}, successfully updated."
                     )
@@ -177,13 +178,14 @@ class UpdateHandler:
             try:
                 self.left, self.right = self.start, self.end_day
                 self.df = self._get_updates(None)
+                self.df.to_csv(self.path)
                 self.description = (
                     f"{self.coin} in {self.fiat}, successfully downloaded."
                 )
                 self.result = True
             except:
                 self.description = (
-                    f"{self.coin} in {self.fiat} in {self.fiat}, download failed."
+                    f"{self.coin} in {self.fiat}, download failed."
                 )
                 self.result = False
                 self.error = traceback.format_exc()
@@ -258,6 +260,21 @@ class UpdateHandler:
         return left, right
 
     def _get_updates(self, df: pd.DataFrame or None) -> pd.DataFrame:
+        """returns dataframe of prices
+
+        get updates using selected apiwrapper.
+
+        The dataframe has default integer index.
+
+        Args:
+            df (pd.DataFrameorNone): _description_
+
+        Raises:
+            NotImplementedError: _description_
+
+        Returns:
+            pd.DataFrame: _description_
+        """
         updates = [
             df,
         ]
@@ -285,7 +302,9 @@ class UpdateHandler:
             raise NotImplementedError
 
         df = pd.concat(updates)
+        # sort ascending, oldest to newest
         df.sort_values(by="Date", inplace=True)
+        df.reset_index(inplace=True,drop=True)
         return df
 
     def __str__(self) -> str:

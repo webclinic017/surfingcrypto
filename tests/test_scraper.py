@@ -2,8 +2,12 @@
 test scraper module.
 """
 import datetime
+from pickletools import pyset
 import pytest
 import pandas as pd
+from pandas.testing import assert_frame_equal
+
+import os
 from unittest.mock import patch
 
 
@@ -11,8 +15,12 @@ from surfingcrypto.scraper import CMCutility, UpdateHandler
 
 ######## cmc utility
 
+def test_CMCutility_scrape_data():
+    """test that scrape data returns the expected result
 
-def test_CMCutility():
+    dataframe
+    newest to oldest order
+    """
     cmc = CMCutility(
         "BTC",
         datetime.datetime(2021, 1, 1),
@@ -21,10 +29,10 @@ def test_CMCutility():
     )
     response = cmc.scrape_data()
     assert isinstance(response, pd.DataFrame)
-    print(response)
     assert len(response) > 0
+    # response is in descending order
+    assert str(response["Date"].iloc[0]) == str(datetime.datetime(2022, 1, 1))
     assert str(response["Date"].iloc[-1]) == str(datetime.datetime(2021, 1, 1))
-    assert str(response["Date"].iloc[-0]) == str(datetime.datetime(2022, 1, 1))
 
 
 def test_CMCutility_str_repr_before_scraping():
@@ -39,7 +47,7 @@ def test_CMCutility_str_repr_before_scraping():
     assert repr(cmc) == expected
 
 
-def test_CMCutility_str_repr_with_god_response():
+def test_CMCutility_str_repr_with_good_response():
     cmc = CMCutility(
         "BTC",
         datetime.datetime(2021, 1, 1),
@@ -110,6 +118,7 @@ def test_UpdateHandler_load_csv(mock, temp_test_env):
     assert isinstance(df, pd.DataFrame)
     assert isinstance(first,datetime.datetime)
     assert isinstance(last,datetime.datetime)
+    # ascending order
     assert first == datetime.datetime(2021, 1, 1)
     assert last == datetime.datetime(2021, 12, 31)
 
@@ -304,6 +313,60 @@ def test_UpdateHandler_get_updates_twosided(mock, temp_test_env):
         datetime.datetime(2022, 5, 30),
     )
 
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [
+        {
+            "ts": ("BTC_EUR.csv",),
+        },
+    ],
+    indirect=["temp_test_env"],
+)
+def test_UpdateHandler_handle_update_already_up_to_date(temp_test_env):
+    """test when local data is already up to date"""
+    root = temp_test_env
+    uh = UpdateHandler(
+        "BTC",
+        "EUR",
+        datetime.datetime(2021, 1, 1),
+        datetime.datetime(2021, 12, 31),
+        root / "data" / "ts" / "BTC_EUR.csv",
+    )
+    assert uh.description == "BTC in EUR, already up to date."
+    assert uh.result == True
+
+@pytest.mark.wip
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [
+        {
+            "ts": (),
+        },
+    ],
+    indirect=["temp_test_env"],
+)
+def test_UpdateHandler_handle_update_nolocaldata(temp_test_env):
+    """test when there is no local data
+
+    empty tuple so that folder struct is created by fixture
+    
+    """
+    root = temp_test_env
+    uh = UpdateHandler(
+        "BTC",
+        "EUR",
+        datetime.datetime(2021, 1, 1),
+        datetime.datetime(2021, 12, 31),
+        root / "data" / "ts" / "BTC_EUR.csv",
+    )
+    assert uh.description == "BTC in EUR, successfully downloaded."
+    assert os.path.isfile(root / "data" / "ts" / "BTC_EUR.csv")
+    assert uh.result == True
+    df=pd.read_csv("tests/fixtures/BTC_EUR.csv")
+    df["Date"]=pd.to_datetime(df["Date"])
+    df.index=df.index.to_list()
+    print(uh.df.head())
+    assert_frame_equal(df,uh.df)
 
 @pytest.mark.skip
 @pytest.mark.parametrize(
