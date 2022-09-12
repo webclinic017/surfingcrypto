@@ -157,9 +157,6 @@ class UpdateHandler:
         if os.path.isfile(self.path):
             df, first, last = self._load_csv()
 
-            first = first.date()
-            last = last.date()
-
             if first == self.start and last == self.end_day:
                 self.df = df
                 self.description = f"{self.coin} in {self.fiat}, already up to date."
@@ -230,6 +227,7 @@ class UpdateHandler:
         # appending to front can cause exceptions because
         # coin data is available from a date that is later
         # than the start parameter
+
 
         # only to the front
         if self.start < first and last == self.end_day:

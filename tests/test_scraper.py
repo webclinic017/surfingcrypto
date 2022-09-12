@@ -97,7 +97,7 @@ def test_UpdateHandler(mock, temp_test_env):
 )
 @patch("surfingcrypto.scraper.UpdateHandler._handle_update")
 def test_UpdateHandler_load_csv(mock, temp_test_env):
-    """load local csv data"""
+    """load local csv data, with first and last being datetime"""
     root = temp_test_env
     uh = UpdateHandler(
         "BTC",
@@ -108,6 +108,8 @@ def test_UpdateHandler_load_csv(mock, temp_test_env):
     )
     df, first, last = uh._load_csv()
     assert isinstance(df, pd.DataFrame)
+    assert isinstance(first,datetime.datetime)
+    assert isinstance(last,datetime.datetime)
     assert first == datetime.datetime(2021, 1, 1)
     assert last == datetime.datetime(2021, 12, 31)
 
@@ -252,7 +254,7 @@ def test_UpdateHandler_get_required_bounds_4(mock, temp_test_env):
 
 @patch("surfingcrypto.scraper.UpdateHandler._handle_update")
 def test_UpdateHandler_get_updates_onesided(mock, temp_test_env):
-    """basic version"""
+    """get updates in basic version, one side update is required"""
     root = temp_test_env
     uh = UpdateHandler(
         "BTC",
@@ -279,7 +281,8 @@ def test_UpdateHandler_get_updates_onesided(mock, temp_test_env):
 )
 @patch("surfingcrypto.scraper.UpdateHandler._handle_update")
 def test_UpdateHandler_get_updates_twosided(mock, temp_test_env):
-    """basic version"""
+    """get updates in a basic version, patching handle update verify that
+    the two way update is recognized"""
     root = temp_test_env
     uh = UpdateHandler(
         "BTC",
@@ -302,7 +305,7 @@ def test_UpdateHandler_get_updates_twosided(mock, temp_test_env):
     )
 
 
-@pytest.mark.wip
+@pytest.mark.skip
 @pytest.mark.parametrize(
     "temp_test_env,descr",
     [
@@ -317,6 +320,7 @@ def test_UpdateHandler_get_updates_twosided(mock, temp_test_env):
     indirect=["temp_test_env"],
 )
 def test_UpdateHandler_str_repr(temp_test_env, descr):
+    """str and repr magic methods"""
     root = temp_test_env
     uh = UpdateHandler(
         "BTC",
