@@ -10,7 +10,7 @@ from pandas.testing import assert_frame_equal
 import os
 from unittest.mock import patch
 
-
+from surfingcrypto.config import Config
 from surfingcrypto.scraper import CMCutility, UpdateHandler, Scraper
 
 #######################################################################
@@ -348,7 +348,7 @@ def test_UpdateHandler_handle_update_nolocaldata(temp_test_env):
     ],
     indirect=["temp_test_env"],
 )
-def test_UpdateHandler_handle_update_update_oneside_endside(temp_test_env):
+def test_UpdateHandler_handle_update_oneside_endside(temp_test_env):
     """test oneside update (append to end) of df"""
     root = temp_test_env
 
@@ -367,10 +367,14 @@ def test_UpdateHandler_handle_update_update_oneside_endside(temp_test_env):
     assert uh.description == "BTC in EUR, successfully updated."
     assert_frame_equal(df,uh.df)
 
-def test_UpdateHandler_handle_update_update_oneside_frontside():
+@pytest.mark.skip
+def test_UpdateHandler_handle_update_oneside_frontside():
     pass
 
-@pytest.mark.wip
+@pytest.mark.skip
+def test_UpdateHandler_handle_update_twoside():
+    pass
+
 @pytest.mark.parametrize(
     "temp_test_env,descr",
     [
@@ -410,3 +414,21 @@ def test_UpdateHandler_str_repr(temp_test_env, descr):
 # 
 #  Scraper
 
+COINS = {"BTC": "", "ETH": ""}
+@pytest.mark.wip
+def test_Scraper(temp_test_env):
+    """
+    test basic Scraper with full download of data
+    """
+    root = temp_test_env
+    c = Config(COINS, root / "data")
+    s = Scraper(c,)
+    s.run()
+    assert isinstance(s.runs,list)
+    for run in s.runs:
+        assert isinstance(run,UpdateHandler)
+    print(s.runs)
+    print(type(s.runs[0].left))
+    print(type(s.runs[0].right))
+    assert os.path.isfile(root/"data"/"ts" / "BTC_EUR.csv")
+    assert os.path.isfile(root/"data"/"ts" / "ETH_EUR.csv")

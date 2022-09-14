@@ -16,30 +16,30 @@ class Scraper:
     Arguments:
         config (:obj:`surfingcrypto.config.config`): package
             configuration object
-        verbose (bool): wether to log at the end of execution
 
     Attributes:
         config (:obj:`surfingcrypto.config.config`): package
             configuration object
-        verbose (bool): wether to print log
-        runs (:obj:`list` of :obj:`surfincrypto.scraper.CoinScraper`): list
-            of `CoinScraper` objects
-        errors (:obj:`list` of :obj:`surfincrypto.scraper.CoinScraper`): list
-            of `CoinScraper` objects that have errors
-        output (bool): Overall boolean output of process. If
+        runs (:obj:`list` of :obj:`surfincrypto.scraper.UpdateHandler`): list
+            of `UpdateHandler` objects executed
+        errors (:obj:`list` of :obj:`surfincrypto.scraper.UpdateHandler`): list
+            of `UpdateHandler` objects that have errors
+        output (bool): Overall boolean output of process, aka if
             everything went well.
-        output_descrition (str): Overall string description of output.
+        output_verbose (str): Overall string description of output.
 
 
     """
 
-    def __init__(self, config, verbose=True):
+    def __init__(self, config):
         self.config = config
-        self.verbose = verbose
+        self.runs = []
+        self.errors = []
+        self.output_verbose = ""
+        self.output = None
 
     def run(self):
         """runs the scraping process for all coins."""
-        self.runs = []
         for key in self.config.scraping_req:
             # dates are utc unaware
             start = self.config.scraping_req[key]["start"].date()
@@ -63,23 +63,18 @@ class Scraper:
         """
         produce a log of all executions.
         """
-        length = len(self.runs)
-        self.errors = []
         for run in self.runs:
             if hasattr(run, "error"):
                 self.errors.append(run)
 
         if len(self.errors) == 0:
-            self.output_description = "Update successful."
+            self.output_verbose = "Update successful."
             self.output = True
         else:
-            self.output_description = (
-                "Update failed." f" There are ({len(self.errors)}/{length}) errors."
+            self.output_verbose = (
+                "Update failed." f" There are ({len(self.errors)}/{len(self.runs)}) errors."
             )
             self.output = False
-
-        if self.verbose:
-            print(self.output_description)
 
 
 class UpdateHandler:
@@ -276,8 +271,8 @@ class UpdateHandler:
             df,
         ]
         # one side update
-        if isinstance(self.left, datetime.datetime) and isinstance(
-            self.right, datetime.datetime
+        if isinstance(self.left, datetime.date) and isinstance(
+            self.right, datetime.date
         ):
             updates.append(
                 self.apiwrapper(
