@@ -72,15 +72,13 @@ def bb_signal(df: pd.DataFrame, buffer=0.1) -> pd.Series:
             if (
                 serie["PREV_STOCK"]
                 > serie["PREV_LOWERBB"] + serie["PREV_LOWERBB"] * buffer
-                and serie["Close"]
-                < serie["BBL_20_2.0"] + serie["BBL_20_2.0"] * buffer
+                and serie["Close"] < serie["BBL_20_2.0"] + serie["BBL_20_2.0"] * buffer
             ):
                 return 1
             elif (
                 serie["PREV_STOCK"]
                 < serie["PREV_UPPERBB"] - serie["PREV_UPPERBB"] * buffer
-                and serie["Close"]
-                > serie["BBU_20_2.0"] - serie["BBU_20_2.0"] * buffer
+                and serie["Close"] > serie["BBU_20_2.0"] - serie["BBU_20_2.0"] * buffer
             ):
                 return 0
         else:

@@ -51,7 +51,7 @@ class Portfolio:
     def _standardize(self):
         """
         creates a dataframe of only `buy` and `sell` orders,
-        for being able to assess the portfolio in a 
+        for being able to assess the portfolio in a
         standardize format.
 
         It calculates missing fee information of `trade` transactions.

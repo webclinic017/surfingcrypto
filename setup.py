@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="surfingcrypto",
-    version="0.5.0",
+    version="0.6.0",
     description="Customizable interface to cryptocurrencies.",
     long_description_content_type="text/markdown",
     long_description=long_description,
@@ -31,9 +31,11 @@ setup(
         "calplot",
         # "pyfolio @ git+https://github.com/giocaizzi/pyfolio.git",
         # "backtrader @ git+https://github.com/mementum/backtrader.git@0fa63ef4a35dc53cc7320813f8b15480c8f85517#egg=backtrader",
-        "scikit-learn"
+        "scikit-learn",
     ],
-    extras_require={"dev": [],},
+    extras_require={
+        "dev": [],
+    },
     classifiers=[
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",

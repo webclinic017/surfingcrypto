@@ -79,15 +79,11 @@ class BinaryLaggedLogReturns(Features):
         return model_df
 
     def get_future_x(self) -> pd.Series:
-        last = self.model_df.loc[
-            self.model_df.iloc[-1].name, self.x_cols_names
-        ]
+        last = self.model_df.loc[self.model_df.iloc[-1].name, self.x_cols_names]
         future = []
         for key in self.indicators:
             iseries = last.loc[last.index.str.contains(key)].shift()
-            iseries.iloc[0] = self.model_df.loc[
-                self.model_df.iloc[-1].name, key
-            ]
+            iseries.iloc[0] = self.model_df.loc[self.model_df.iloc[-1].name, key]
             future.append(iseries)
 
         future = pd.concat(future)

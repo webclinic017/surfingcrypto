@@ -7,7 +7,8 @@ from pathlib import Path
 
 from TelegramBotNotifications import TelegramBot
 
-from surfingcrypto import Config, TS
+from surfingcrypto.config import Config
+from surfingcrypto.ts import TS
 from surfingcrypto.scraper import Scraper
 from surfingcrypto.reporting.reporting import (
     report_percentage_diff,
@@ -63,9 +64,7 @@ tg = TelegramBot(
 print("### Scraper")
 s = Scraper(c)
 s.run()
-tg.send_message_to_all(
-    message=s.output_description
-)  # send scraper log to telegram
+tg.send_message_to_all(message=s.output_verbose)  # send scraper log to telegram
 
 # start tracker AFTER having scraped required data
 p.start_tracker(
@@ -74,9 +73,7 @@ p.start_tracker(
 )
 
 coins_to_plot = [
-    x
-    for x in set(p.coinbase.active_accounts + list(c.coins.keys()))
-    if x != "USDC"
+    x for x in set(p.coinbase.active_accounts + list(c.coins.keys())) if x != "USDC"
 ]
 
 # produce reports for each coin in configuration
@@ -92,9 +89,7 @@ for coin in coins_to_plot:
 
 # PORTFOLIO INFO
 tg.send_message_to_user(report_coinbase_live_value(p), "admin")
-tg.send_message_to_user(
-    report_stock_gain(p.tracker.daily_snaphost("last")), "admin"
-)
+tg.send_message_to_user(report_stock_gain(p.tracker.daily_snaphost("last")), "admin")
 
 # ALGOTRADING
 

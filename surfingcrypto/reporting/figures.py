@@ -220,10 +220,10 @@ class TaPlot(BaseFigure):
             self.object.coin, fontsize=10, va="center", ha="center", pad=20
         )
 
-        ymin= self.object.df["Low"].min() - 0.1*self.object.df["Low"].min()
-        ymax= self.object.df["High"].max() + 0.1*self.object.df["High"].max()
-        self.axes[0].set_ylim([ymin,ymax])
-        
+        ymin = self.object.df["Low"].min() - 0.1 * self.object.df["Low"].min()
+        ymax = self.object.df["High"].max() + 0.1 * self.object.df["High"].max()
+        self.axes[0].set_ylim([ymin, ymax])
+
         # log
         print(f"{self.object.coin} plotted.")
 
@@ -386,4 +386,3 @@ class BacktestPerformancePlot:
         self.axes[2].grid(True)
         pf.plot_rolling_sharpe(returns=self.bt.returns, ax=self.axes[3])
         self.axes[3].grid(True)
-

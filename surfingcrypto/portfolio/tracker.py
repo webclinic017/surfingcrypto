@@ -34,7 +34,7 @@ class Tracker:
         stocks_start: str = None,
         stocks_end: str = None,
         benchmark: str = None,
-        configuration: surfingcrypto.Config = None,
+        configuration: surfingcrypto.config.Config = None,
     ):
         self.configuration = configuration
 
