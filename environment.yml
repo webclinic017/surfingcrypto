@@ -17,6 +17,7 @@ dependencies:
 #formatting and linting
   - black
   - flake8
+  - flake8-rst-docstrings
 #docs
   - sphinx
   - sphinx_rtd_theme
