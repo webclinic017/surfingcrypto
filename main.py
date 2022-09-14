@@ -7,7 +7,8 @@ from pathlib import Path
 
 from TelegramBotNotifications import TelegramBot
 
-from surfingcrypto import Config, TS
+from surfingcrypto.config import Config
+from surfingcrypto.ts import TS
 from surfingcrypto.scraper import Scraper
 from surfingcrypto.reporting.reporting import (
     report_percentage_diff,
@@ -63,7 +64,7 @@ tg = TelegramBot(
 print("### Scraper")
 s = Scraper(c)
 s.run()
-tg.send_message_to_all(message=s.output_description)  # send scraper log to telegram
+tg.send_message_to_all(message=s.output_verbose)  # send scraper log to telegram
 
 # start tracker AFTER having scraped required data
 p.start_tracker(
