@@ -157,9 +157,7 @@ class UpdateHandler:
         if os.path.isfile(self.path):
             df, first, last = self._load_csv()
 
-            print(df)
-
-            if first == self.start and last == self.end_day:
+            if (first <= self.start) and (self.end_day <= last):
                 self.df = df
                 self.description = f"{self.coin} in {self.fiat}, already up to date."
                 self.result = True
@@ -251,12 +249,9 @@ class UpdateHandler:
             left.append(last + datetime.timedelta(1))
             right.append(self.end_day)
 
-        # within data I already have
-        elif (first == self.start or first < self.start) and (
-            self.end_day == last or self.end_day < last
-        ):
-            left, right = None, None
-        else:
+        else:  
+            print(f"first: {first}, last: {last}")
+            print(f"start: {self.start}, end: {self.end_day}")
             raise NotImplementedError
 
         return left, right
@@ -269,7 +264,7 @@ class UpdateHandler:
         The dataframe has default integer index.
 
         Args:
-            df (pd.DataFrameorNone): _description_
+            df (pd.DataFrame or None): _description_
 
         Raises:
             NotImplementedError: _description_
@@ -289,21 +284,14 @@ class UpdateHandler:
                     self.coin, self.left, self.right, self.fiat
                 ).scrape_data()
             )
-        # two side update
-        elif (
-            isinstance(self.left, list)
-            and isinstance(self.right, list)
-            and len(self.left) == 2
-            and len(self.right) == 2
-        ):
+        # two side update (lists)
+        else:
             for l, r in zip(self.left, self.right):
                 updates.append(
                     self.apiwrapper(self.coin, l, r, self.fiat).scrape_data()
                 )
-        else:
-            raise NotImplementedError
-        for idf in updates:
-            print(idf)
+
+        #concat
         df = pd.concat(updates)
         # sort ascending, oldest to newest
         df.sort_values(by="Date", inplace=True)

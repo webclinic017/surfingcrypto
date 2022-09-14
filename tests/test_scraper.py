@@ -11,9 +11,11 @@ import os
 from unittest.mock import patch
 
 
-from surfingcrypto.scraper import CMCutility, UpdateHandler
+from surfingcrypto.scraper import CMCutility, UpdateHandler, Scraper
 
-######## cmc utility
+#######################################################################
+# 
+#  cmc utility
 
 def test_CMCutility_scrape_data():
     """test that scrape data returns the expected result
@@ -74,7 +76,9 @@ def test_CMCutility_str_repr_with_bad_response():
     assert repr(cmc) == expected
 
 
-############  updatehandler
+#######################################################################
+# 
+#  Updatehandler
 
 # @patch.object(UpdateHandler,"_handle_update") #both works
 @patch("surfingcrypto.scraper.UpdateHandler._handle_update")
@@ -228,40 +232,6 @@ def test_UpdateHandler_get_required_bounds_3(mock, temp_test_env):
     assert right[1] == datetime.datetime(2022, 8, 20)
 
 
-@pytest.mark.parametrize(
-    "temp_test_env",
-    [
-        {
-            "ts": ("BTC_EUR.csv",),
-        },
-    ],
-    indirect=["temp_test_env"],
-)
-@patch("surfingcrypto.scraper.UpdateHandler._handle_update")
-def test_UpdateHandler_get_required_bounds_4(mock, temp_test_env):
-    """
-    load get required bounds
-    first 2021-1-1
-    start 2021-2-1
-    end   2021-10-31
-    last  2021-12-31
-
-    --> already have return None
-    """
-    root = temp_test_env
-    uh = UpdateHandler(
-        "BTC",
-        "EUR",
-        datetime.datetime(2021, 2, 1),
-        datetime.datetime(2021, 10, 31),
-        root / "data" / "ts" / "BTC_EUR.csv",
-    )
-    df, first, last = uh._load_csv()
-    left, right = uh._get_required_bounds(first, last)
-    assert left == None
-    assert right == None
-
-
 @patch("surfingcrypto.scraper.UpdateHandler._handle_update")
 def test_UpdateHandler_get_updates_onesided(mock, temp_test_env):
     """get updates in basic version, one side update is required"""
@@ -400,7 +370,7 @@ def test_UpdateHandler_handle_update_update_oneside_endside(temp_test_env):
 def test_UpdateHandler_handle_update_update_oneside_frontside():
     pass
 
-@pytest.mark.skip
+@pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env,descr",
     [
@@ -410,7 +380,12 @@ def test_UpdateHandler_handle_update_update_oneside_frontside():
             },
             "BTC in EUR, already up to date.",
         ),
-        (None, "BTC in EUR, successfully downloaded."),
+        (
+            {
+                "ts": (),
+            },
+            "BTC in EUR, successfully downloaded."
+        ),
     ],
     indirect=["temp_test_env"],
 )
@@ -429,3 +404,9 @@ def test_UpdateHandler_str_repr(temp_test_env, descr):
         print(uh.error)
     assert str(uh) == expected
     assert repr(uh) == expected
+
+
+#######################################################################
+# 
+#  Scraper
+
