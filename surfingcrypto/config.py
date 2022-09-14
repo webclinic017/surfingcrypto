@@ -24,14 +24,10 @@ class Config:
         coins (dict): coins
         data_folder (str) : ABSOLUTE path to data folder
         fiat (str): preferred fiat, defaults is `EUR`
-
         coinbase (dict): coinbase user configuration
         telegram (dict): telegram user configuration
-
         coinbase_req (:obj:`dict` of :obj:`dict`) dictionary
             containing coinbase requirements
-        data_folder (str) : ABSOLUTE path to data folder
-
         error_log (:obj:`list`): list of errors
         rebrandings (dict): dictionary of known rebrandings
         scraping_req (:obj:`dict` of :obj:`dict`)

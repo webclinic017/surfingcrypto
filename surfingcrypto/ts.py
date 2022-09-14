@@ -106,7 +106,8 @@ class TS:
             "bbands": {"length": 20, "std": 2},
             "rsi": {"timeperiod": 14},
         }
-        ````
+        
+        ```
         """
         for param in params:
             # dictionary
