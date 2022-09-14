@@ -93,7 +93,6 @@ def test_UpdateHandler(mock, temp_test_env):
     assert hasattr(uh, "apiwrapper")
     assert uh.apiwrapper == CMCutility
 
-
 @pytest.mark.parametrize(
     "temp_test_env",
     [
@@ -118,6 +117,8 @@ def test_UpdateHandler_load_csv(mock, temp_test_env):
     assert isinstance(df, pd.DataFrame)
     assert isinstance(first,datetime.datetime)
     assert isinstance(last,datetime.datetime)
+    #range index
+    assert isinstance(df.index,pd.RangeIndex)
     # ascending order
     assert first == datetime.datetime(2021, 1, 1)
     assert last == datetime.datetime(2021, 12, 31)
@@ -335,7 +336,6 @@ def test_UpdateHandler_handle_update_already_up_to_date(temp_test_env):
     assert uh.description == "BTC in EUR, already up to date."
     assert uh.result == True
 
-@pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env",
     [
@@ -364,9 +364,41 @@ def test_UpdateHandler_handle_update_nolocaldata(temp_test_env):
     assert uh.result == True
     df=pd.read_csv("tests/fixtures/BTC_EUR.csv")
     df["Date"]=pd.to_datetime(df["Date"])
+    #quick fix for compraing rangeindex e int index
     df.index=df.index.to_list()
-    print(uh.df.head())
     assert_frame_equal(df,uh.df)
+
+
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [
+        {
+            "ts": ("BTC_EUR.csv",),
+        },
+    ],
+    indirect=["temp_test_env"],
+)
+def test_UpdateHandler_handle_update_update_oneside_endside(temp_test_env):
+    """test oneside update (append to end) of df"""
+    root = temp_test_env
+
+    #split df for test
+    df=pd.read_csv(root/"data"/"ts"/"BTC_EUR.csv")
+    df[:31].to_csv(root/"data"/"ts"/"BTC_EUR.csv",index=False)
+    df["Date"]=pd.to_datetime(df["Date"])
+
+    uh = UpdateHandler(
+        "BTC",
+        "EUR",
+        datetime.datetime(2021, 1, 1),
+        datetime.datetime(2021, 12, 31),
+        root / "data" / "ts" / "BTC_EUR.csv",
+    )
+    assert uh.description == "BTC in EUR, successfully updated."
+    assert_frame_equal(df,uh.df)
+
+def test_UpdateHandler_handle_update_update_oneside_frontside():
+    pass
 
 @pytest.mark.skip
 @pytest.mark.parametrize(

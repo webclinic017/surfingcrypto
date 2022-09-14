@@ -157,6 +157,8 @@ class UpdateHandler:
         if os.path.isfile(self.path):
             df, first, last = self._load_csv()
 
+            print(df)
+
             if first == self.start and last == self.end_day:
                 self.df = df
                 self.description = f"{self.coin} in {self.fiat}, already up to date."
@@ -300,7 +302,8 @@ class UpdateHandler:
                 )
         else:
             raise NotImplementedError
-
+        for idf in updates:
+            print(idf)
         df = pd.concat(updates)
         # sort ascending, oldest to newest
         df.sort_values(by="Date", inplace=True)
