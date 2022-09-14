@@ -221,7 +221,9 @@ class TaPlot(BaseFigure):
         )
 
         ymin = self.object.df["Low"].min() - 0.1 * self.object.df["Low"].min()
-        ymax = self.object.df["High"].max() + 0.1 * self.object.df["High"].max()
+        ymax = (
+            self.object.df["High"].max() + 0.1 * self.object.df["High"].max()
+        )
         self.axes[0].set_ylim([ymin, ymax])
 
         # log
@@ -271,7 +273,9 @@ class ATHPlot(BaseFigure):
         colors = [cmap(norm(x)) for x in self.object.df["distance_ATH"]]
 
         # points
-        self.ax.scatter(self.object.df.index, self.object.df.Close, c=colors, s=2)
+        self.ax.scatter(
+            self.object.df.index, self.object.df.Close, c=colors, s=2
+        )
         # colorbar
         cmappable = ScalarMappable(norm=norm, cmap=cmap)
         self.f.colorbar(cmappable)
@@ -321,7 +325,9 @@ class PortfolioPlot(BaseFigure):
         self.f, self.ax = plt.subplots(
             dpi=200,
         )
-        df = self.object.tracker.daily_grouped_metrics(variables, by_symbol=by_symbol)
+        df = self.object.tracker.daily_grouped_metrics(
+            variables, by_symbol=by_symbol
+        )
         df = df.loc[self.graphstart.date() :].dropna(axis=1, how="all")
         df.plot(ax=self.ax)
         if zero_line:
@@ -359,7 +365,9 @@ class CalendarPlot:
             ),
             midpoint=norm(0),
         )
-        self.calplot = calplot.calplot(values["Stock Gain / (Loss)"], cmap=cmap)
+        self.calplot = calplot.calplot(
+            values["Stock Gain / (Loss)"], cmap=cmap
+        )
 
 
 class BacktestPerformancePlot:

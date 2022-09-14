@@ -64,7 +64,9 @@ class Portfolio:
         self.df = self.coinbase.history.df.copy()
 
         # exclude fiat deposit and withdrawals
-        self.df = self.df[self.df["type"].isin(["buy", "sell", "trade", "send"])]
+        self.df = self.df[
+            self.df["type"].isin(["buy", "sell", "trade", "send"])
+        ]
 
         # get unique transaction-ids for trades
 
@@ -129,7 +131,9 @@ class Portfolio:
         """
         investment = (
             self.coinbase.history.df[
-                self.coinbase.history.df.type.isin(["fiat_deposit", "fiat_withdrawal"])
+                self.coinbase.history.df.type.isin(
+                    ["fiat_deposit", "fiat_withdrawal"]
+                )
             ]
             .groupby("type")[["amount"]]
             .sum()
@@ -150,7 +154,9 @@ class Portfolio:
         def update_price(series):
             string = f'{series["Symbol"]}-EUR'
             return float(
-                self.coinbase.client.get_spot_price(currency_pair=string)["amount"]
+                self.coinbase.client.get_spot_price(currency_pair=string)[
+                    "amount"
+                ]
             )
 
         last["Symbol Adj Close"] = last.apply(update_price, axis=1)
@@ -178,7 +184,10 @@ class Portfolio:
         print(self.coinbase)
         if len(self.df) != len(self.coinbase.history.df):
             n = len(self.coinbase.history.df) - len(self.df)
-            print(f"Warning! There are {n} transactions" "that were EXCLUDED in df.")
+            print(
+                f"Warning! There are {n} transactions"
+                "that were EXCLUDED in df."
+            )
         if not self.coinbase.history.executed_without_errors():
             print("Warning! Errors while handling transactions:")
             print(self.coinbase.history)

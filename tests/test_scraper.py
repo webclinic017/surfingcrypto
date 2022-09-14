@@ -2,7 +2,6 @@
 test scraper module.
 """
 import datetime
-from pickletools import pyset
 import pytest
 import pandas as pd
 from pandas.testing import assert_frame_equal
@@ -14,8 +13,9 @@ from surfingcrypto.config import Config
 from surfingcrypto.scraper import CMCutility, UpdateHandler, Scraper
 
 #######################################################################
-# 
+#
 #  cmc utility
+
 
 def test_CMCutility_scrape_data():
     """test that scrape data returns the expected result
@@ -44,7 +44,9 @@ def test_CMCutility_str_repr_before_scraping():
         datetime.datetime(2022, 1, 1),
         "EUR",
     )
-    expected = "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=None)"
+    expected = (
+        "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=None)"
+    )
     assert str(cmc) == expected
     assert repr(cmc) == expected
 
@@ -57,7 +59,9 @@ def test_CMCutility_str_repr_with_good_response():
         "EUR",
     )
     cmc.scrape_data()
-    expected = "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=True)"
+    expected = (
+        "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=True)"
+    )
     assert str(cmc) == expected
     assert repr(cmc) == expected
 
@@ -71,13 +75,15 @@ def test_CMCutility_str_repr_with_bad_response():
         "EUR",
     )
     cmc.scrape_data()
-    expected = "CmcScraper(SOL, left=01-01-2017, right=01-01-2018, response=False)"
+    expected = (
+        "CmcScraper(SOL, left=01-01-2017, right=01-01-2018, response=False)"
+    )
     assert str(cmc) == expected
     assert repr(cmc) == expected
 
 
 #######################################################################
-# 
+#
 #  Updatehandler
 
 # @patch.object(UpdateHandler,"_handle_update") #both works
@@ -96,6 +102,7 @@ def test_UpdateHandler(mock, temp_test_env):
     assert not hasattr(uh, "df")
     assert hasattr(uh, "apiwrapper")
     assert uh.apiwrapper == CMCutility
+
 
 @pytest.mark.parametrize(
     "temp_test_env",
@@ -119,10 +126,10 @@ def test_UpdateHandler_load_csv(mock, temp_test_env):
     )
     df, first, last = uh._load_csv()
     assert isinstance(df, pd.DataFrame)
-    assert isinstance(first,datetime.datetime)
-    assert isinstance(last,datetime.datetime)
-    #range index
-    assert isinstance(df.index,pd.RangeIndex)
+    assert isinstance(first, datetime.datetime)
+    assert isinstance(last, datetime.datetime)
+    # range index
+    assert isinstance(df.index, pd.RangeIndex)
     # ascending order
     assert first == datetime.datetime(2021, 1, 1)
     assert last == datetime.datetime(2021, 12, 31)
@@ -284,6 +291,7 @@ def test_UpdateHandler_get_updates_twosided(mock, temp_test_env):
         datetime.datetime(2022, 5, 30),
     )
 
+
 @pytest.mark.parametrize(
     "temp_test_env",
     [
@@ -306,6 +314,7 @@ def test_UpdateHandler_handle_update_already_up_to_date(temp_test_env):
     assert uh.description == "BTC in EUR, already up to date."
     assert uh.result == True
 
+
 @pytest.mark.parametrize(
     "temp_test_env",
     [
@@ -319,7 +328,7 @@ def test_UpdateHandler_handle_update_nolocaldata(temp_test_env):
     """test when there is no local data
 
     empty tuple so that folder struct is created by fixture
-    
+
     """
     root = temp_test_env
     uh = UpdateHandler(
@@ -332,11 +341,11 @@ def test_UpdateHandler_handle_update_nolocaldata(temp_test_env):
     assert uh.description == "BTC in EUR, successfully downloaded."
     assert os.path.isfile(root / "data" / "ts" / "BTC_EUR.csv")
     assert uh.result == True
-    df=pd.read_csv("tests/fixtures/BTC_EUR.csv")
-    df["Date"]=pd.to_datetime(df["Date"])
-    #quick fix for compraing rangeindex e int index
-    df.index=df.index.to_list()
-    assert_frame_equal(df,uh.df)
+    df = pd.read_csv("tests/fixtures/BTC_EUR.csv")
+    df["Date"] = pd.to_datetime(df["Date"])
+    # quick fix for compraing rangeindex e int index
+    df.index = df.index.to_list()
+    assert_frame_equal(df, uh.df)
 
 
 @pytest.mark.parametrize(
@@ -352,10 +361,10 @@ def test_UpdateHandler_handle_update_oneside_endside(temp_test_env):
     """test oneside update (append to end) of df"""
     root = temp_test_env
 
-    #split df for test
-    df=pd.read_csv(root/"data"/"ts"/"BTC_EUR.csv")
-    df[:31].to_csv(root/"data"/"ts"/"BTC_EUR.csv",index=False)
-    df["Date"]=pd.to_datetime(df["Date"])
+    # split df for test
+    df = pd.read_csv(root / "data" / "ts" / "BTC_EUR.csv")
+    df[:31].to_csv(root / "data" / "ts" / "BTC_EUR.csv", index=False)
+    df["Date"] = pd.to_datetime(df["Date"])
 
     uh = UpdateHandler(
         "BTC",
@@ -365,15 +374,18 @@ def test_UpdateHandler_handle_update_oneside_endside(temp_test_env):
         root / "data" / "ts" / "BTC_EUR.csv",
     )
     assert uh.description == "BTC in EUR, successfully updated."
-    assert_frame_equal(df,uh.df)
+    assert_frame_equal(df, uh.df)
+
 
 @pytest.mark.skip
 def test_UpdateHandler_handle_update_oneside_frontside():
     pass
 
+
 @pytest.mark.skip
 def test_UpdateHandler_handle_update_twoside():
     pass
+
 
 @pytest.mark.parametrize(
     "temp_test_env,descr",
@@ -388,7 +400,7 @@ def test_UpdateHandler_handle_update_twoside():
             {
                 "ts": (),
             },
-            "BTC in EUR, successfully downloaded."
+            "BTC in EUR, successfully downloaded.",
         ),
     ],
     indirect=["temp_test_env"],
@@ -411,10 +423,12 @@ def test_UpdateHandler_str_repr(temp_test_env, descr):
 
 
 #######################################################################
-# 
+#
 #  Scraper
 
 COINS = {"BTC": "", "ETH": ""}
+
+
 @pytest.mark.wip
 def test_Scraper(temp_test_env):
     """
@@ -422,13 +436,15 @@ def test_Scraper(temp_test_env):
     """
     root = temp_test_env
     c = Config(COINS, root / "data")
-    s = Scraper(c,)
+    s = Scraper(
+        c,
+    )
     s.run()
-    assert isinstance(s.runs,list)
+    assert isinstance(s.runs, list)
     for run in s.runs:
-        assert isinstance(run,UpdateHandler)
+        assert isinstance(run, UpdateHandler)
     print(s.runs)
     print(type(s.runs[0].left))
     print(type(s.runs[0].right))
-    assert os.path.isfile(root/"data"/"ts" / "BTC_EUR.csv")
-    assert os.path.isfile(root/"data"/"ts" / "ETH_EUR.csv")
+    assert os.path.isfile(root / "data" / "ts" / "BTC_EUR.csv")
+    assert os.path.isfile(root / "data" / "ts" / "ETH_EUR.csv")

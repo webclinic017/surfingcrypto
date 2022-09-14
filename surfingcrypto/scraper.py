@@ -50,7 +50,9 @@ class Scraper:
                 key = self.config.rebrandings[key]
 
             path = (
-                self.config.data_folder / "ts" / (key + "_" + self.config.fiat + ".csv")
+                self.config.data_folder
+                / "ts"
+                / (key + "_" + self.config.fiat + ".csv")
             )
 
             c = UpdateHandler(key, self.config.fiat, start, end_day, path)
@@ -72,7 +74,8 @@ class Scraper:
             self.output = True
         else:
             self.output_verbose = (
-                "Update failed." f" There are ({len(self.errors)}/{len(self.runs)}) errors."
+                "Update failed."
+                f" There are ({len(self.errors)}/{len(self.runs)}) errors."
             )
             self.output = False
 
@@ -154,11 +157,15 @@ class UpdateHandler:
 
             if (first <= self.start) and (self.end_day <= last):
                 self.df = df
-                self.description = f"{self.coin} in {self.fiat}, already up to date."
+                self.description = (
+                    f"{self.coin} in {self.fiat}, already up to date."
+                )
                 self.result = True
             else:
                 try:
-                    self.left, self.right = self._get_required_bounds(first, last)
+                    self.left, self.right = self._get_required_bounds(
+                        first, last
+                    )
                     self.df = self._get_updates(df)
                     self.df.to_csv(self.path)
                     self.description = (
@@ -166,7 +173,9 @@ class UpdateHandler:
                     )
                     self.result = True
                 except:
-                    self.description = f"{self.coin} in {self.fiat}," " update failed."
+                    self.description = (
+                        f"{self.coin} in {self.fiat}," " update failed."
+                    )
                     self.result = False
                     self.error = traceback.format_exc()
         else:
@@ -225,13 +234,14 @@ class UpdateHandler:
         # coin data is available from a date that is later
         # than the start parameter
 
-
         # only to the front
         if self.start < first and last == self.end_day:
             left, right = self.start, (first - datetime.timedelta(1))
 
         # only to the end
-        elif (first == self.start or first < self.start) and last < self.end_day:
+        elif (
+            first == self.start or first < self.start
+        ) and last < self.end_day:
             left, right = last + datetime.timedelta(1), self.end_day
 
         # both sides
@@ -244,7 +254,7 @@ class UpdateHandler:
             left.append(last + datetime.timedelta(1))
             right.append(self.end_day)
 
-        else:  
+        else:
             print(f"first: {first}, last: {last}")
             print(f"start: {self.start}, end: {self.end_day}")
             raise NotImplementedError
@@ -286,11 +296,11 @@ class UpdateHandler:
                     self.apiwrapper(self.coin, l, r, self.fiat).scrape_data()
                 )
 
-        #concat
+        # concat
         df = pd.concat(updates)
         # sort ascending, oldest to newest
         df.sort_values(by="Date", inplace=True)
-        df.reset_index(inplace=True,drop=True)
+        df.reset_index(inplace=True, drop=True)
         return df
 
     def __str__(self) -> str:

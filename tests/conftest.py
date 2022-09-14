@@ -51,7 +51,9 @@ def populate_test_env(request, tmp_path):
         # if first element of param is string then tuple of strings
         if isinstance(request.param, dict):
             for folder in request.param:
-                copy_tuple_elements_to_folder(request.param[folder], tmp_path, folder)
+                copy_tuple_elements_to_folder(
+                    request.param[folder], tmp_path, folder
+                )
         else:
             print(request.param)
             raise NotImplementedError("params fixture not matches type")
@@ -61,7 +63,8 @@ def copy_tuple_elements_to_folder(tupleoftuples, tmp_path, folder_name):
     for filename in tupleoftuples:
         if os.path.isfile(TEST_DATA / filename):
             shutil.copy(
-                TEST_DATA / filename, tmp_path / "data" / folder_name / filename
+                TEST_DATA / filename,
+                tmp_path / "data" / folder_name / filename,
             )
         else:
             raise AttributeError("Missing fixture data.")

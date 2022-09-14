@@ -47,7 +47,9 @@ def candlesticks(ts: TS, ax, volume=False, vol_ax=None, style="candlesticks"):
                 show_nontrading=True,
             )
     elif style == "ohlc":
-        mplf.plot(ts.df, ax=ax, type="ohlc", style="mike", show_nontrading=True)
+        mplf.plot(
+            ts.df, ax=ax, type="ohlc", style="mike", show_nontrading=True
+        )
     else:
         raise ValueError("Must specify style.")
     return
@@ -112,7 +114,9 @@ def plot_macd(ts: TS, ax, plot_lines=True):
     prices.dropna(inplace=True)
 
     for i in range(len(prices)):
-        ax.bar(prices.index[i], prices[h_colname][i], color=prices["colors"][i])
+        ax.bar(
+            prices.index[i], prices[h_colname][i], color=prices["colors"][i]
+        )
 
     if plot_lines:
         prices.plot(y=[macd_colname, signal_colname], ax=ax, zorder=3)

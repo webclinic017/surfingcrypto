@@ -59,10 +59,14 @@ class TS:
         saved in .csv format.
         """
         if os.path.isfile(
-            self.config.data_folder / "ts" / (self.coin + "_" + self.fiat + ".csv")
+            self.config.data_folder
+            / "ts"
+            / (self.coin + "_" + self.fiat + ".csv")
         ):
             self.df = pd.read_csv(
-                self.config.data_folder / "ts" / (self.coin + "_" + self.fiat + ".csv")
+                self.config.data_folder
+                / "ts"
+                / (self.coin + "_" + self.fiat + ".csv")
             )
             self.df["Date"] = pd.to_datetime(self.df["Date"], utc=True)
             self.df.set_index("Date", inplace=True)
@@ -88,32 +92,32 @@ class TS:
             ]
         ).issubset(self.df.columns):
             raise AttributeError(
-                "df must have at least columns named: " "Open, High, Low, Close"
+                "df must have at least columns named: "
+                "Open, High, Low, Close"
             )
         # duplicates
         if any(self.df.index.duplicated()):
             raise ValueError("Data has duplicates.")
 
     def set_ta_params(self, params: dict):
-        """sets new TA parameters
-        ```
-        self.ta_params = {
-            "sma": [
-                {"fast": 12, "slow": 26},
-                {"fast": 100, "slow": 200}
-                ],
-            "macd": {"fast": 12, "slow": 26, "signal": 9},
-            "bbands": {"length": 20, "std": 2},
-            "rsi": {"timeperiod": 14},
-        }
-        
-        ```
+        """
+        sets new TA parameters::
+
+            self.ta_params = {
+                "sma": [
+                    {"fast": 12, "slow": 26},
+                    {"fast": 100, "slow": 200}
+                    ],
+                "macd": {"fast": 12, "slow": 26, "signal": 9},
+                "bbands": {"length": 20, "std": 2},
+                "rsi": {"timeperiod": 14},}
+
         """
         for param in params:
             # dictionary
             self.ta_params[param] = params[param]
 
-    ########## COLUMNS FOR INDICATORS SAVED TO THE DF INPLACE
+    # COLUMNS FOR INDICATORS SAVED TO THE DF INPLACE
 
     def compute_ta_indicators(self):
         """computes the selected TA indicators and appends them to df attribute
@@ -157,5 +161,7 @@ class TS:
     def distance_from_ath(self):
         d = {}
         for idx in self.df.index:
-            d[idx] = abs(self.df.loc[idx, "Close"] - self.df[:idx]["Close"].max())
+            d[idx] = abs(
+                self.df.loc[idx, "Close"] - self.df[:idx]["Close"].max()
+            )
         self.df["distance_ATH"] = pd.Series(d)

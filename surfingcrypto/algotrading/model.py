@@ -40,7 +40,9 @@ class Model:
 
     def _estimate(self) -> pd.Series:
         return pd.DataFrame(
-            self.model.predict(self.X), index=self.X.index, columns=["predicted"]
+            self.model.predict(self.X),
+            index=self.X.index,
+            columns=["predicted"],
         )
 
     def make_tomorrow_prediction(self) -> int:
