@@ -1,7 +1,8 @@
 """
-test scraper module.
+test UpdateHandler class.
 """
 import datetime
+from logging import root
 import pytest
 import pandas as pd
 from pandas.testing import assert_frame_equal
@@ -9,84 +10,8 @@ from pandas.testing import assert_frame_equal
 import os
 from unittest.mock import patch
 
-from surfingcrypto.config import Config
-from surfingcrypto.scraper import CMCutility, UpdateHandler, Scraper
+from surfingcrypto.scraper import CMCutility, UpdateHandler
 
-#######################################################################
-#
-#  cmc utility
-
-
-def test_CMCutility_scrape_data():
-    """test that scrape data returns the expected result
-
-    dataframe
-    newest to oldest order
-    """
-    cmc = CMCutility(
-        "BTC",
-        datetime.datetime(2021, 1, 1),
-        datetime.datetime(2022, 1, 1),
-        "EUR",
-    )
-    response = cmc.scrape_data()
-    assert isinstance(response, pd.DataFrame)
-    assert len(response) > 0
-    # response is in descending order
-    assert str(response["Date"].iloc[0]) == str(datetime.datetime(2022, 1, 1))
-    assert str(response["Date"].iloc[-1]) == str(datetime.datetime(2021, 1, 1))
-
-
-def test_CMCutility_str_repr_before_scraping():
-    cmc = CMCutility(
-        "BTC",
-        datetime.datetime(2021, 1, 1),
-        datetime.datetime(2022, 1, 1),
-        "EUR",
-    )
-    expected = (
-        "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=None)"
-    )
-    assert str(cmc) == expected
-    assert repr(cmc) == expected
-
-
-def test_CMCutility_str_repr_with_good_response():
-    cmc = CMCutility(
-        "BTC",
-        datetime.datetime(2021, 1, 1),
-        datetime.datetime(2022, 1, 1),
-        "EUR",
-    )
-    cmc.scrape_data()
-    expected = (
-        "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=True)"
-    )
-    assert str(cmc) == expected
-    assert repr(cmc) == expected
-
-
-def test_CMCutility_str_repr_with_bad_response():
-    """there are no data for this range"""
-    cmc = CMCutility(
-        "SOL",
-        datetime.datetime(2017, 1, 1),
-        datetime.datetime(2018, 1, 1),
-        "EUR",
-    )
-    cmc.scrape_data()
-    expected = (
-        "CmcScraper(SOL, left=01-01-2017, right=01-01-2018, response=False)"
-    )
-    assert str(cmc) == expected
-    assert repr(cmc) == expected
-
-
-#######################################################################
-#
-#  Updatehandler
-
-# @patch.object(UpdateHandler,"_handle_update") #both works
 @patch("surfingcrypto.scraper.UpdateHandler._handle_update")
 def test_UpdateHandler(mock, temp_test_env):
     """base test for UpdateHandler"""
@@ -386,6 +311,33 @@ def test_UpdateHandler_handle_update_oneside_frontside():
 def test_UpdateHandler_handle_update_twoside():
     pass
 
+@pytest.mark.wip
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [
+        {
+            "ts": (),
+        },
+    ],
+    indirect=["temp_test_env"],
+)
+def test_UpdateHandler_handle_update_save_csv(temp_test_env,):
+    """
+    test if data is saved locally correctly
+
+    eg. pandas int index is ignored
+    """
+    root = temp_test_env
+    UpdateHandler(
+        "BTC",
+        "EUR",
+        datetime.datetime(2021, 1, 1),
+        datetime.datetime(2021, 12, 31),
+        root / "data" / "ts" / "BTC_EUR.csv",
+    )
+    df = pd.read_csv(root / "data" / "ts" / "BTC_EUR.csv",)
+
+    assert any([True for col in df.columns if "Unnamed" in col]) == False
 
 @pytest.mark.parametrize(
     "temp_test_env,descr",
@@ -416,35 +368,5 @@ def test_UpdateHandler_str_repr(temp_test_env, descr):
         root / "data" / "ts" / "BTC_EUR.csv",
     )
     expected = f"UpdateHandler(BTC-EUR: {descr})"
-    if hasattr(uh, "error"):
-        print(uh.error)
     assert str(uh) == expected
     assert repr(uh) == expected
-
-
-#######################################################################
-#
-#  Scraper
-
-COINS = {"BTC": "", "ETH": ""}
-
-
-@pytest.mark.wip
-def test_Scraper(temp_test_env):
-    """
-    test basic Scraper with full download of data
-    """
-    root = temp_test_env
-    c = Config(COINS, root / "data")
-    s = Scraper(
-        c,
-    )
-    s.run()
-    assert isinstance(s.runs, list)
-    for run in s.runs:
-        assert isinstance(run, UpdateHandler)
-    print(s.runs)
-    print(type(s.runs[0].left))
-    print(type(s.runs[0].right))
-    assert os.path.isfile(root / "data" / "ts" / "BTC_EUR.csv")
-    assert os.path.isfile(root / "data" / "ts" / "ETH_EUR.csv")
