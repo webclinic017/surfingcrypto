@@ -429,7 +429,6 @@ def test_UpdateHandler_str_repr(temp_test_env, descr):
 COINS = {"BTC": "", "ETH": ""}
 
 
-@pytest.mark.wip
 def test_Scraper(temp_test_env):
     """
     test basic Scraper with full download of data
@@ -448,3 +447,50 @@ def test_Scraper(temp_test_env):
     print(type(s.runs[0].right))
     assert os.path.isfile(root / "data" / "ts" / "BTC_EUR.csv")
     assert os.path.isfile(root / "data" / "ts" / "ETH_EUR.csv")
+
+
+@pytest.mark.wip
+@pytest.mark.parametrize(
+    "error,output",
+    [
+        (None, True),
+        ("str", False),
+    ],
+)
+@patch("surfingcrypto.scraper.UpdateHandler", autospec=True)
+def test_Scraper_output(mock, error, output, temp_test_env):
+    """
+    test basic Scraper output
+    """
+    mock.return_value.error = error
+
+    root = temp_test_env
+    c = Config(COINS, root / "data")
+    s = Scraper(
+        c,
+    )
+    s.run()
+    print(s.runs)
+    assert len(s.runs) == 2
+    assert s.output == output
+
+
+@pytest.mark.skip
+@patch("surfingcrypto.scraper.UpdateHandler", autospec=True)
+def test_Scraper_output_mixed(mock, temp_test_env):
+    """
+    test basic Scraper output
+    """
+    ## cant do this, having a different value each time
+    mock.return_value.error = [None, "str"]
+
+    root = temp_test_env
+    c = Config(COINS, root / "data")
+    s = Scraper(
+        c,
+    )
+    s.run()
+    print(s.runs)
+    assert len(s.runs) == 2
+    assert s.output == False
+    assert s.output_verbose == ("Update failed." f" There are (1/2) errors.")
