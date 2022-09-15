@@ -45,7 +45,7 @@ def test_Scraper(temp_test_env):
 @patch("surfingcrypto.scraper.UpdateHandler", autospec=True)
 def test_Scraper_output(mock, error, output, temp_test_env):
     """
-    test basic Scraper output
+    test Scraper output when no errors and when there is
     """
     mock.return_value.error = error
 
@@ -64,7 +64,7 @@ def test_Scraper_output(mock, error, output, temp_test_env):
 @patch("surfingcrypto.scraper.UpdateHandler", autospec=True)
 def test_Scraper_output_mixed(mock, temp_test_env):
     """
-    test basic Scraper output
+    test output verbose when partly failed.
     """
     ## cant do this, having a different value each time
     mock.return_value.error = [None, "str"]

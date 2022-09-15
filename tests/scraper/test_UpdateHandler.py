@@ -2,6 +2,7 @@
 test UpdateHandler class.
 """
 import datetime
+from logging import root
 import pytest
 import pandas as pd
 from pandas.testing import assert_frame_equal
@@ -310,6 +311,33 @@ def test_UpdateHandler_handle_update_oneside_frontside():
 def test_UpdateHandler_handle_update_twoside():
     pass
 
+@pytest.mark.wip
+@pytest.mark.parametrize(
+    "temp_test_env",
+    [
+        {
+            "ts": (),
+        },
+    ],
+    indirect=["temp_test_env"],
+)
+def test_UpdateHandler_handle_update_save_csv(temp_test_env,):
+    """
+    test if data is saved locally correctly
+
+    eg. pandas int index is ignored
+    """
+    root = temp_test_env
+    UpdateHandler(
+        "BTC",
+        "EUR",
+        datetime.datetime(2021, 1, 1),
+        datetime.datetime(2021, 12, 31),
+        root / "data" / "ts" / "BTC_EUR.csv",
+    )
+    df = pd.read_csv(root / "data" / "ts" / "BTC_EUR.csv",)
+
+    assert any([True for col in df.columns if "Unnamed" in col]) == False
 
 @pytest.mark.parametrize(
     "temp_test_env,descr",
@@ -340,7 +368,5 @@ def test_UpdateHandler_str_repr(temp_test_env, descr):
         root / "data" / "ts" / "BTC_EUR.csv",
     )
     expected = f"UpdateHandler(BTC-EUR: {descr})"
-    if hasattr(uh, "error"):
-        print(uh.error)
     assert str(uh) == expected
     assert repr(uh) == expected
