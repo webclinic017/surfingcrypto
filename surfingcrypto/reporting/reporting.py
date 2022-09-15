@@ -4,13 +4,14 @@ reporting with text
 import pandas as pd
 
 
-def percentage_diff(df: pd.DataFrame, window=7):
+def percentage_diff(df: pd.DataFrame, window=7) -> float:
     """
     Percentage difference given a window size.
 
     Arguments:
-        df ()
-        window (int): number of days used to computer percentage
+        df (:obj:`pandas.DataFrame`): dataframe of prices, must have
+            a "Close" column.
+        window (int): number of last n days used to computer percentage
             difference.
     """
     return (
