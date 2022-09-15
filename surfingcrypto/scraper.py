@@ -66,7 +66,7 @@ class Scraper:
         produce a log of all executions.
         """
         for run in self.runs:
-            if hasattr(run, "error"):
+            if run.error is not None:
                 self.errors.append(run)
 
         if len(self.errors) == 0:
