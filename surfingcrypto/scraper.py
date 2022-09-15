@@ -66,7 +66,7 @@ class Scraper:
         produce a log of all executions.
         """
         for run in self.runs:
-            if hasattr(run, "error"):
+            if run.error is not None:
                 self.errors.append(run)
 
         if len(self.errors) == 0:
@@ -167,7 +167,7 @@ class UpdateHandler:
                         first, last
                     )
                     self.df = self._get_updates(df)
-                    self.df.to_csv(self.path)
+                    self.df.to_csv(self.path, index=False)
                     self.description = (
                         f"{self.coin} in {self.fiat}, successfully updated."
                     )
@@ -182,7 +182,7 @@ class UpdateHandler:
             try:
                 self.left, self.right = self.start, self.end_day
                 self.df = self._get_updates(None)
-                self.df.to_csv(self.path)
+                self.df.to_csv(self.path, index=False)
                 self.description = (
                     f"{self.coin} in {self.fiat}, successfully downloaded."
                 )
