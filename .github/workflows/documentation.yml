@@ -3,7 +3,7 @@ name: "Documentation"
 on:
   push:
     branches:
-      - automate_docs
+      - gh-pages
 
 jobs:
   docs:
@@ -62,5 +62,5 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        branch: automate_docs
+        branch: gh-pages
         github_token: ${{ secrets.GITHUB_TOKEN }}
