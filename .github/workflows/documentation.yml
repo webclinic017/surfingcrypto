@@ -9,7 +9,9 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
+
     - uses: actions/checkout@v2
+      ref : gh-pages
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
