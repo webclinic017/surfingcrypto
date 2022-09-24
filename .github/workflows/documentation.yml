@@ -35,9 +35,8 @@ jobs:
         file: docsrc/source/contents/changelog.md
         commit : false
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        header: |
-          # Releases
-           
+
+      # although adding headers is supported by action is done by makefile      
   
     - name: Format Changelog headers
       run : |
