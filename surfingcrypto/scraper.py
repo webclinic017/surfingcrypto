@@ -13,6 +13,10 @@ class Scraper:
     """
     gets all data required by configuration.
 
+    #. Iterates through all coins specified in configuration.
+    #. Starts and UpdateHandler object to identify the kind
+        of update that is required.
+    #. Uses selected apiwrapper for downloading data.
     Arguments:
         config (:obj:`surfingcrypto.config.config`): package
             configuration object
