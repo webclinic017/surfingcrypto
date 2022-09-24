@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 from surfingcrypto.scraper import CMCutility, UpdateHandler
 
+
 @patch("surfingcrypto.scraper.UpdateHandler._handle_update")
 def test_UpdateHandler(mock, temp_test_env):
     """base test for UpdateHandler"""
@@ -311,6 +312,7 @@ def test_UpdateHandler_handle_update_oneside_frontside():
 def test_UpdateHandler_handle_update_twoside():
     pass
 
+
 @pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env",
@@ -321,7 +323,9 @@ def test_UpdateHandler_handle_update_twoside():
     ],
     indirect=["temp_test_env"],
 )
-def test_UpdateHandler_handle_update_save_csv(temp_test_env,):
+def test_UpdateHandler_handle_update_save_csv(
+    temp_test_env,
+):
     """
     test if data is saved locally correctly
 
@@ -335,9 +339,12 @@ def test_UpdateHandler_handle_update_save_csv(temp_test_env,):
         datetime.datetime(2021, 12, 31),
         root / "data" / "ts" / "BTC_EUR.csv",
     )
-    df = pd.read_csv(root / "data" / "ts" / "BTC_EUR.csv",)
+    df = pd.read_csv(
+        root / "data" / "ts" / "BTC_EUR.csv",
+    )
 
     assert any([True for col in df.columns if "Unnamed" in col]) == False
+
 
 @pytest.mark.parametrize(
     "temp_test_env,descr",
