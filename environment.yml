@@ -2,7 +2,7 @@ name: cryptoenv
 channels:
   - conda-forge
 dependencies:
-  - python=3.7
+  - python=3.9
 #notebooks
   - ipython
   - ipykernel
@@ -22,7 +22,7 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
   - myst-parser
-  - docutils=0.16 #rtd_theme & py37 avoids bug in bullet points
+  - docutils
   - nbsphinx
 #tests
   - pytest
