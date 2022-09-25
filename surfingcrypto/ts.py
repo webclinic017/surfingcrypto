@@ -59,14 +59,10 @@ class TS:
         saved in .csv format.
         """
         if os.path.isfile(
-            self.config.data_folder
-            / "ts"
-            / (self.coin + "_" + self.fiat + ".csv")
+            self.config.data_folder / "ts" / (self.coin + "_" + self.fiat + ".csv")
         ):
             self.df = pd.read_csv(
-                self.config.data_folder
-                / "ts"
-                / (self.coin + "_" + self.fiat + ".csv")
+                self.config.data_folder / "ts" / (self.coin + "_" + self.fiat + ".csv")
             )
             self.df["Date"] = pd.to_datetime(self.df["Date"], utc=True)
             self.df.set_index("Date", inplace=True)
@@ -92,8 +88,7 @@ class TS:
             ]
         ).issubset(self.df.columns):
             raise AttributeError(
-                "df must have at least columns named: "
-                "Open, High, Low, Close"
+                "df must have at least columns named: " "Open, High, Low, Close"
             )
         # duplicates
         if any(self.df.index.duplicated()):
@@ -161,7 +156,5 @@ class TS:
     def distance_from_ath(self):
         d = {}
         for idx in self.df.index:
-            d[idx] = abs(
-                self.df.loc[idx, "Close"] - self.df[:idx]["Close"].max()
-            )
+            d[idx] = abs(self.df.loc[idx, "Close"] - self.df[:idx]["Close"].max())
         self.df["distance_ATH"] = pd.Series(d)

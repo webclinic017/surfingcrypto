@@ -97,9 +97,7 @@ def test_set_ta_params(temp_test_env):
     root = temp_test_env
     c = Config(COINS, root / "data")
     ts = TS(c, coin="BTC")
-    ts.set_ta_params(
-        {"macd": {"fast": 7, "slow": 12, "signal": 9}, "foo": {"bar": 1}}
-    )
+    ts.set_ta_params({"macd": {"fast": 7, "slow": 12, "signal": 9}, "foo": {"bar": 1}})
     assert ts.ta_params["macd"]["fast"] == 7
     assert ts.ta_params["foo"]["bar"] == 1
 
@@ -124,9 +122,7 @@ def test_compute_ta_indicators(temp_test_env):
     c = Config(COINS, root / "data")
     ts = TS(c, coin="BTC")
     ts.compute_ta_indicators()
-    assert set(["MACD_12_26_9", "RSI_14", "BBU_20_2.0"]).issubset(
-        list(ts.df.columns)
-    )
+    assert set(["MACD_12_26_9", "RSI_14", "BBU_20_2.0"]).issubset(list(ts.df.columns))
 
 
 @pytest.mark.parametrize(

@@ -1,4 +1,5 @@
 [flake8]
+max-line-length = 88
 rst-roles =
     class,
     obj,
@@ -10,4 +11,4 @@ rst-roles =
 extend-ignore =
     # Google Python style is not RST until after processed by Napoleon
     # See https://github.com/peterjc/flake8-rst-docstrings/issues/17
-    RST201,RST203,RST301,
+    RST201,RST203,RST301,E203

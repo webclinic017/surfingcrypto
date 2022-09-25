@@ -51,9 +51,7 @@ def populate_test_env(request, tmp_path):
         # if first element of param is string then tuple of strings
         if isinstance(request.param, dict):
             for folder in request.param:
-                copy_tuple_elements_to_folder(
-                    request.param[folder], tmp_path, folder
-                )
+                copy_tuple_elements_to_folder(request.param[folder], tmp_path, folder)
         else:
             print(request.param)
             raise NotImplementedError("params fixture not matches type")

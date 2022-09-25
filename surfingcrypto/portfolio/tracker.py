@@ -138,9 +138,7 @@ class Tracker:
 
                 # considering rebrandings
                 rebrandings = [
-                    k
-                    for k, v in self.configuration.rebrandings.items()
-                    if v == ts.coin
+                    k for k, v in self.configuration.rebrandings.items() if v == ts.coin
                 ]
                 if rebrandings:
                     ts.coin = rebrandings[0]
@@ -163,9 +161,7 @@ class Tracker:
 
                 df = self._check_data(
                     ts.df[["Close"]].copy(),
-                    pd.Timestamp(
-                        self.configuration.coinbase_req[ts.coin]["start"]
-                    ),
+                    pd.Timestamp(self.configuration.coinbase_req[ts.coin]["start"]),
                     end_day,
                 )
                 df["symbol"] = symbol
@@ -406,9 +402,7 @@ class Tracker:
 
         return df
 
-    def _modified_cost_per_share(
-        self, portfolio: pd.DataFrame
-    ) -> pd.DataFrame:
+    def _modified_cost_per_share(self, portfolio: pd.DataFrame) -> pd.DataFrame:
         """
         matches prices of each asset to open date
 
@@ -431,9 +425,7 @@ class Tracker:
         return df
 
     # merge portfolio data with latest benchmark data and create several calcs
-    def _benchmark_portfolio_calcs(
-        self, portfolio: pd.DataFrame
-    ) -> pd.DataFrame:
+    def _benchmark_portfolio_calcs(self, portfolio: pd.DataFrame) -> pd.DataFrame:
         """make benchmark calculations
 
         Args:
@@ -461,9 +453,7 @@ class Tracker:
             how="left",
         )
         portfolio.drop("Open date_temp", axis=1, inplace=True)
-        portfolio.rename(
-            columns={"Close": "Benchmark DayOfBuy Close"}, inplace=True
-        )
+        portfolio.rename(columns={"Close": "Benchmark DayOfBuy Close"}, inplace=True)
         portfolio["Benchmark Equiv Shares"] = (
             portfolio["Adj cost"] / portfolio["Benchmark DayOfBuy Close"]
         )
@@ -491,9 +481,7 @@ class Tracker:
         )
         # #benchmark
         portfolio["Benchmark Return"] = (
-            portfolio["Benchmark Close"]
-            / portfolio["Benchmark DayOfBuy Close"]
-            - 1
+            portfolio["Benchmark Close"] / portfolio["Benchmark DayOfBuy Close"] - 1
         )
 
         portfolio["Benchmark Gain / (Loss)"] = (

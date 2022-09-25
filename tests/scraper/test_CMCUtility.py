@@ -38,9 +38,7 @@ def test_CMCutility_str_repr_before_scraping():
         datetime.datetime(2022, 1, 1),
         "EUR",
     )
-    expected = (
-        "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=None)"
-    )
+    expected = "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=None)"
     assert str(cmc) == expected
     assert repr(cmc) == expected
 
@@ -53,9 +51,7 @@ def test_CMCutility_str_repr_with_good_response():
         "EUR",
     )
     cmc.scrape_data()
-    expected = (
-        "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=True)"
-    )
+    expected = "CmcScraper(BTC, left=01-01-2021, right=01-01-2022, response=True)"
     assert str(cmc) == expected
     assert repr(cmc) == expected
 
@@ -69,8 +65,6 @@ def test_CMCutility_str_repr_with_bad_response():
         "EUR",
     )
     cmc.scrape_data()
-    expected = (
-        "CmcScraper(SOL, left=01-01-2017, right=01-01-2018, response=False)"
-    )
+    expected = "CmcScraper(SOL, left=01-01-2017, right=01-01-2018, response=False)"
     assert str(cmc) == expected
     assert repr(cmc) == expected

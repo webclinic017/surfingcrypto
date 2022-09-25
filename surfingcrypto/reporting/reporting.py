@@ -14,9 +14,7 @@ def percentage_diff(df: pd.DataFrame, window=7) -> float:
         window (int): number of last n days used to computer percentage
             difference.
     """
-    return (
-        (df.Close[-1] - df.Close[-window - 1]) / (df.Close[-window - 1]) * 100
-    )
+    return (df.Close[-1] - df.Close[-window - 1]) / (df.Close[-window - 1]) * 100
 
 
 def report_percentage_diff(
@@ -37,12 +35,7 @@ def report_percentage_diff(
     """
     s = f"**{coin}**\n"
     for window in windows:
-        s = (
-            s
-            + f"- {window}d: "
-            + "{:.2f}".format(percentage_diff(df, window))
-            + " %\n"
-        )
+        s = s + f"- {window}d: " + "{:.2f}".format(percentage_diff(df, window)) + " %\n"
     return s
 
 
@@ -83,13 +76,7 @@ def report_coinbase_live_value(portfolio):
     tot = 0
     for account in portfolio.coinbase.accounts:
         if float(account.native_balance.amount) > 0:
-            s = (
-                s
-                + str(account.currency)
-                + " : "
-                + str(account.native_balance)
-                + "\n"
-            )
+            s = s + str(account.currency) + " : " + str(account.native_balance) + "\n"
             tot += float(account.native_balance.amount)
     s = s + "---\n" + "Portfolio: EUR " + "{:.2f}".format(tot)
     return s
