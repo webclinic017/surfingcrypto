@@ -11,7 +11,7 @@ on:
 
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
     strategy:
     #allow the matrix to not fail completely if one fails
