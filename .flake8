@@ -1,5 +1,5 @@
 [flake8]
-max-line-length = 88
+max-line-length = 88 # flake8 and black compatibility
 rst-roles =
     class,
     obj,
@@ -11,4 +11,5 @@ rst-roles =
 extend-ignore =
     # Google Python style is not RST until after processed by Napoleon
     # See https://github.com/peterjc/flake8-rst-docstrings/issues/17
+    # E203: flake8 and black compatibility
     RST201,RST203,RST301,E203
