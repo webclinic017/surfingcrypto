@@ -32,7 +32,8 @@ class BaseFigure:
     This is the base class object for all figures.
 
     Arguments:
-        object (:class:`surfingcrypto.ts.TS` or :class:`surfingcrypto.portfolio.Portfolio` ) :
+        object (:class:`surfingcrypto.ts.TS`
+            or :class:`surfingcrypto.portfolio.Portfolio` ) :
             timeseries :obj:`TS` or :obj:`Portfolio` object
         graphstart (str) : date string in d-m-Y format
             (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which
@@ -121,7 +122,8 @@ class SimplePlot(BaseFigure):
     Arguments:
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         graphstart (str) : date string in d-m-Y format
-            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
+            (or relative from today eg. 1 month: `1m`,3 month: `3m`)
+            from which to start the graph.
     """
 
     def __init__(self, *args, **kwargs):
@@ -189,7 +191,8 @@ class TaPlot(BaseFigure):
             for elem in ["macd", "sma", "bbands", "rsi"]
         ):
             raise AttributeError(
-                "Object myust have `sma`,`macd`,`bbands` and `rsi` in `ta_params` attribute."
+                "Object myust have `sma`,`macd`,`bbands` "
+                "and `rsi` in `ta_params` attribute."
             )
         # figure
         self.f, self.axes = plt.subplots(
@@ -235,7 +238,8 @@ class ATHPlot(BaseFigure):
     Arguments:
         ts (:class:`surfingcrypto.ts.TS`) : `surfingcrypto.ts.TS` object
         graphstart (str) : date string in d-m-Y format
-            (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which to start the graph.
+            (or relative from today eg. 1 month: `1m`,3 month: `3m`)
+            from which to start the graph.
 
     """
 
@@ -274,7 +278,7 @@ class ATHPlot(BaseFigure):
         self.ax.scatter(self.object.df.index, self.object.df.Close, c=colors, s=2)
         # colorbar
         cmappable = ScalarMappable(norm=norm, cmap=cmap)
-        self.f.colorbar(cmappable)
+        self.f.colorbar(cmappable, ax=self.ax)
 
         # axes look
         self.set_axes()
