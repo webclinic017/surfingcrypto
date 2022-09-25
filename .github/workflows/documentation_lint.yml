@@ -12,8 +12,6 @@ jobs:
     steps:
 
     - uses: actions/checkout@v2
-      with:
-        ref : gh-pages
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
@@ -22,13 +20,8 @@ jobs:
 
     - name: Set up dependencies
       run: |
-        pip install --upgrade pip 
-        pip install -r requirements.txt 
-        pip install git+https://github.com/mementum/backtrader.git@0fa63ef4a35dc53cc7320813f8b15480c8f85517#egg=backtrader
-        pip install git+https://github.com/giocaizzi/pyfolio.git
-        pip install .
-        pip install flake8 flake8-rst-docstrings
+        python -m pip install --upgrade pip 
+        python -m pip install flake8 flake8-rst-docstrings
 
     - name: Lint with flake8 for RST erorrs
-      run : flake8 surfingcrypto
-      # run : flake8 --select=RST surfingcrypto
+      run : flake8 --select=RST surfingcrypto
