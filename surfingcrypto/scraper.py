@@ -17,6 +17,7 @@ class Scraper:
     #. Starts and UpdateHandler object to identify the kind
         of update that is required.
     #. Uses selected apiwrapper for downloading data.
+
     Arguments:
         config (:obj:`surfingcrypto.config.config`): package
             configuration object
