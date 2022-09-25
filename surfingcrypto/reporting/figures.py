@@ -1,6 +1,5 @@
-"""
-figures built for crypto prices.
-"""
+"""figures built for crypto prices."""
+
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.colors import LinearSegmentedColormap, Normalize
@@ -33,8 +32,8 @@ class BaseFigure:
 
     Arguments:
         object (:class:`surfingcrypto.ts.TS`
-            or :class:`surfingcrypto.portfolio.Portfolio` ) :
-            timeseries :obj:`TS` or :obj:`Portfolio` object
+            or :class:`surfingcrypto.portfolio.Portfolio` ) : timeseries
+            object :obj:`TS` or object :obj:`Portfolio`
         graphstart (str) : date string in d-m-Y format
             (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which
             to start the graph.
@@ -69,7 +68,7 @@ class BaseFigure:
         ).replace(tzinfo=pytz.UTC)
 
     def subset_ts_df(self, first: str, last=None):
-        """subsets inplace ts.df to selected interval
+        """Subsets inplace ts.df to selected interval.
 
         Note:
             The `object` attribute is a TS or Portfolio object and it must have
@@ -87,7 +86,7 @@ class BaseFigure:
 
     def save(self, path):
         """
-        save fig to specified path.
+        Save fig to specified path.
 
         Arguments:
             path (str) : path to output file.
@@ -95,9 +94,10 @@ class BaseFigure:
         return self.f.savefig(path)
 
     def set_axes(self):
-        """
-        set axes look.
-        set axes to the specified xlims.
+        """Set axes look.
+
+        Set axes look.
+        Set axes to the specified xlims.
         """
         if hasattr(self, "axes"):
             for iax in self.axes:
@@ -115,7 +115,8 @@ class BaseFigure:
 
 
 class SimplePlot(BaseFigure):
-    """
+    """Simple plot.
+
     This is the basic price plot.
     Candlesticks + volume.
 
@@ -131,9 +132,7 @@ class SimplePlot(BaseFigure):
         self.default_plot()
 
     def default_plot(self):
-        """
-        default plotting.
-        """
+        """Plot default plot."""
         # figure
         self.f, self.axes = plt.subplots(
             2,
@@ -161,8 +160,9 @@ class SimplePlot(BaseFigure):
 
 
 class TaPlot(BaseFigure):
-    """
-    this is the Technical Analysis plot.
+    """Ta plot.
+
+    This is the Technical Analysis plot.
     It shows (at current time): candlesticks,
     volume and 3 TA Indicators (MACD, BB bands and RSI)
     Can be easily modified to fit other and/or more indicators.
@@ -180,10 +180,7 @@ class TaPlot(BaseFigure):
         self.ta_plot()
 
     def ta_plot(self):
-        """
-        plotting function.
-        """
-
+        """Plot ta indicators."""
         if not hasattr(self.object, "ta_params"):
             raise AttributeError("Object myust have `ta_params`")
         if not all(
@@ -249,7 +246,7 @@ class ATHPlot(BaseFigure):
 
     def plot(self):
         """
-        plot distance from ath points.
+        Plot distance from ath points.
 
         Note:
             ATM it its a zoomed-in view.
@@ -294,8 +291,9 @@ class ATHPlot(BaseFigure):
 
 
 class PortfolioPlot(BaseFigure):
-    """
-    Portfolio plots
+    """Portfolio plots.
+
+    This is the Portfolio plot.
 
     Arguments:
         variables (list): list of variables to plot
@@ -321,6 +319,7 @@ class PortfolioPlot(BaseFigure):
         self.plot(variables, by_symbol, zero_line)
 
     def plot(self, variables: list, by_symbol: bool, zero_line: bool):
+        """Plot portfolio plot."""
         # figure
         self.f, self.ax = plt.subplots(
             dpi=200,
@@ -335,7 +334,7 @@ class PortfolioPlot(BaseFigure):
 
 
 class CalendarPlot:
-    """calendar plot
+    """Calendar plot.
 
     This object is a good visualisation of a variable in a calendar style.
 
@@ -367,11 +366,14 @@ class CalendarPlot:
 
 
 class BacktestPerformancePlot:
+    """Bakctest performance plot."""
+
     def __init__(self, bt: BackTest):
         self.bt = bt
         self.plot()
 
     def plot(self):
+        """Plot backtest performance."""
         self.fig, axes = plt.subplots(
             nrows=2, ncols=2, figsize=(16, 9), constrained_layout=True
         )
