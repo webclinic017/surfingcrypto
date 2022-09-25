@@ -55,7 +55,7 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
-        git commit -m "Build documentation" -a || true
+        git commit -m "Actions: Build documentation" -a || true
     
       # The last command will fail if no changes were present, so we ignore
       # the return code.
