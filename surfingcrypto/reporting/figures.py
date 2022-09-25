@@ -31,9 +31,8 @@ class BaseFigure:
     This is the base class object for all figures.
 
     Arguments:
-        object (:class:`surfingcrypto.ts.TS`
-            or :class:`surfingcrypto.portfolio.Portfolio` ) : timeseries
-            object :obj:`TS` or object :obj:`Portfolio`
+        object (:obj:`surfingcrypto.ts.TS` or :obj:`surfingcrypto.portfolio.Portfolio`):
+            timeseries or portfolio object
         graphstart (str) : date string in d-m-Y format
             (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which
             to start the graph.
