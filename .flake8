@@ -1,15 +1,19 @@
 [flake8]
-max-line-length = 88 # flake8 and black compatibility
+# flake8 and black compatibility
+max-line-length = 88
+#rst plugin
 rst-roles =
     class,
+    func,
+    ref,
     obj,
-; rst-directives =
-;     envvar,
-;     exception,
-; rst-substitutions =
-;     version,
+rst-directives =
+    envvar,
+    exception,
+rst-substitutions =
+    version,
 extend-ignore =
     # Google Python style is not RST until after processed by Napoleon
     # See https://github.com/peterjc/flake8-rst-docstrings/issues/17
     # E203: flake8 and black compatibility
-    RST201,RST203,RST301,E203
+    RST307,RST201,RST203,RST301,E203
