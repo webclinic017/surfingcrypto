@@ -22,7 +22,7 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
   - myst-parser
-  - docutils
+  - docutils=0.16
   - nbsphinx
 #tests
   - pytest
