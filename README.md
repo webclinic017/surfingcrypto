@@ -1,11 +1,15 @@
 
 # surfingcrypto
 
+
 ![img](https://github.com/giocaizzi/surfingcrypto/blob/gh-pages/docsrc/source/images/logo.png)
 
-![Python](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20-blue)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/giocaizzi/surfingcrypto/ci)
-![Codecov](https://img.shields.io/codecov/c/gh/giocaizzi/surfingcrypto)
+![PyPI](https://img.shields.io/pypi/v/surfingcrypto?color=blue)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/surfingcrypto)
+[![Testing](https://github.com/giocaizzi/surfingcrypto/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/giocaizzi/surfingcrypto/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/giocaizzi/surfingcrypto/branch/main/graph/badge.svg?token=06LXACLA9H)](https://codecov.io/gh/giocaizzi/surfingcrypto)
+[![Requirements Status](https://requires.io/github/giocaizzi/surfingcrypto/requirements.svg?branch=main)](https://requires.io/github/giocaizzi/surfingcrypto/requirements/?branch=main)
+![black](https://img.shields.io/badge/code%20style-black-black)
 
 python package to surf crypto-waves.
 
