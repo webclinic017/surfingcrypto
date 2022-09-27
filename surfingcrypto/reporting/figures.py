@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 from matplotlib.cm import ScalarMappable
+import matplotlib.dates as mdates
 
 import pandas as pd
 import copy
@@ -101,13 +102,18 @@ class BaseFigure:
                 iax.grid(which="major", axis="y", linewidth=0.05)
                 iax.yaxis.set_label_position("left")
                 iax.yaxis.tick_left()
-        elif hasattr(self, "ax"):
+                iax.xaxis.set_major_locator(mdates.MonthLocator(bymonthday=1))
+                iax.xaxis.set_minor_locator(mdates.WeekdayLocator(byweekday=mdates.MO))
+                iax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+
+        else: # if not axes, than ax
             self.ax.grid(which="major", axis="x", linewidth=0.1)
             self.ax.grid(which="major", axis="y", linewidth=0.05)
             self.ax.yaxis.set_label_position("left")
             self.ax.yaxis.tick_left()
-        else:
-            raise NotImplementedError
+            self.ax.xaxis.set_major_locator(mdates.MonthLocator(bymonthday=1))
+            self.ax.xaxis.set_minor_locator(mdates.WeekdayLocator(byweekday=mdates.MO))
+            self.ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
 
 
 class SimplePlot(BaseFigure):
@@ -183,7 +189,7 @@ class TaPlot(BaseFigure):
             for elem in ["macd", "sma", "bbands", "rsi"]
         ):
             raise AttributeError(
-                "Object myust have `sma`,`macd`,`bbands` "
+                "Object must have `sma`,`macd`,`bbands` "
                 "and `rsi` in `ta_params` attribute."
             )
         # figure
