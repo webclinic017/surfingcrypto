@@ -139,7 +139,7 @@ class SimplePlot(BaseFigure):
         )
         # plot
         scplot.candlesticks(
-            self.object,
+            self.object, # a TS object
             ax=self.axes[0],
             volume=True,
             vol_ax=self.axes[1],
