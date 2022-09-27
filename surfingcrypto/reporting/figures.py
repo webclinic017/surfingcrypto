@@ -27,15 +27,29 @@ mpl.rcParams["font.size"] = 4
 
 
 class BaseFigure:
-    """
-    This is the base class object for all figures.
+    """Base class object for all figures.
+
+    This class contains a set of common methods useful
+    for the generic plots required by the `surfingcrypto`
+    package.
+
+    Note:
+        The `BaseFigure` class does not create a `figure`
+        nor any `ax`. This is done by children classes.
 
     Arguments:
         object (:obj:`surfingcrypto.ts.TS` or :obj:`surfingcrypto.portfolio.Portfolio`):
             timeseries or portfolio object
-        graphstart (str) : date string in d-m-Y format
+        graphstart (str) : date string in dd-mm-yyyy format
             (or relative from today eg. 1 month: `1m`,3 month: `3m`) from which
             to start the graph.
+    
+    Attributes:
+        object (:obj:`surfingcrypto.ts.TS` or :obj:`surfingcrypto.portfolio.Portfolio`):
+            timeseries or portfolio object
+        graphstart (:obj:`datetime.date`) : start of fraph, UTC aware
+        graphend (:obj:`datetime.date` or `None`): end of graph, UTC aware
+    
     """
 
     def __init__(
@@ -43,12 +57,12 @@ class BaseFigure:
         object: TS or Portfolio,
         graphstart="1-1-2021",
     ):
-
         self.object = copy.copy(object)  # copy so can be sliced for purpose
-
         self._set_graphstart(graphstart)
+        self.graphend = None # not implemented yet
+        # if ts, slice df to extent
         if isinstance(object, TS):
-            self.subset_ts_df(self.graphstart)
+            self.object.df = self.object.df.loc[self.graphstart:self.graphend]
 
     def _set_graphstart(self, graphstart):
         if graphstart.lower() == "3m":
@@ -65,23 +79,6 @@ class BaseFigure:
         self.graphstart = datetime.datetime.combine(
             self.graphstart, datetime.time.min
         ).replace(tzinfo=pytz.UTC)
-
-    def subset_ts_df(self, first: str, last=None):
-        """Subsets inplace ts.df to selected interval.
-
-        Note:
-            The `object` attribute is a TS or Portfolio object and it must have
-            a df attribute.
-
-        Args:
-            first (str): first date of interval, as string in d-m-Y format
-            last (_type_, optional):  last date of interval, as string in d-m-Y format.
-                Defaults to None.
-        """
-        if last is None:
-            self.object.df = self.object.df.loc[first:]
-        else:
-            self.object.df = self.object.df.loc[first:last]
 
     def save(self, path):
         """
@@ -116,7 +113,6 @@ class BaseFigure:
 class SimplePlot(BaseFigure):
     """Simple plot.
 
-    This is the basic price plot.
     Candlesticks + volume.
 
     Arguments:

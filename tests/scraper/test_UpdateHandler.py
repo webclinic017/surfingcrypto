@@ -313,7 +313,6 @@ def test_UpdateHandler_handle_update_twoside():
     pass
 
 
-@pytest.mark.wip
 @pytest.mark.parametrize(
     "temp_test_env",
     [

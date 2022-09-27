@@ -34,7 +34,6 @@ def test_Scraper(temp_test_env):
     assert os.path.isfile(root / "data" / "ts" / "ETH_EUR.csv")
 
 
-@pytest.mark.wip
 @pytest.mark.parametrize(
     "error,output",
     [
