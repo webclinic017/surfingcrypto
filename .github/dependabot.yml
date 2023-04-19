@@ -14,3 +14,9 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: "pip" 
+    directory: "/docsrc" # Location of package manifests
+    target-branch: "ghpages" #targeted branch if not default
+    schedule:
+      interval: "weekly"
